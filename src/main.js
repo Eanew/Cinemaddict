@@ -2,6 +2,7 @@ import {createUserLevelTemplate} from './components/user-level.js';
 import {createNavigationTemplate} from './components/navigation.js';
 import {createStatisticTemplate} from './components/statistic.js';
 import {createSortingTemplate} from './components/sorting.js';
+import {createFilmCardTemplate} from './components/film-card.js';
 import * as filmList from './components/film-list.js';
 import * as details from './components/details.js';
 
@@ -15,7 +16,7 @@ const renderHtml = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
 
-renderHtml(pageHeader, createUserLevelTemplate());
+renderHtml(pageHeader, createUserLevelTemplate(30, `images/bitmap@2x.png`));
 
 renderHtml(pageMain, createNavigationTemplate());
 renderHtml(pageMain, createStatisticTemplate());
@@ -25,7 +26,7 @@ renderHtml(pageMain, filmList.createSectionTemplate());
 const filmListContainer = pageMain.querySelector(`.films-list__container`);
 
 for (let i = 0; i < FILM_CARDS_COUNT; i++) {
-  renderHtml(filmListContainer, filmList.createItemTemplate());
+  renderHtml(filmListContainer, createFilmCardTemplate());
 }
 
 renderHtml(filmListContainer, filmList.createShowMoreButtonTemplate(), `afterend`);

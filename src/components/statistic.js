@@ -1,4 +1,41 @@
+import {Regular} from '../util.js';
+
+const renderStatisticFieldMarkup = (name) => {
+  const lowerCaseName = name.toLowerCase();
+
+  return (
+    `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter"
+      id="statistic-${lowerCaseName}" value="${lowerCaseName}">
+    <label for="statistic-${lowerCaseName}" class="statistic__filters-label">${name}</label>`
+  );
+};
+
+const renderStatisticStringMarkup = (string) => {
+  return string
+    .split(Regular.SPACE)
+    .map((it) => {
+      return it.length && it.replace(Regular.NUMBERS, ``).toLowerCase() === it ?
+        `<span class="statistic__item-description">${it}</span>`
+        : it;
+    })
+    .join(Regular.SPACE);
+};
+
+const renderStatisticTextItemMarkup = (name, value) => {
+  const itemText = renderStatisticStringMarkup(value);
+
+  return (
+    `<li class="statistic__text-item">
+      <h4 class="statistic__item-title">${name}</h4>
+      <p class="statistic__item-text">${itemText}</p>
+    </li>`
+  );
+};
+
 export const createStatisticTemplate = () => {
+  const statisticField = renderStatisticFieldMarkup(`Today`);
+  const statisticTextItem = renderStatisticTextItemMarkup(`Total duration`, `130 h 22 m`);
+
   return (
     `<section class="statistic">
       <p class="statistic__rank">
@@ -9,36 +46,17 @@ export const createStatisticTemplate = () => {
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
         <p class="statistic__filters-description">Show stats:</p>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" checked>
-        <label for="statistic-all-time" class="statistic__filters-label">All time</label>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today">
-        <label for="statistic-today" class="statistic__filters-label">Today</label>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week">
-        <label for="statistic-week" class="statistic__filters-label">Week</label>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month">
-        <label for="statistic-month" class="statistic__filters-label">Month</label>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year">
-        <label for="statistic-year" class="statistic__filters-label">Year</label>
+        ${statisticField}
+        ${statisticField}
+        ${statisticField}
+        ${statisticField}
+        ${statisticField}
       </form>
 
       <ul class="statistic__text-list">
-        <li class="statistic__text-item">
-          <h4 class="statistic__item-title">You watched</h4>
-          <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
-        </li>
-        <li class="statistic__text-item">
-          <h4 class="statistic__item-title">Total duration</h4>
-          <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
-        </li>
-        <li class="statistic__text-item">
-          <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">Sci-Fi</p>
-        </li>
+        ${renderStatisticTextItemMarkup(`You watched`, `22 movies`)}
+        ${statisticTextItem}
+        ${renderStatisticTextItemMarkup(`Top genre`, `Sci-Fi`)}
       </ul>
 
       <div class="statistic__chart-wrap">

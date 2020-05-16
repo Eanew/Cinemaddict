@@ -1,9 +1,19 @@
+const createSortingItemMarkup = function (name, isActive = false) {
+  return (
+    `<li>
+      <a href="#" class="sort__button${isActive ? ` sort__button--active` : ``}">Sort by ${name}</a>
+    </li>`
+  );
+};
+
 export const createSortingTemplate = () => {
+  const sortItem = createSortingItemMarkup(`date`);
+
   return (
     `<ul class="sort">
-      <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
-      <li><a href="#" class="sort__button">Sort by date</a></li>
-      <li><a href="#" class="sort__button">Sort by rating</a></li>
+      ${sortItem}
+      ${sortItem}
+      ${sortItem}
     </ul>`
   );
 };
