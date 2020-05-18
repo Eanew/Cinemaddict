@@ -16,7 +16,7 @@ const renderHtml = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
 
-renderHtml(pageHeader, createUserLevelTemplate(30, `images/bitmap@2x.png`));
+renderHtml(pageHeader, createUserLevelTemplate());
 
 renderHtml(pageMain, createNavigationTemplate());
 renderHtml(pageMain, createStatisticTemplate());

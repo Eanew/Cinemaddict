@@ -1,31 +1,29 @@
-const Rank = {
-  'movie buff': 21,
-  'fan': 11,
-  'novice': 1,
-};
-
 const setRank = (movies) => {
-  let rank;
+  const Rank = {
+    'Movie Buff': 21,
+    'Fan': 11,
+    'Novice': 1,
+  };
 
-  if (movies >= Rank[`movie buff`]) {
-    rank = `Movie Buff`;
-  } else if (movies >= Rank[`fan`]) {
-    rank = `Fan`;
-  } else if (movies >= Rank[`novice`]) {
-    rank = `Novice`;
-  } else {
-    rank = null;
+  for (const count in Rank) {
+    if (Rank.hasOwnProperty(count) && Rank[count] <= movies) {
+      return count;
+    }
   }
-
-  return rank;
+  return null;
 };
 
-export const createUserLevelTemplate = (watchedMovies, avatar) => {
-  const rank = setRank(watchedMovies);
+export const createUserLevelTemplate = () => {
+  const profile = {
+    avatar: `images/bitmap@2x.png`,
+    movies: 30,
+  };
+
+  const rank = setRank(profile.movies);
   return (
     `<section class="header__profile profile">
       ${rank ? `<p class="profile__rating">${rank}</p>` : ``}
-      <img class="profile__avatar" src="${avatar}" alt="Avatar" width="35" height="35">
+      <img class="profile__avatar" src="${profile.avatar}" alt="Avatar" width="35" height="35">
     </section>`
   );
 };

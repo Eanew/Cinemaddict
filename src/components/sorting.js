@@ -1,3 +1,5 @@
+import {createMarkup} from '../util.js';
+
 const createSortingItemMarkup = function (name, isActive = false) {
   return (
     `<li>
@@ -7,13 +9,24 @@ const createSortingItemMarkup = function (name, isActive = false) {
 };
 
 export const createSortingTemplate = () => {
-  const sortItem = createSortingItemMarkup(`date`);
+  const sortItemsData = [
+    {
+      name: `default`,
+      isActive: true,
+    },
+    {
+      name: `date`,
+    },
+    {
+      name: `raiting`,
+    },
+  ];
+
+  const sortItemsMarkup = createMarkup(sortItemsData, createSortingItemMarkup);
 
   return (
     `<ul class="sort">
-      ${sortItem}
-      ${sortItem}
-      ${sortItem}
+      ${sortItemsMarkup}
     </ul>`
   );
 };

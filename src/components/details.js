@@ -1,14 +1,21 @@
-import {Regular} from '../util.js';
+import {getKeys, createMarkup} from '../util.js';
 
 const GENRES_FIELD_NAME = `Genres`;
 
-const renderFilmDetailsRowMarkup = (name, ...values) => {
+const Emoji = {
+  smile: `smile`,
+  sleeping: `sleeping`,
+  puke: `puke`,
+  angry: `angry`,
+};
+
+const renderFilmDetailsRowMarkup = (name, values) => {
   const term = (name === GENRES_FIELD_NAME && values.length < 2)
     ? name.replace(`s`, ``)
     : name;
 
   const cell = (name === GENRES_FIELD_NAME)
-    ? values.map((it) => `<span class="film-details__genre">${it}</span>`).join(` `)
+    ? values.map((it) => `<span class="film-details__genre">${it}</span>`).join(`\n`)
     : values.join(`, `);
 
   return (
@@ -19,9 +26,7 @@ const renderFilmDetailsRowMarkup = (name, ...values) => {
   );
 };
 
-const renderControlFieldMarkup = (name, fieldId) => {
-  const id = fieldId || name.replace(Regular.EMPTY_SPACE_IN_EDGES, ``).split(Regular.SPACE).pop().toLowerCase();
-
+const renderControlFieldMarkup = (name, id) => {
   return (
     `<input type="checkbox" class="film-details__control-input visually-hidden" id="${id}" name="${id}">
     <label for="${id}" class="film-details__control-label film-details__control-label--${id}">${name}</label>`
@@ -70,6 +75,39 @@ export const createTopContainerTemplate = () => {
 };
 
 export const createDescriptionTemplate = () => {
+  const detailsTableData = [
+    {
+      name: `Director`,
+      values: [`Anthony Mann`],
+    },
+    {
+      name: `Writers`,
+      values: [`Anne Wigton`, `Heinz Herald`, `Richard Weil`],
+    },
+    {
+      name: `Actors`,
+      values: [`Erich von Stroheim`, `Mary Beth Hughes`, `Dan Duryea`],
+    },
+    {
+      name: `Release Date`,
+      values: [`30 March 1945`],
+    },
+    {
+      name: `Runtime`,
+      values: [`1h 18m`],
+    },
+    {
+      name: `Country`,
+      values: [`USA`],
+    },
+    {
+      name: `Genres`,
+      values: [`Drama`, `Film-Noir`, `Mystery`],
+    }
+  ];
+
+  const detailsTableMarkup = createMarkup(detailsTableData, renderFilmDetailsRowMarkup);
+
   return (
     `<div class="film-details__close">
       <button class="film-details__close-btn" type="button">close</button>
@@ -94,13 +132,7 @@ export const createDescriptionTemplate = () => {
         </div>
 
         <table class="film-details__table">
-          ${renderFilmDetailsRowMarkup(`Director`, `Anthony Mann`)}
-          ${renderFilmDetailsRowMarkup(`Writers`, `Anne Wigton`, `Heinz Herald`, `Richard Weil`)}
-          ${renderFilmDetailsRowMarkup(`Actors`, `Erich von Stroheim`, `Mary Beth Hughes`, `Dan Duryea`)}
-          ${renderFilmDetailsRowMarkup(`Release Date`, `30 March 1945`)}
-          ${renderFilmDetailsRowMarkup(`Runtime`, `1h 18m`)}
-          ${renderFilmDetailsRowMarkup(`Country`, `USA`)}
-          ${renderFilmDetailsRowMarkup(`Genres`, `Drama`, `Film-Noir`, `Mystery`)}
+          ${detailsTableMarkup}
         </table>
 
         <p class="film-details__film-description">
@@ -112,11 +144,26 @@ export const createDescriptionTemplate = () => {
 };
 
 export const createControlsTemplate = () => {
+  const detailsControlsData = [
+    {
+      name: `Add to watchlist`,
+      id: `watchlist`,
+    },
+    {
+      name: `Already watched`,
+      id: `watched`,
+    },
+    {
+      name: `Add to favorites`,
+      id: `favorite`,
+    },
+  ];
+
+  const detailsControlsMarkup = createMarkup(detailsControlsData, renderControlFieldMarkup);
+
   return (
     `<section class="film-details__controls">
-      ${renderControlFieldMarkup(`Add to watchlist`)}
-      ${renderControlFieldMarkup(`Already watched`)}
-      ${renderControlFieldMarkup(`Add to favorites`, `favorite`)}
+      ${detailsControlsMarkup}
     </section>`
   );
 };
@@ -130,19 +177,47 @@ export const createBottomContainerTemplate = () => {
 };
 
 export const createCommentsTemplate = () => {
+  const detailsCommentsData = [
+    {
+      author: `Tim Macoveev`,
+      time: `2019/12/31 23:59`,
+      text: `Interesting setting and a good cast`,
+      emoji: Emoji.smile,
+    },
+    {
+      author: `John Doe`,
+      time: `2 days ago`,
+      text: `Booooooooooring`,
+      emoji: Emoji.sleeping,
+    },
+    {
+      author: `John Doe`,
+      time: `2 days ago`,
+      text: `Very very old. Meh`,
+      emoji: Emoji.puke,
+    },
+    {
+      author: `John Doe`,
+      time: `Today`,
+      text: `Almost two hours? Seriously?`,
+      emoji: Emoji.angry,
+    },
+  ];
+
+  const detailsCommentsMarkup = createMarkup(detailsCommentsData, renderCommentsItemMarkup);
+
   return (
     `<h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
 
     <ul class="film-details__comments-list">
-      ${renderCommentsItemMarkup(`Tim Macoveev`, `2019/12/31 23:59`, `Interesting setting and a good cast`, `smile`)}
-      ${renderCommentsItemMarkup(`John Doe`, `2 days ago`, `Booooooooooring`, `sleeping`)}
-      ${renderCommentsItemMarkup(`John Doe`, `2 days ago`, `Very very old. Meh`, `puke`)}
-      ${renderCommentsItemMarkup(`John Doe`, `Today`, `Almost two hours? Seriously?`, `angry`)}
+      ${detailsCommentsMarkup}
     </ul>`
   );
 };
 
 export const createNewCommentTemplate = () => {
+  const emojiListMarkup = getKeys(Emoji).map((it) => renderEmojiItemMarkup(it)).join(`\n`);
+
   return (
     `<div class="film-details__new-comment">
       <div for="add-emoji" class="film-details__add-emoji-label"></div>
@@ -152,10 +227,7 @@ export const createNewCommentTemplate = () => {
       </label>
 
       <div class="film-details__emoji-list">
-        ${renderEmojiItemMarkup(`smile`)}
-        ${renderEmojiItemMarkup(`sleeping`)}
-        ${renderEmojiItemMarkup(`puke`)}
-        ${renderEmojiItemMarkup(`angry`)}
+        ${emojiListMarkup}
       </div>
     </div>`
   );

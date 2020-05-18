@@ -1,12 +1,13 @@
-import {Regular} from '../util.js';
+import {Regular, createMarkup} from '../util.js';
+import {setId} from '../util.js';
 
-const renderStatisticFieldMarkup = (name) => {
-  const lowerCaseName = name.toLowerCase();
+const renderStatisticFieldMarkup = (name, isChecked = false) => {
+  const id = setId(name);
 
   return (
     `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter"
-      id="statistic-${lowerCaseName}" value="${lowerCaseName}">
-    <label for="statistic-${lowerCaseName}" class="statistic__filters-label">${name}</label>`
+      id="statistic-${id}" value="${id}"${isChecked ? ` checked` : ``}>
+    <label for="statistic-${id}" class="statistic__filters-label">${name}</label>`
   );
 };
 
@@ -14,8 +15,8 @@ const renderStatisticStringMarkup = (string) => {
   return string
     .split(Regular.SPACE)
     .map((it) => {
-      return it.length && it.replace(Regular.NUMBERS, ``).toLowerCase() === it ?
-        `<span class="statistic__item-description">${it}</span>`
+      return (it.length && it.replace(Regular.NUMBERS, ``).toLowerCase() === it)
+        ? `<span class="statistic__item-description">${it}</span>`
         : it;
     })
     .join(Regular.SPACE);
@@ -33,8 +34,43 @@ const renderStatisticTextItemMarkup = (name, value) => {
 };
 
 export const createStatisticTemplate = () => {
-  const statisticField = renderStatisticFieldMarkup(`Today`);
-  const statisticTextItem = renderStatisticTextItemMarkup(`Total duration`, `130 h 22 m`);
+  const statisticFieldsData = [
+    {
+      name: `All time`,
+      isChecked: true,
+    },
+    {
+      name: `Today`,
+    },
+    {
+      name: `Week`,
+    },
+    {
+      name: `Month`,
+    },
+    {
+      name: `Year`,
+    },
+  ];
+
+  const statisticFieldMarkup = createMarkup(statisticFieldsData, renderStatisticFieldMarkup);
+
+  const statisticTextData = [
+    {
+      name: `You watched`,
+      value: `22 movies`,
+    },
+    {
+      name: `Total duration`,
+      value: `130 h 22 m`,
+    },
+    {
+      name: `Top genre`,
+      value: `Sci-Fi`,
+    },
+  ];
+
+  const statisticTextMarkup = createMarkup(statisticTextData, renderStatisticTextItemMarkup);
 
   return (
     `<section class="statistic">
@@ -46,17 +82,11 @@ export const createStatisticTemplate = () => {
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
         <p class="statistic__filters-description">Show stats:</p>
-        ${statisticField}
-        ${statisticField}
-        ${statisticField}
-        ${statisticField}
-        ${statisticField}
+        ${statisticFieldMarkup}
       </form>
 
       <ul class="statistic__text-list">
-        ${renderStatisticTextItemMarkup(`You watched`, `22 movies`)}
-        ${statisticTextItem}
-        ${renderStatisticTextItemMarkup(`Top genre`, `Sci-Fi`)}
+        ${statisticTextMarkup}
       </ul>
 
       <div class="statistic__chart-wrap">
