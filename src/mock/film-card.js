@@ -26,7 +26,6 @@ export const generateControlsData = () => {
     {
       name: `Mark as favorite`,
       id: `favorite`,
-      isActive: true,
     },
   ];
 };

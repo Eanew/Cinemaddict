@@ -3,7 +3,6 @@ export const generateNavItemsData = () => {
     {
       name: `All movies`,
       count: null,
-      isActive: true,
       id: `all`,
     },
     {

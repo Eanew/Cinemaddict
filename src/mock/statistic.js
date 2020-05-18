@@ -2,7 +2,6 @@ export const generateFieldsData = () => {
   return [
     {
       name: `All time`,
-      isChecked: true,
     },
     {
       name: `Today`,

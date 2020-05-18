@@ -6,7 +6,7 @@ const renderInfoFieldMarkup = (name, value) => {
   );
 };
 
-const renderControlButtonMarkup = (name, id, isActive = false) => {
+const renderControlButtonMarkup = (isActive = false, name, id) => {
   return (
     `<button class="film-card__controls-item button film-card__controls-item--${id || setId(name)}
       ${isActive ? ` film-card__controls-item--active` : ``}">
@@ -17,7 +17,7 @@ const renderControlButtonMarkup = (name, id, isActive = false) => {
 
 export const createFilmCardTemplate = (infoFieldsData, controlButtonsData) => {
   const infoFieldsMarkup = createMarkup(infoFieldsData, renderInfoFieldMarkup);
-  const controlButtonsMarkup = createMarkup(controlButtonsData, renderControlButtonMarkup);
+  const controlButtonsMarkup = createMarkup(controlButtonsData, renderControlButtonMarkup, -1);
 
   return (
     `<article class="film-card">

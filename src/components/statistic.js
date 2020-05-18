@@ -1,6 +1,6 @@
 import {Regular, createMarkup, setId} from '../util.js';
 
-const renderStatisticFieldMarkup = (name, isChecked = false) => {
+const renderStatisticFieldMarkup = (isChecked = false, name) => {
   const id = setId(name);
 
   return (
@@ -33,7 +33,7 @@ const renderStatisticTextItemMarkup = (name, value) => {
 };
 
 export const createStatisticTemplate = (fieldsData, textData) => {
-  const statisticFieldMarkup = createMarkup(fieldsData, renderStatisticFieldMarkup);
+  const statisticFieldMarkup = createMarkup(fieldsData, renderStatisticFieldMarkup, 0);
   const statisticTextMarkup = createMarkup(textData, renderStatisticTextItemMarkup);
 
   return (

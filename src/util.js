@@ -32,7 +32,16 @@ export const getKeys = (object) => {
   return keys;
 };
 
-export const createMarkup = (array, render) => array.map((it) => render(...getKeys(it))).join(`\n`);
+export const createMarkup = (array, render, ...activeItems) => array
+  .map((it, i) => {
+    const keys = getKeys(it);
+    const markupPart = (typeof activeItems[0] === `number`)
+      ? render((activeItems.some((item) => item === i)), ...keys)
+      : render(...keys);
+
+    return markupPart;
+  })
+  .join(`\n`);
 
 export const isEscEvent = (evt, action) => {
   if (evt.key === Key.ESC) {
