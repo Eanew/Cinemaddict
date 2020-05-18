@@ -1,5 +1,4 @@
 import {Regular, createMarkup, setId} from '../util.js';
-import * as statistic from '../mock/statistic.js';
 
 const renderStatisticFieldMarkup = (name, isChecked = false) => {
   const id = setId(name);
@@ -33,14 +32,9 @@ const renderStatisticTextItemMarkup = (name, value) => {
   );
 };
 
-export const createStatisticTemplate = () => {
-  const statisticFieldsData = statistic.generateFieldsData();
-
-  const statisticFieldMarkup = createMarkup(statisticFieldsData, renderStatisticFieldMarkup);
-
-  const statisticTextData = statistic.generateTextData();
-
-  const statisticTextMarkup = createMarkup(statisticTextData, renderStatisticTextItemMarkup);
+export const createStatisticTemplate = (fieldsData, textData) => {
+  const statisticFieldMarkup = createMarkup(fieldsData, renderStatisticFieldMarkup);
+  const statisticTextMarkup = createMarkup(textData, renderStatisticTextItemMarkup);
 
   return (
     `<section class="statistic">

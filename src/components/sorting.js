@@ -1,5 +1,4 @@
 import {createMarkup} from '../util.js';
-import {generateSortItemsData} from '../mock/sorting.js';
 
 const createSortingItemMarkup = function (name, isActive = false) {
   return (
@@ -9,10 +8,8 @@ const createSortingItemMarkup = function (name, isActive = false) {
   );
 };
 
-export const createSortingTemplate = () => {
-  const sortItemsData = generateSortItemsData();
-
-  const sortItemsMarkup = createMarkup(sortItemsData, createSortingItemMarkup);
+export const createSortingTemplate = (itemsData) => {
+  const sortItemsMarkup = createMarkup(itemsData, createSortingItemMarkup);
 
   return (
     `<ul class="sort">

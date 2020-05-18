@@ -1,5 +1,4 @@
 import {createMarkup, setId} from '../util.js';
-import * as filmCard from '../mock/film-card.js';
 
 const renderInfoFieldMarkup = (name, value) => {
   return (
@@ -16,13 +15,8 @@ const renderControlButtonMarkup = (name, id, isActive = false) => {
   );
 };
 
-export const createFilmCardTemplate = () => {
-  const infoFieldsData = filmCard.generateFieldsData();
-
+export const createFilmCardTemplate = (infoFieldsData, controlButtonsData) => {
   const infoFieldsMarkup = createMarkup(infoFieldsData, renderInfoFieldMarkup);
-
-  const controlButtonsData = filmCard.generateControlsData();
-
   const controlButtonsMarkup = createMarkup(controlButtonsData, renderControlButtonMarkup);
 
   return (

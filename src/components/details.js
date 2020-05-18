@@ -1,5 +1,4 @@
 import {getKeys, createMarkup} from '../util.js';
-import * as details from '../mock/details.js';
 
 const GENRES_FIELD_NAME = `Genres`;
 
@@ -75,10 +74,8 @@ export const createTopContainerTemplate = () => {
   );
 };
 
-export const createDescriptionTemplate = () => {
-  const detailsTableData = details.generateTableData();
-
-  const detailsTableMarkup = createMarkup(detailsTableData, renderFilmDetailsRowMarkup);
+export const createDescriptionTemplate = (tableData) => {
+  const detailsTableMarkup = createMarkup(tableData, renderFilmDetailsRowMarkup);
 
   return (
     `<div class="film-details__close">
@@ -115,10 +112,8 @@ export const createDescriptionTemplate = () => {
   );
 };
 
-export const createControlsTemplate = () => {
-  const detailsControlsData = details.generateControlsData();
-
-  const detailsControlsMarkup = createMarkup(detailsControlsData, renderControlFieldMarkup);
+export const createControlsTemplate = (controlsData) => {
+  const detailsControlsMarkup = createMarkup(controlsData, renderControlFieldMarkup);
 
   return (
     `<section class="film-details__controls">
@@ -135,10 +130,8 @@ export const createBottomContainerTemplate = () => {
   );
 };
 
-export const createCommentsTemplate = () => {
-  const detailsCommentsData = details.generateCommentsData();
-
-  const detailsCommentsMarkup = createMarkup(detailsCommentsData, renderCommentsItemMarkup);
+export const createCommentsTemplate = (commentsData) => {
+  const detailsCommentsMarkup = createMarkup(commentsData, renderCommentsItemMarkup);
 
   return (
     `<h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>

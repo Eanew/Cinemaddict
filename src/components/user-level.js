@@ -1,5 +1,3 @@
-import {generateProfileData} from '../mock/user-level.js';
-
 const setRank = (movies) => {
   const Rank = {
     'Movie Buff': 21,
@@ -15,10 +13,9 @@ const setRank = (movies) => {
   return null;
 };
 
-export const createUserLevelTemplate = () => {
-  const profile = generateProfileData();
-
+export const createUserLevelTemplate = (profile) => {
   const rank = setRank(profile.movies);
+
   return (
     `<section class="header__profile profile">
       ${rank ? `<p class="profile__rating">${rank}</p>` : ``}

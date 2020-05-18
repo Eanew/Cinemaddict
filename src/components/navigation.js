@@ -1,5 +1,4 @@
 import {createMarkup, setId} from '../util.js';
-import {generateNavItemsData} from '../mock/navigation.js';
 
 const MAX_FILTER_RESULTS_COUNT_TO_DISPLAY = 5;
 
@@ -14,10 +13,8 @@ const createNavigationItemMarkup = function (name, count = 0, isActive = false, 
   );
 };
 
-export const createNavigationTemplate = () => {
-  const navItemsData = generateNavItemsData();
-
-  const navItemsMarkup = createMarkup(navItemsData, createNavigationItemMarkup);
+export const createNavigationTemplate = (itemsData) => {
+  const navItemsMarkup = createMarkup(itemsData, createNavigationItemMarkup);
 
   return (
     `<nav class="main-navigation">
