@@ -1,5 +1,5 @@
-import {Regular, createMarkup} from '../util.js';
-import {setId} from '../util.js';
+import {Regular, createMarkup, setId} from '../util.js';
+import * as statistic from '../mock/statistic.js';
 
 const renderStatisticFieldMarkup = (name, isChecked = false) => {
   const id = setId(name);
@@ -34,41 +34,11 @@ const renderStatisticTextItemMarkup = (name, value) => {
 };
 
 export const createStatisticTemplate = () => {
-  const statisticFieldsData = [
-    {
-      name: `All time`,
-      isChecked: true,
-    },
-    {
-      name: `Today`,
-    },
-    {
-      name: `Week`,
-    },
-    {
-      name: `Month`,
-    },
-    {
-      name: `Year`,
-    },
-  ];
+  const statisticFieldsData = statistic.generateFieldsData();
 
   const statisticFieldMarkup = createMarkup(statisticFieldsData, renderStatisticFieldMarkup);
 
-  const statisticTextData = [
-    {
-      name: `You watched`,
-      value: `22 movies`,
-    },
-    {
-      name: `Total duration`,
-      value: `130 h 22 m`,
-    },
-    {
-      name: `Top genre`,
-      value: `Sci-Fi`,
-    },
-  ];
+  const statisticTextData = statistic.generateTextData();
 
   const statisticTextMarkup = createMarkup(statisticTextData, renderStatisticTextItemMarkup);
 

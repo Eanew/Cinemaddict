@@ -30,19 +30,19 @@ for (let i = 0; i < FILM_CARDS_COUNT; i++) {
 }
 
 renderHtml(filmListContainer, filmList.createShowMoreButtonTemplate(), `afterend`);
-renderHtml(pageFooter, details.createSectionTemplate(), `afterend`);
+// renderHtml(pageFooter, details.createSectionTemplate(), `afterend`);
 
-const filmDetails = document.querySelector(`.film-details__inner`);
+// const filmDetails = document.querySelector(`.film-details__inner`);
 
-renderHtml(filmDetails, details.createTopContainerTemplate());
+// renderHtml(filmDetails, details.createTopContainerTemplate());
 
-const detailsTopContainer = filmDetails.querySelector(`.form-details__top-container`);
+// const detailsTopContainer = filmDetails.querySelector(`.form-details__top-container`);
 
-renderHtml(detailsTopContainer, details.createDescriptionTemplate());
-renderHtml(detailsTopContainer, details.createControlsTemplate());
-renderHtml(filmDetails, details.createBottomContainerTemplate());
+// renderHtml(detailsTopContainer, details.createDescriptionTemplate());
+// renderHtml(detailsTopContainer, details.createControlsTemplate());
+// renderHtml(filmDetails, details.createBottomContainerTemplate());
 
-const detailsBottomContainer = filmDetails.querySelector(`.film-details__comments-wrap`);
+// const detailsBottomContainer = filmDetails.querySelector(`.film-details__comments-wrap`);
 
-renderHtml(detailsBottomContainer, details.createCommentsTemplate());
-renderHtml(detailsBottomContainer, details.createNewCommentTemplate());
+// renderHtml(detailsBottomContainer, details.createCommentsTemplate());
+// renderHtml(detailsBottomContainer, details.createNewCommentTemplate());

@@ -1,4 +1,5 @@
-import {Regular, createMarkup} from '../util.js';
+import {createMarkup, setId} from '../util.js';
+import * as filmCard from '../mock/film-card.js';
 
 const renderInfoFieldMarkup = (name, value) => {
   return (
@@ -7,10 +8,8 @@ const renderInfoFieldMarkup = (name, value) => {
 };
 
 const renderControlButtonMarkup = (name, id, isActive = false) => {
-  const modClass = id || name.toLowerCase().replace(Regular.EMPTY_SPACE, Regular.DASH);
-
   return (
-    `<button class="film-card__controls-item button film-card__controls-item--${modClass}
+    `<button class="film-card__controls-item button film-card__controls-item--${id || setId(name)}
       ${isActive ? ` film-card__controls-item--active` : ``}">
       ${name}
     </button>`
@@ -18,36 +17,11 @@ const renderControlButtonMarkup = (name, id, isActive = false) => {
 };
 
 export const createFilmCardTemplate = () => {
-  const infoFieldsData = [
-    {
-      name: `year`,
-      value: `1929`,
-    },
-    {
-      name: `duration`,
-      value: `1h 55m`,
-    },
-    {
-      name: `genre`,
-      value: `Musical`,
-    },
-  ];
+  const infoFieldsData = filmCard.generateFieldsData();
 
   const infoFieldsMarkup = createMarkup(infoFieldsData, renderInfoFieldMarkup);
 
-  const controlButtonsData = [
-    {
-      name: `Add to watchlist`,
-    },
-    {
-      name: `Mark as watched`,
-    },
-    {
-      name: `Mark as favorite`,
-      id: `favorite`,
-      isActive: true,
-    },
-  ];
+  const controlButtonsData = filmCard.generateControlsData();
 
   const controlButtonsMarkup = createMarkup(controlButtonsData, renderControlButtonMarkup);
 

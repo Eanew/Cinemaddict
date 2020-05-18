@@ -1,4 +1,5 @@
 import {createMarkup} from '../util.js';
+import {generateSortItemsData} from '../mock/sorting.js';
 
 const createSortingItemMarkup = function (name, isActive = false) {
   return (
@@ -9,18 +10,7 @@ const createSortingItemMarkup = function (name, isActive = false) {
 };
 
 export const createSortingTemplate = () => {
-  const sortItemsData = [
-    {
-      name: `default`,
-      isActive: true,
-    },
-    {
-      name: `date`,
-    },
-    {
-      name: `raiting`,
-    },
-  ];
+  const sortItemsData = generateSortItemsData();
 
   const sortItemsMarkup = createMarkup(sortItemsData, createSortingItemMarkup);
 
