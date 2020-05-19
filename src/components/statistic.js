@@ -1,6 +1,6 @@
-import {Regular, createMarkup, setId} from '../util.js';
+import {Regular, mergeData, createMarkup, setId} from '../util.js';
 
-const renderStatisticFieldMarkup = (isChecked = false, name) => {
+const renderStatisticFieldMarkup = (name, isChecked = false) => {
   const id = setId(name);
 
   return (
@@ -14,14 +14,14 @@ const renderStatisticStringMarkup = (string) => {
   return string
     .split(Regular.SPACE)
     .map((it) => {
-      return (it.length && it.replace(Regular.NUMBERS, ``).toLowerCase() === it)
+      return (it.length && (it.replace(Regular.NUMBERS, ``).toLowerCase() === it))
         ? `<span class="statistic__item-description">${it}</span>`
         : it;
     })
     .join(Regular.SPACE);
 };
 
-const renderStatisticTextItemMarkup = (name, value) => {
+const renderStatisticTextItemMarkup = ({name, value}) => {
   const itemText = renderStatisticStringMarkup(value);
 
   return (
@@ -32,8 +32,15 @@ const renderStatisticTextItemMarkup = (name, value) => {
   );
 };
 
-export const createStatisticTemplate = (fieldsData, textData) => {
-  const statisticFieldMarkup = createMarkup(fieldsData, renderStatisticFieldMarkup, 0);
+export const createStatisticTemplate = (textFieldsValues) => {
+  const fieldNames = [`All time`, `Today`, `Week`, `Month`, `Year`];
+  const textFieldNames = [
+    {name: `You watched`},
+    {name: `Total duration`},
+    {name: `Top genre`}];
+
+  const textData = mergeData(textFieldNames, textFieldsValues);
+  const statisticFieldMarkup = createMarkup(fieldNames, renderStatisticFieldMarkup, 0);
   const statisticTextMarkup = createMarkup(textData, renderStatisticTextItemMarkup);
 
   return (

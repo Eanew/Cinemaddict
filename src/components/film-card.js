@@ -1,12 +1,12 @@
-import {createMarkup, setId} from '../util.js';
+import {mergeData, createMarkup, setId} from '../util.js';
 
-const renderInfoFieldMarkup = (name, value) => {
+const renderInfoFieldMarkup = ({name, value}) => {
   return (
     `<span class="film-card__${name}">${value}</span>`
   );
 };
 
-const renderControlButtonMarkup = (isActive = false, name, id) => {
+const renderControlButtonMarkup = ({name, id}, isActive = false) => {
   return (
     `<button class="film-card__controls-item button film-card__controls-item--${id || setId(name)}
       ${isActive ? ` film-card__controls-item--active` : ``}">
@@ -15,9 +15,20 @@ const renderControlButtonMarkup = (isActive = false, name, id) => {
   );
 };
 
-export const createFilmCardTemplate = (infoFieldsData, controlButtonsData) => {
+export const createFilmCardTemplate = (infoFieldsValues) => {
+  const infoFields = [
+    {name: `year`},
+    {name: `duration`},
+    {name: `genre`}];
+
+  const controlButtonsData = [
+    {name: `Add to watchlist`},
+    {name: `Mark as watched`},
+    {name: `Mark as favorite`, id: `favorite`}];
+
+  const infoFieldsData = mergeData(infoFields, infoFieldsValues);
   const infoFieldsMarkup = createMarkup(infoFieldsData, renderInfoFieldMarkup);
-  const controlButtonsMarkup = createMarkup(controlButtonsData, renderControlButtonMarkup, -1);
+  const controlButtonsMarkup = createMarkup(controlButtonsData, renderControlButtonMarkup);
 
   return (
     `<article class="film-card">

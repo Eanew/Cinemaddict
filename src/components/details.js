@@ -1,4 +1,4 @@
-import {getKeys, createMarkup} from '../util.js';
+import {getArrayFromKeyValues, mergeData, createMarkup} from '../util.js';
 
 const GENRES_FIELD_NAME = `Genres`;
 
@@ -9,7 +9,7 @@ export const Emoji = {
   angry: `angry`,
 };
 
-const renderFilmDetailsRowMarkup = (name, values) => {
+const renderFilmDetailsRowMarkup = ({name, values}) => {
   const term = (name === GENRES_FIELD_NAME && values.length < 2)
     ? name.replace(`s`, ``)
     : name;
@@ -26,14 +26,15 @@ const renderFilmDetailsRowMarkup = (name, values) => {
   );
 };
 
-const renderControlFieldMarkup = (name, id) => {
+const renderControlFieldMarkup = ({name, id}, isChecked = false) => {
   return (
-    `<input type="checkbox" class="film-details__control-input visually-hidden" id="${id}" name="${id}">
+    `<input type="checkbox" class="film-details__control-input visually-hidden" id="${id}" name="${id}"
+    ${isChecked ? ` checked` : ``}>
     <label for="${id}" class="film-details__control-label film-details__control-label--${id}">${name}</label>`
   );
 };
 
-const renderCommentsItemMarkup = (author, time, text, emoji) => {
+const renderCommentsItemMarkup = ({author, time, text, emoji}) => {
   return (
     `<li class="film-details__comment">
       <span class="film-details__comment-emoji">
@@ -74,8 +75,18 @@ export const createTopContainerTemplate = () => {
   );
 };
 
-export const createDescriptionTemplate = (tableData) => {
-  const detailsTableMarkup = createMarkup(tableData, renderFilmDetailsRowMarkup);
+export const createDescriptionTemplate = (tableValues) => {
+  const tableFields = [
+    {name: `Director`},
+    {name: `Writers`},
+    {name: `Actors`},
+    {name: `Release Date`},
+    {name: `Runtime`},
+    {name: `Country`},
+    {name: `Genres`}];
+
+  const data = mergeData(tableFields, tableValues);
+  const detailsTableMarkup = createMarkup(data, renderFilmDetailsRowMarkup);
 
   return (
     `<div class="film-details__close">
@@ -112,7 +123,21 @@ export const createDescriptionTemplate = (tableData) => {
   );
 };
 
-export const createControlsTemplate = (controlsData) => {
+export const createControlsTemplate = () => {
+  const controlsData = [
+    {
+      name: `Add to watchlist`,
+      id: `watchlist`,
+    },
+    {
+      name: `Already watched`,
+      id: `watched`,
+    },
+    {
+      name: `Add to favorites`,
+      id: `favorite`,
+    }];
+
   const detailsControlsMarkup = createMarkup(controlsData, renderControlFieldMarkup);
 
   return (
@@ -143,7 +168,7 @@ export const createCommentsTemplate = (commentsData) => {
 };
 
 export const createNewCommentTemplate = () => {
-  const emojiListMarkup = getKeys(Emoji).map((it) => renderEmojiItemMarkup(it)).join(`\n`);
+  const emojiListMarkup = getArrayFromKeyValues(Emoji).map((it) => renderEmojiItemMarkup(it)).join(`\n`);
 
   return (
     `<div class="film-details__new-comment">

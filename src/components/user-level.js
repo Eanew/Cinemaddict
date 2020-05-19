@@ -13,13 +13,13 @@ const setRank = (movies) => {
   return null;
 };
 
-export const createUserLevelTemplate = (profile) => {
-  const rank = setRank(profile.movies);
+export const createUserLevelTemplate = ({avatar, movies}) => {
+  const rank = setRank(movies);
 
   return (
     `<section class="header__profile profile">
       ${rank ? `<p class="profile__rating">${rank}</p>` : ``}
-      <img class="profile__avatar" src="${profile.avatar}" alt="Avatar" width="35" height="35">
+      <img class="profile__avatar" src="${avatar}" alt="Avatar" width="35" height="35">
     </section>`
   );
 };

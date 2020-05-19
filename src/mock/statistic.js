@@ -1,36 +1,6 @@
-export const generateFieldsData = () => {
-  return [
-    {
-      name: `All time`,
-    },
-    {
-      name: `Today`,
-    },
-    {
-      name: `Week`,
-    },
-    {
-      name: `Month`,
-    },
-    {
-      name: `Year`,
-    },
-  ];
-};
-
 export const generateTextData = () => {
   return [
-    {
-      name: `You watched`,
-      value: `22 movies`,
-    },
-    {
-      name: `Total duration`,
-      value: `130 h 22 m`,
-    },
-    {
-      name: `Top genre`,
-      value: `Sci-Fi`,
-    },
-  ];
+    {value: `22 movies`},
+    {value: `130 h 22 m`},
+    {value: `Sci-Fi`}];
 };

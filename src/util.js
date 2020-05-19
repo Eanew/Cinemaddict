@@ -22,7 +22,7 @@ export const setId = (name) => {
     .replace(Regular.EMPTY_SPACE, Regular.DASH);
 };
 
-export const getKeys = (object) => {
+export const getArrayFromKeyValues = (object) => {
   const keys = [];
   for (let key in object) {
     if (object.hasOwnProperty(key)) {
@@ -32,15 +32,10 @@ export const getKeys = (object) => {
   return keys;
 };
 
-export const createMarkup = (array, render, ...activeItems) => array
-  .map((it, i) => {
-    const keys = getKeys(it);
-    const markupPart = (typeof activeItems[0] === `number`)
-      ? render((activeItems.some((item) => item === i)), ...keys)
-      : render(...keys);
+export const mergeData = (staticData, variableData) => staticData.map((it, i) => Object.assign(it, variableData[i]));
 
-    return markupPart;
-  })
+export const createMarkup = (array, render, ...activeItems) => array
+  .map((it, i) => render(it, activeItems.some((item) => item === i)))
   .join(`\n`);
 
 export const isEscEvent = (evt, action) => {
