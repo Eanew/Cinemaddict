@@ -1,4 +1,4 @@
-import {getArrayFromKeyValues, mergeData, createMarkup} from '../util.js';
+import {getArrayFromKeyValues, createMarkup} from '../util.js';
 
 const GENRES_FIELD_NAME = `Genres`;
 
@@ -75,18 +75,8 @@ export const createTopContainerTemplate = () => {
   );
 };
 
-export const createDescriptionTemplate = (tableValues) => {
-  const tableFields = [
-    {name: `Director`},
-    {name: `Writers`},
-    {name: `Actors`},
-    {name: `Release Date`},
-    {name: `Runtime`},
-    {name: `Country`},
-    {name: `Genres`}];
-
-  const data = mergeData(tableFields, tableValues);
-  const detailsTableMarkup = createMarkup(data, renderFilmDetailsRowMarkup);
+export const createDescriptionTemplate = (tableData) => {
+  const detailsTableMarkup = createMarkup(tableData, renderFilmDetailsRowMarkup);
 
   return (
     `<div class="film-details__close">
@@ -159,7 +149,9 @@ export const createCommentsTemplate = (commentsData) => {
   const detailsCommentsMarkup = createMarkup(commentsData, renderCommentsItemMarkup);
 
   return (
-    `<h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+    `<h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">
+      ${commentsData.length || `0`}</span>
+    </h3>
 
     <ul class="film-details__comments-list">
       ${detailsCommentsMarkup}

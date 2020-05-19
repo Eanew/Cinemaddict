@@ -9,7 +9,11 @@ const createSortingItemMarkup = function (name, isActive = false) {
 };
 
 export const createSortingTemplate = () => {
-  const sortNames = [`default`, `date`, `raiting`];
+  const sortNames = [
+    `default`,
+    `date`,
+    `raiting`];
+
   const sortItemsMarkup = createMarkup(sortNames, createSortingItemMarkup, 0);
 
   return (

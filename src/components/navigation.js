@@ -1,7 +1,7 @@
-import {createMarkup, mergeData, setId} from '../util.js';
+import {createMarkup, setId} from '../util.js';
 
+export const ALL_MOVIES_ID = `all`;
 const MAX_FILTER_RESULTS_COUNT_TO_DISPLAY = 5;
-const ALL_MOVIES_ID = `all`;
 
 const createNavigationItemMarkup = function ({name, id, count = 0}, isActive = false) {
   return (
@@ -14,15 +14,8 @@ const createNavigationItemMarkup = function ({name, id, count = 0}, isActive = f
   );
 };
 
-export const createNavigationTemplate = (counts) => {
-  const navItems = [
-    {name: `All movies`, id: ALL_MOVIES_ID},
-    {name: `Watchlist`},
-    {name: `History`},
-    {name: `Favorites`}];
-
-  const data = mergeData(navItems, counts);
-  const navItemsMarkup = createMarkup(data, createNavigationItemMarkup, 0);
+export const createNavigationTemplate = (navItemsData) => {
+  const navItemsMarkup = createMarkup(navItemsData, createNavigationItemMarkup, 0);
 
   return (
     `<nav class="main-navigation">

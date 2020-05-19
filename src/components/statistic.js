@@ -1,4 +1,4 @@
-import {Regular, mergeData, createMarkup, setId} from '../util.js';
+import {Regular, createMarkup, setId} from '../util.js';
 
 const renderStatisticFieldMarkup = (name, isChecked = false) => {
   const id = setId(name);
@@ -32,14 +32,14 @@ const renderStatisticTextItemMarkup = ({name, value}) => {
   );
 };
 
-export const createStatisticTemplate = (textFieldsValues) => {
-  const fieldNames = [`All time`, `Today`, `Week`, `Month`, `Year`];
-  const textFieldNames = [
-    {name: `You watched`},
-    {name: `Total duration`},
-    {name: `Top genre`}];
+export const createStatisticTemplate = (textData) => {
+  const fieldNames = [
+    `All time`,
+    `Today`,
+    `Week`,
+    `Month`,
+    `Year`];
 
-  const textData = mergeData(textFieldNames, textFieldsValues);
   const statisticFieldMarkup = createMarkup(fieldNames, renderStatisticFieldMarkup, 0);
   const statisticTextMarkup = createMarkup(textData, renderStatisticTextItemMarkup);
 
