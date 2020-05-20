@@ -1,4 +1,4 @@
-import {getArrayFromKeyValues, createMarkup} from '../util.js';
+import {createMarkup} from '../util.js';
 
 const GENRES_FIELD_NAME = `Genres`;
 
@@ -160,7 +160,7 @@ export const createCommentsTemplate = (commentsData) => {
 };
 
 export const createNewCommentTemplate = () => {
-  const emojiListMarkup = getArrayFromKeyValues(Emoji).map((it) => renderEmojiItemMarkup(it)).join(`\n`);
+  const emojiListMarkup = Object.values(Emoji).map((it) => renderEmojiItemMarkup(it)).join(`\n`);
 
   return (
     `<div class="film-details__new-comment">

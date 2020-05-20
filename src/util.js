@@ -38,16 +38,6 @@ export const generateRandomActiveItems = (array) => {
   return items;
 };
 
-export const getArrayFromKeyValues = (object) => {
-  const keys = [];
-  for (let key in object) {
-    if (object.hasOwnProperty(key)) {
-      keys.push(object[key]);
-    }
-  }
-  return keys;
-};
-
 export const mergeData = (staticData, variableData) => staticData.map((it, i) => Object.assign(it, variableData[i]));
 
 export const createMarkup = (array, render, ...activeItems) => array
