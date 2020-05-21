@@ -1,7 +1,8 @@
 import * as util from '../util.js';
+import {renderHtml} from '../main.js';
 
 const MAX_DESCRIPTION_LENGTH = 140;
-const DEFAULT_FILM_CARDS_DISPLAY_COUNT = 5;
+const FILMS_DISPLAY_STEP = 5;
 
 const getDescription = (string) => string.length > MAX_DESCRIPTION_LENGTH
   ? string.replace(string.slice(MAX_DESCRIPTION_LENGTH), `...`)
@@ -89,8 +90,17 @@ const renderFilmCard = (data) => {
   );
 };
 
+let films = [];
+
 export const createFilmListTemplate = (cardsData) => {
-  const filmCards = util.createMarkup(cardsData.slice(0, DEFAULT_FILM_CARDS_DISPLAY_COUNT), renderFilmCard);
+  const filmList = document.querySelector(`.films-list`);
+  if (filmList) {
+    filmList.remove();
+  }
+
+  films = cardsData;
+  const filmCards = util.createMarkup(films.slice(0, FILMS_DISPLAY_STEP), renderFilmCard);
+  const button = films.length > FILMS_DISPLAY_STEP ? `<button class="films-list__show-more">Show more</button>` : ``;
 
   return (
     `<section class="films-list">
@@ -98,7 +108,36 @@ export const createFilmListTemplate = (cardsData) => {
       <div class="films-list__container">
         ${filmCards}
       </div>
-      <button class="films-list__show-more">Show more</button>
+        ${button}
     </section>`
   );
+};
+
+export const addShowMoreButtonListener = () => {
+  const filmList = document.querySelector(`.films-list__container`);
+  const button = document.querySelector(`.films-list__show-more`);
+  let currentFilmsCount = FILMS_DISPLAY_STEP;
+
+  const renderCards = (isLastCards) => {
+    const currentFilmCards = films
+      .slice(currentFilmsCount, (isLastCards ? films.length : currentFilmsCount + FILMS_DISPLAY_STEP));
+
+    renderHtml(filmList, util.createMarkup(currentFilmCards, renderFilmCard));
+
+    if (isLastCards) {
+      button.remove();
+    } else {
+      currentFilmsCount += FILMS_DISPLAY_STEP;
+    }
+  };
+
+  const onButtonClick = (evt) => {
+    evt.preventDefault();
+    const isLastCards = (currentFilmsCount + FILMS_DISPLAY_STEP < films.length) ? false : true;
+    renderCards(isLastCards);
+  };
+
+  if (button) {
+    button.addEventListener(`click`, onButtonClick);
+  }
 };

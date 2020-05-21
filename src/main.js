@@ -2,7 +2,7 @@ import {createUserLevelTemplate} from './components/user-level.js';
 import {createNavigationTemplate} from './components/navigation.js';
 import {createStatisticTemplate} from './components/statistic.js';
 import {createSortingTemplate} from './components/sorting.js';
-import {createFilmListTemplate} from './components/film-list.js';
+import {createFilmListTemplate, addShowMoreButtonListener} from './components/film-list.js';
 import {createDetailsTemplate} from './components/details.js';
 
 import {generateProfileData} from './mock/user-level.js';
@@ -30,4 +30,8 @@ renderHtml(pageMain, createNavigationTemplate(data.filmCards));
 renderHtml(pageMain, createStatisticTemplate(data.profile));
 renderHtml(pageMain, createSortingTemplate());
 renderHtml(pageMain, createFilmListTemplate(data.filmCards));
-// renderHtml(pageFooter, createDetailsTemplate(data.filmCards[0], data.detailsComments), `afterend`);
+renderHtml(pageFooter, createDetailsTemplate(data.filmCards[0], data.detailsComments), `afterend`);
+
+addShowMoreButtonListener();
+
+export {renderHtml};
