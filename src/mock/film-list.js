@@ -75,13 +75,13 @@ const generateGenres = () => {
 const RandomFilmCard = function (index) {
   const film = util.getUniqueRandomItem(filmTemplates);
   this[`id`] = `${index}`;
-  this[`comments`] = new Array(Math.floor(Math.random() * 6)).fill(``).map((it, i) => i);
+  this[`comments`] = new Array(Math.floor(Math.random() * 7)).fill(``).map(() => +`303${util.getRandomCount(4, 9)}`);
   this[`film_info`] = {
     'title': film.name,
     'alternative_title': ``,
     'total_raiting': generateRaiting(),
     'poster': film.picture,
-    'age_raiting': 0,
+    'age_raiting': util.getRandomCount(0, 18),
     'director': [`Tom Ford`, `Ken Cuopis`, `Kreve Standers`, `Elise Woo`, `Justin Cursele`][Math.floor(Math.random() * 5)],
     'writers': [[`Takeshi KItano`, `Tom Ford`, `Ken Cuopis`, `Kreve Standers`, `Elise Woo`, `Justin Cursele`][Math.floor(Math.random() * 6)]],
     'actors': [[`Morgan Freeman`, `Takeshi KItano`, `Tom Ford`, `Ken Cuopis`, `Kreve Standers`, `Elise Woo`, `Justin Cursele`][Math.floor(Math.random() * 7)]],
@@ -103,32 +103,4 @@ const RandomFilmCard = function (index) {
 
 export const generateFilmCardsData = (count) => new Array(count)
   .fill(``)
-  .map(() => new RandomFilmCard());
-
-// const filmDataTemplate = {
-//   'id': `0`,
-//   'comments': [1, 2],
-//   'film_info': {
-//     'title': `Sagebrush trail`,
-//     'alternative_title': ``,
-//     'total_raiting': 6.3,
-//     'poster': `./images/posters/sagebrush-trail.jpg`,
-//     'age_raiting': 0,
-//     'director': `Tom Ford`,
-//     'writers': [`Takeshi KItano`],
-//     'actors': [`Morgan Freeman`],
-//     'release': {
-//       'date': `2019-05-11T00:00:00.000Z`,
-//       'release_country': `Finland`,
-//     },
-//     'runtime': 77,
-//     'genre': [`Comedy`],
-//     'description': `Oscar-winning film, a war drama about two young people, from the creators of timeless classic \"Nu, Pogodi!\" and \"Alice in Wonderland\", with the best fight scenes since Bruce Lee.`,
-//   },
-//   'user_details': {
-//     'watchlist': false,
-//     'already_watched': true,
-//     'watching_date': `2019-04-12T16:12:32.554Z`,
-//     'favorite': false,
-//   },
-// };
+  .map((it, i) => new RandomFilmCard(i));

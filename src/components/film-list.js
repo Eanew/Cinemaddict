@@ -120,3 +120,5 @@ export const createFilmListTemplate = (cardsData) => {
     </section>`
   );
 };
+
+export {getDuration, setActiveButtons};
