@@ -1,5 +1,4 @@
 import * as util from '../util.js';
-import {getDuration, setActiveButtons} from './film-list.js';
 
 const GENRES_FIELD_NAME = `Genres`;
 
@@ -124,7 +123,7 @@ const FilmCard = function (data) {
     info[`writers`],
     info[`actors`],
     [getReleaseDate(info[`release`][`date`])],
-    [getDuration(info[`runtime`])],
+    [util.getDuration(info[`runtime`])],
     [info[`release`][`release_country`]],
     info[`genre`]];
 
@@ -134,7 +133,7 @@ const FilmCard = function (data) {
   const watchlistButtonStatus = data[`user_details`][`watchlist`];
   const watchedButtonStatus = data[`user_details`][`already_watched`];
   const favoriteButtonStatus = data[`user_details`][`favorite`];
-  const activeButtons = setActiveButtons([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
+  const activeButtons = util.setActiveButtons([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
   this.detailsControlsMarkup = util.createMarkup(controlButtonsList, renderControlFieldMarkup, ...activeButtons);
   this.emojiListMarkup = util.createMarkup(emojiList, renderEmojiItemMarkup);
 };

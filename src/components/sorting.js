@@ -1,5 +1,10 @@
 import {createMarkup} from '../util.js';
 
+const sortFieldsList = [
+  `default`,
+  `date`,
+  `raiting`];
+
 const createSortingItemMarkup = function (name, isActive = false) {
   return (
     `<li>
@@ -9,12 +14,7 @@ const createSortingItemMarkup = function (name, isActive = false) {
 };
 
 export const createSortingTemplate = () => {
-  const sortNames = [
-    `default`,
-    `date`,
-    `raiting`];
-
-  const sortItemsMarkup = createMarkup(sortNames, createSortingItemMarkup, 0);
+  const sortItemsMarkup = createMarkup(sortFieldsList, createSortingItemMarkup, 0);
 
   return (
     `<ul class="sort">

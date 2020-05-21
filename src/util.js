@@ -1,3 +1,4 @@
+export const HOUR_IN_MINUTES = 60;
 export const SPACE = ` `;
 
 export const Key = {
@@ -29,6 +30,8 @@ export const setId = (name) => {
     .replace(Regular.EMPTY_SPACE, Regular.DASH);
 };
 
+export const setActiveButtons = (buttonsList) => buttonsList.map((it, i) => it ? i : -1);
+
 export const generateRandomActiveItems = (array) => {
   const items = [];
   const cycleCount = Math.floor(Math.random() * (array.length + 1));
@@ -38,7 +41,21 @@ export const generateRandomActiveItems = (array) => {
   return items;
 };
 
-export const mergeData = (staticData, variableData) => staticData.map((it, i) => Object.assign(it, variableData[i]));
+export const getDuration = (minutesAmount, spaceBetween = false) => {
+  const hours = Math.floor(minutesAmount / HOUR_IN_MINUTES)
+    ? `${Math.floor(minutesAmount / HOUR_IN_MINUTES)}${spaceBetween ? ` ` : ``}h`
+    : ``;
+
+  const restOfMinutes = minutesAmount % HOUR_IN_MINUTES
+    ? ` ${minutesAmount % HOUR_IN_MINUTES}${spaceBetween ? ` ` : ``}m`
+    : ``;
+
+  const minutes = hours
+    ? restOfMinutes
+    : `${minutesAmount}${spaceBetween ? ` ` : ``}m`;
+
+  return hours + minutes;
+};
 
 export const createMarkup = (array, render, ...activeItems) => array
   .map((it, i) => render(it, activeItems.some((item) => item === i)))

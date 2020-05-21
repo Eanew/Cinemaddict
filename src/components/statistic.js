@@ -1,6 +1,18 @@
-import {Regular, createMarkup, setId} from '../util.js';
+import {Regular, createMarkup, setId, getDuration} from '../util.js';
 
-const renderStatisticFieldMarkup = (name, isChecked = false) => {
+const timeFieldNames = [
+  `All time`,
+  `Today`,
+  `Week`,
+  `Month`,
+  `Year`];
+
+const textFieldNames = [
+  `You watched`,
+  `Total duration`,
+  `Top genre`];
+
+const renderTimeFieldMarkup = (name, isChecked = false) => {
   const id = setId(name);
 
   return (
@@ -10,8 +22,8 @@ const renderStatisticFieldMarkup = (name, isChecked = false) => {
   );
 };
 
-const renderStatisticStringMarkup = (string) => {
-  return string
+const getStatisticString = (text) => {
+  return text
     .split(Regular.SPACE)
     .map((it) => {
       return (it.length && (it.replace(Regular.NUMBERS, ``).toLowerCase() === it))
@@ -21,34 +33,53 @@ const renderStatisticStringMarkup = (string) => {
     .join(Regular.SPACE);
 };
 
-const renderStatisticTextItemMarkup = ({name, value}) => {
-  const itemText = renderStatisticStringMarkup(value);
+const generateTextFields = (textFieldValues) => textFieldNames.map((it, i) => ({
+  name: it,
+  text: textFieldValues[i],
+}));
+
+const renderStatisticTextItemMarkup = ({name, text}) => {
+  const fieldItemText = getStatisticString(text);
 
   return (
     `<li class="statistic__text-item">
       <h4 class="statistic__item-title">${name}</h4>
-      <p class="statistic__item-text">${itemText}</p>
+      <p class="statistic__item-text">${fieldItemText}</p>
     </li>`
   );
 };
 
-export const createStatisticTemplate = (textData) => {
-  const fieldNames = [
-    `All time`,
-    `Today`,
-    `Week`,
-    `Month`,
-    `Year`];
+const getRankLabel = () => {
+  return `Sci-Fighter`; // WIP
+};
 
-  const statisticFieldMarkup = createMarkup(fieldNames, renderStatisticFieldMarkup, 0);
-  const statisticTextMarkup = createMarkup(textData, renderStatisticTextItemMarkup);
+const Statistic = function (data) {
+  this.avatar = data[`avatar`];
+
+  const movies = `${data[`movies`]} movies`;
+  const duration = getDuration(data[`total_duration`], true);
+  const genre = data[`genre`];
+  const textFields = generateTextFields([movies, duration, genre]);
+
+  this.rankLabel = getRankLabel(genre);
+  this.statisticFieldMarkup = createMarkup(timeFieldNames, renderTimeFieldMarkup, 0);
+  this.statisticTextMarkup = createMarkup(textFields, renderStatisticTextItemMarkup);
+};
+
+export const createStatisticTemplate = (textData) => {
+  const {
+    avatar,
+    rankLabel,
+    statisticFieldMarkup,
+    statisticTextMarkup,
+  } = new Statistic(textData);
 
   return (
     `<section class="statistic">
       <p class="statistic__rank">
         Your rank
-        <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">Sci-Fighter</span>
+        <img class="statistic__img" src="${avatar}" alt="Avatar" width="35" height="35">
+        <span class="statistic__rank-label">${rankLabel}</span>
       </p>
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">

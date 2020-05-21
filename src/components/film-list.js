@@ -1,29 +1,13 @@
 import * as util from '../util.js';
 
 const MAX_DESCRIPTION_LENGTH = 140;
-const HOUR_IN_MINUTES = 60;
+const DEFAULT_FILM_CARDS_DISPLAY_COUNT = 5;
 
 const getDescription = (string) => string.length > MAX_DESCRIPTION_LENGTH
   ? string.replace(string.slice(MAX_DESCRIPTION_LENGTH), `...`)
   : string;
 
 const getYear = (iso) => new Date(Date.parse(iso)).getFullYear();
-
-const getDuration = (minutesAmount) => {
-  const hours = Math.floor(minutesAmount / HOUR_IN_MINUTES)
-    ? `${Math.floor(minutesAmount / HOUR_IN_MINUTES)}h`
-    : ``;
-
-  const restOfMinutes = minutesAmount % HOUR_IN_MINUTES
-    ? ` ${minutesAmount % HOUR_IN_MINUTES}m`
-    : ``;
-
-  const minutes = hours
-    ? restOfMinutes
-    : `${minutesAmount}m`;
-
-  return hours + minutes;
-};
 
 const infoFieldsList = [
   `year`,
@@ -55,8 +39,6 @@ const renderControlButtonMarkup = ({name, id}, isActive = false) => {
   );
 };
 
-const setActiveButtons = (buttonsList) => buttonsList.map((it, i) => it ? i : -1);
-
 const FilmCard = function (data) {
   const info = data[`film_info`];
   this.title = info[`title`];
@@ -66,7 +48,7 @@ const FilmCard = function (data) {
   this.commentsCount = data[`comments`].length;
 
   const year = getYear(info[`release`][`date`]);
-  const duration = getDuration(info[`runtime`]);
+  const duration = util.getDuration(info[`runtime`]);
   const genre = info[`genre`][0];
   const infoFields = generateInfoFields([year, duration, genre]);
   this.infoFieldsMarkup = util.createMarkup(infoFields, renderInfoFieldMarkup);
@@ -74,7 +56,7 @@ const FilmCard = function (data) {
   const watchlistButtonStatus = data[`user_details`][`watchlist`];
   const watchedButtonStatus = data[`user_details`][`already_watched`];
   const favoriteButtonStatus = data[`user_details`][`favorite`];
-  const activeButtons = setActiveButtons([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
+  const activeButtons = util.setActiveButtons([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
   this.buttonsMarkup = util.createMarkup(controlButtonsList, renderControlButtonMarkup, ...activeButtons);
 };
 
@@ -108,7 +90,7 @@ const renderFilmCard = (data) => {
 };
 
 export const createFilmListTemplate = (cardsData) => {
-  const filmCards = util.createMarkup(cardsData, renderFilmCard);
+  const filmCards = util.createMarkup(cardsData.slice(0, DEFAULT_FILM_CARDS_DISPLAY_COUNT), renderFilmCard);
 
   return (
     `<section class="films-list">
@@ -120,5 +102,3 @@ export const createFilmListTemplate = (cardsData) => {
     </section>`
   );
 };
-
-export {getDuration, setActiveButtons};

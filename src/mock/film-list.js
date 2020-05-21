@@ -73,7 +73,7 @@ const generateGenres = () => {
 };
 
 const RandomFilmCard = function (index) {
-  const film = util.getUniqueRandomItem(filmTemplates);
+  const film = filmTemplates[util.getRandomCount(0, filmTemplates.length - 1)];
   this[`id`] = `${index}`;
   this[`comments`] = new Array(Math.floor(Math.random() * 7)).fill(``).map(() => +`303${util.getRandomCount(4, 9)}`);
   this[`film_info`] = {
