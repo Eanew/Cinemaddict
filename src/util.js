@@ -9,6 +9,7 @@ export const Key = {
 
 export const Regular = {
   SPACE,
+  COMMA: `,`,
   DASH: `-`,
   NUMBERS: /\d+/g,
   EXCEPT_NUMBERS: /(\D+)*[^.\d]/g,

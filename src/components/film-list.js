@@ -133,7 +133,7 @@ export const addShowMoreButtonListener = () => {
 
   const onButtonClick = (evt) => {
     evt.preventDefault();
-    const isLastCards = (currentFilmsCount + FILMS_DISPLAY_STEP < films.length) ? false : true;
+    const isLastCards = !(currentFilmsCount + FILMS_DISPLAY_STEP < films.length);
     renderCards(isLastCards);
   };
 
