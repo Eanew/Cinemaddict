@@ -21,7 +21,7 @@ const textFieldNames = [
   `Total duration`,
   GENRES_FILED_NAME];
 
-const setRank = (movies) => {
+const getRank = (movies) => {
   for (const count in Rank) {
     if (Rank.hasOwnProperty(count) && Rank[count] <= movies) {
       return count;
@@ -61,12 +61,12 @@ const generateTextFields = (textFieldValues) => textFieldNames.map((it, i) => ({
 const renderStatisticTextItemMarkup = ({name, text}) => {
   const fieldItemText = getStatisticString(text);
 
-  return (
+  return fieldItemText ? (
     `<li class="statistic__text-item">
       <h4 class="statistic__item-title">${name}</h4>
       <p class="statistic__item-text">${fieldItemText}</p>
     </li>`
-  );
+  ) : ``;
 };
 
 const getTopGenres = (films) => {
@@ -113,42 +113,49 @@ const getTopGenres = (films) => {
     .join(`, `);
 };
 
+const createStatisticRankMarkup = (rank) => {
+  return rank ? (
+    `<p class="statistic__rank">
+      Your rank
+      <img class="statistic__img" src="${AVATAR}" alt="Avatar" width="35" height="35">
+      <span class="statistic__rank-label">${rank}</span>
+    </p>`
+  ) : ``;
+};
+
 const Statistic = function (films) {
   const watchedMovies = films.filter((it) => it[`user_details`][`already_watched`]);
   const moviesCount = `${watchedMovies.length} movies`;
   const durationInMinutes = watchedMovies.reduce(((accumulator, it) => accumulator + it[`film_info`][`runtime`]), 0);
   const durationString = getDuration(durationInMinutes, true);
-  const topGenres = getTopGenres(films);
+  const topGenres = getTopGenres(watchedMovies);
   const textFields = generateTextFields([moviesCount, durationString, topGenres]);
 
-  this.rank = setRank(watchedMovies.length);
+  this.rank = getRank(watchedMovies.length);
+  this.rankMarkup = createStatisticRankMarkup(this.rank);
   this.fieldMarkup = createMarkup(timeFieldNames, renderTimeFieldMarkup, 0);
   this.textMarkup = createMarkup(textFields, renderStatisticTextItemMarkup);
 };
 
 const createUserLevelTemplate = (rank) => {
-  return (
+  return rank ? (
     `<section class="header__profile profile">
       ${rank ? `<p class="profile__rating">${rank}</p>` : ``}
       <img class="profile__avatar" src="${AVATAR}" alt="Avatar" width="35" height="35">
     </section>`
-  );
+  ) : ``;
 };
 
 const createStatisticTemplate = (statistic) => {
   const {
-    rank,
     fieldMarkup,
     textMarkup,
+    rankMarkup,
   } = statistic;
 
   return (
     `<section class="statistic">
-      <p class="statistic__rank">
-        Your rank
-        <img class="statistic__img" src="${AVATAR}" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">${rank}</span>
-      </p>
+      ${rankMarkup}
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
         <p class="statistic__filters-description">Show stats:</p>
