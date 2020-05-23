@@ -36,7 +36,7 @@ renderHtml(pageMain, createNavigationTemplate(filmCards));
 renderHtml(pageMain, createStatisticTemplate(userData));
 renderHtml(pageMain, createSortingTemplate());
 renderHtml(pageMain, createFilmListTemplate(filmCards));
-// renderHtml(pageFooter, createDetailsTemplate(filmCards[0], comments), `afterend`);
+renderHtml(pageFooter, createDetailsTemplate(filmCards[0], comments), `afterend`);
 
 addShowMoreButtonListener();
 
