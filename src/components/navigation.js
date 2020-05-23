@@ -1,7 +1,5 @@
 import {createMarkup, setId} from '../util.js';
 
-const MAX_FILTER_RESULTS_COUNT_TO_DISPLAY = 5;
-
 const AllMovies = {
   ID: `all`,
   NAME: `All movies`,
@@ -15,7 +13,7 @@ const navItemsList = [
 
 const generateNavItemsData = (counts) => navItemsList.map((it, i) => ({
   name: it,
-  id: (it === AllMovies.NAME ? AllMovies.ID : setId(it)),
+  id: it === AllMovies.NAME ? AllMovies.ID : setId(it),
   count: counts[i],
 }));
 
@@ -24,8 +22,7 @@ const createNavigationItemMarkup = function ({name, id, count = 0}, isActive = f
     `<a href="#${id || setId(name)}"
       class="main-navigation__item${isActive ? ` main-navigation__item--active` : ``}">
       ${name}
-      ${(count > MAX_FILTER_RESULTS_COUNT_TO_DISPLAY || id === AllMovies.ID) ? ``
-      : ` <span class="main-navigation__item-count">${count}</span>`}
+      ${count !== null ? ` <span class="main-navigation__item-count">${count}</span>` : ``}
     </a>`
   );
 };
@@ -50,7 +47,8 @@ const generateNavigationItems = (films) => {
       }
     });
 
-  const navItems = generateNavItemsData([films.length, watchlist.length, history.length, favorites.length]);
+  const displayedCounts = [null, watchlist.length, history.length, favorites.length];
+  const navItems = generateNavItemsData(displayedCounts);
   return createMarkup(navItems, createNavigationItemMarkup, 0);
 };
 
