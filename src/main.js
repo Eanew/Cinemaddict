@@ -1,47 +1,43 @@
-import {createUserLevelTemplate} from './components/user-level.js';
+import {
+  Statistic,
+  createUserLevelTemplate,
+  createStatisticTemplate
+} from './components/user-statistic.js';
+
 import {createNavigationTemplate} from './components/navigation.js';
-import {createStatisticTemplate} from './components/statistic.js';
 import {createSortingTemplate} from './components/sorting.js';
-import * as filmList from './components/film-list.js';
-import * as details from './components/details.js';
 
-const FILM_CARDS_COUNT = 5;
+import {
+  createFilmListTemplate,
+  addShowMoreButtonListener
+} from './components/film-list.js';
 
-const pageHeader = document.querySelector(`.header`);
-const pageMain = document.querySelector(`.main`);
-const pageFooter = document.querySelector(`.footer`);
+import {createDetailsTemplate} from './components/details.js';
+
+import {generateFilmCardsData} from './mock/film-list.js';
+import {generateCommentsData} from './mock/details.js';
+
+const FILM_CARDS_COUNT = 12;
 
 const renderHtml = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
 
-renderHtml(pageHeader, createUserLevelTemplate());
+const pageHeader = document.querySelector(`.header`);
+const pageMain = document.querySelector(`.main`);
+const pageFooter = document.querySelector(`.footer`);
 
-renderHtml(pageMain, createNavigationTemplate());
-renderHtml(pageMain, createStatisticTemplate());
+const filmCards = generateFilmCardsData(FILM_CARDS_COUNT);
+const comments = generateCommentsData();
+const userData = new Statistic(filmCards);
+
+renderHtml(pageHeader, createUserLevelTemplate(userData.rank));
+renderHtml(pageMain, createNavigationTemplate(filmCards));
+renderHtml(pageMain, createStatisticTemplate(userData));
 renderHtml(pageMain, createSortingTemplate());
-renderHtml(pageMain, filmList.createSectionTemplate());
+renderHtml(pageMain, createFilmListTemplate(filmCards));
+renderHtml(pageFooter, createDetailsTemplate(filmCards[0], comments), `afterend`);
 
-const filmListContainer = pageMain.querySelector(`.films-list__container`);
+addShowMoreButtonListener();
 
-for (let i = 0; i < FILM_CARDS_COUNT; i++) {
-  renderHtml(filmListContainer, filmList.createItemTemplate());
-}
-
-renderHtml(filmListContainer, filmList.createShowMoreButtonTemplate(), `afterend`);
-renderHtml(pageFooter, details.createSectionTemplate(), `afterend`);
-
-const filmDetails = document.querySelector(`.film-details__inner`);
-
-renderHtml(filmDetails, details.createTopContainerTemplate());
-
-const detailsTopContainer = filmDetails.querySelector(`.form-details__top-container`);
-
-renderHtml(detailsTopContainer, details.createDescriptionTemplate());
-renderHtml(detailsTopContainer, details.createControlsTemplate());
-renderHtml(filmDetails, details.createBottomContainerTemplate());
-
-const detailsBottomContainer = filmDetails.querySelector(`.film-details__comments-wrap`);
-
-renderHtml(detailsBottomContainer, details.createCommentsTemplate());
-renderHtml(detailsBottomContainer, details.createNewCommentTemplate());
+export {renderHtml};
