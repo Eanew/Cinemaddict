@@ -1,4 +1,4 @@
-import {createMarkup} from '../util.js';
+import {createMarkup, createElement} from '../util.js';
 
 const sortFieldsList = [
   `default`,
@@ -13,7 +13,7 @@ const createSortingItemMarkup = function (name, isActive = false) {
   );
 };
 
-export const createSortingTemplate = () => {
+const createSortingTemplate = () => {
   const sortItemsMarkup = createMarkup(sortFieldsList, createSortingItemMarkup, 0);
 
   return (
@@ -22,3 +22,24 @@ export const createSortingTemplate = () => {
     </ul>`
   );
 };
+
+export default class Sorting {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSortingTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
