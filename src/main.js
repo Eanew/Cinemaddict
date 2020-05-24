@@ -15,6 +15,10 @@ import {generateCommentsData} from './mock/details.js';
 const FILM_CARDS_COUNT = 12;
 const FILMS_DISPLAY_STEP = 5;
 
+const pageBody = document.querySelector(`body`);
+const pageHeader = document.querySelector(`.header`);
+const pageMain = document.querySelector(`.main`);
+
 const renderUserLevel = (watchedMovies) => {
   const userLevelComponent = new UserLevel(watchedMovies);
 
@@ -36,17 +40,30 @@ const renderStatistic = (movies) => {
   render(pageMain, statisticComponent.getElement());
 };
 
-let previousCard;
+let isPopupAlredyClosed = false;
 
 const renderFilmCard = (container, card) => {
   const cardComponent = new Card(card);
   const detailsComponent = new Details(card, generateCommentsData());
+  const detailsCloseButtonElement = detailsComponent.getElement().querySelector(`.film-details__close-btn`);
+
+  const appendNewPopup = (currentDetailsElement) => {
+    const lastDetailsElement = pageBody.querySelector(`.film-details`);
+    if (lastDetailsElement) {
+      pageBody.replaceChild(currentDetailsElement, lastDetailsElement);
+    } else if (!isPopupAlredyClosed) {
+      pageBody.appendChild(currentDetailsElement);
+    }
+  };
 
   const onCloseButtonClick = () => {
-    detailsComponent.removeElement();
-    removeElement(`.film-details`);
+    isPopupAlredyClosed = true;
+    setTimeout((() => {
+      isPopupAlredyClosed = false;
+    }), 200);
     document.removeEventListener(`keydown`, onDetailsEscPress);
-    document.addEventListener(`click`, onCloseButtonClick);
+    document.removeEventListener(`click`, onCloseButtonClick);
+    pageBody.removeChild(detailsComponent.getElement());
   };
 
   const onDetailsEscPress = (evt) => {
@@ -56,19 +73,11 @@ const renderFilmCard = (container, card) => {
   const onCardClick = (evt) => {
     evt.preventDefault();
     evt.stopPropagation();
-    onCloseButtonClick();
-    render(pageFooter, detailsComponent.getElement(), RenderPosition.AFTEREND);
+    detailsCloseButtonElement.addEventListener(`click`, onCloseButtonClick);
+    detailsComponent.getElement().addEventListener(`click`, (clickEvt) => clickEvt.stopPropagation());
     document.addEventListener(`keydown`, onDetailsEscPress);
     document.addEventListener(`click`, onCloseButtonClick);
-    detailsComponent.getElement().addEventListener(`click`, (clickEvt) => clickEvt.stopPropagation());
-    detailsComponent.getElement()
-      .querySelector(`.film-details__close-btn`)
-      .addEventListener(`click`, onCloseButtonClick);
-
-    if (previousCard) {
-      previousCard.removeElement();
-    }
-    previousCard = cardComponent;
+    appendNewPopup(detailsComponent.getElement());
   };
 
   const cardListeningElements = [
@@ -122,10 +131,6 @@ const renderFilmList = (cards) => {
     renderLoadMoreButton(filmListElement, cards);
   }
 };
-
-const pageHeader = document.querySelector(`.header`);
-const pageMain = document.querySelector(`.main`);
-const pageFooter = document.querySelector(`.footer`);
 
 const filmCards = generateFilmCardsData(FILM_CARDS_COUNT);
 const watchedMovies = filmCards.filter((it) => it[`user_details`][`already_watched`]);
