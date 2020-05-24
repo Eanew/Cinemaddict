@@ -1,21 +1,30 @@
 import {createElement} from '../util.js';
 
-const createFilmListTemplate = () => {
+const renderFilmListContentsMarkup = (movies) => {
+  return movies
+    ? (`<h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+      <div class="films-list__container"></div>`)
+    : (`<h2 class="films-list__title">There are no movies in our database</h2>`);
+};
+
+const createFilmListTemplate = (films) => {
+  const filmListContentsMarkup = renderFilmListContentsMarkup(films && films.length);
+
   return (
     `<section class="films-list">
-      <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
-      <div class="films-list__container"></div>
+      ${filmListContentsMarkup}
     </section>`
   );
 };
 
 export default class FilmList {
-  constructor() {
+  constructor(films) {
+    this._films = films;
     this._element = null;
   }
 
   getTemplate() {
-    return createFilmListTemplate();
+    return createFilmListTemplate(this._films);
   }
 
   getElement() {

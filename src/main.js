@@ -125,7 +125,9 @@ const renderFilmList = (cards) => {
 
   const filmListElement = filmListComponent.getElement().querySelector(`.films-list__container`);
 
-  cards.slice(0, FILMS_DISPLAY_STEP).forEach((card) => renderFilmCard(filmListElement, card));
+  if (filmListElement) {
+    cards.slice(0, FILMS_DISPLAY_STEP).forEach((card) => renderFilmCard(filmListElement, card));
+  }
 
   if (cards.length > FILMS_DISPLAY_STEP) {
     renderLoadMoreButton(filmListElement, cards);
