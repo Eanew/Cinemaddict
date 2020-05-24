@@ -36,6 +36,8 @@ const renderStatistic = (movies) => {
   render(pageMain, statisticComponent.getElement());
 };
 
+let previousCard;
+
 const renderFilmCard = (container, card) => {
   const cardComponent = new Card(card);
   const detailsComponent = new Details(card, generateCommentsData());
@@ -63,6 +65,10 @@ const renderFilmCard = (container, card) => {
       .querySelector(`.film-details__close-btn`)
       .addEventListener(`click`, onCloseButtonClick);
 
+    if (previousCard) {
+      previousCard.removeElement();
+    }
+    previousCard = cardComponent;
   };
 
   const cardListeningElements = [
