@@ -10,12 +10,47 @@ export const Key = {
 export const Regular = {
   SPACE,
   COMMA: `,`,
+  ELLIPSIS: `...`,
   DASH: `-`,
   NUMBERS: /\d+/g,
   EXCEPT_NUMBERS: /(\D+)*[^.\d]/g,
   FIRST_NUMBER: /\d+/,
   EMPTY_SPACE: /\s+/g,
   EMPTY_SPACE_IN_EDGES: /^\s+|\s+(?!.)/g,
+};
+
+export const RenderPosition = {
+  BEFOREBEGIN: `beforebegin`,
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`,
+  AFTEREND: `afterend`,
+};
+
+export const render = (container, element, place = RenderPosition.BEFOREEND) => {
+  switch (place) {
+    case RenderPosition.BEFOREBEGIN:
+      container.before(element);
+      break;
+
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+
+    case RenderPosition.AFTEREND:
+      container.after(element);
+      break;
+  }
+};
+
+export const removeElement = (selector) => {
+  const element = document.querySelector(selector);
+  if (element) {
+    element.remove();
+  }
 };
 
 export const getRandomCount = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
@@ -58,9 +93,15 @@ export const getDuration = (minutesAmount, spaceBetween = false) => {
   return hours + minutes;
 };
 
-export const createMarkup = (array, render, ...activeItems) => array
-  .map((it, i) => render(it, activeItems.some((item) => item === i)))
+export const createMarkup = (array, renderer, ...activeItems) => array
+  .map((it, i) => renderer(it, activeItems.some((item) => item === i)))
   .join(`\n`);
+
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+  return newElement.firstChild || ``;
+};
 
 export const isEscEvent = (evt, action) => {
   if (evt.key === Key.ESC) {

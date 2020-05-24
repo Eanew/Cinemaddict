@@ -1,4 +1,4 @@
-import * as util from '../util.js';
+import {createMarkup, createElement, setActiveButtons, getDuration} from '../util.js';
 
 const GENRES_FIELD_NAME = `Genres`;
 
@@ -123,19 +123,19 @@ const FilmCard = function (data) {
     info[`writers`],
     info[`actors`],
     [getReleaseDate(info[`release`][`date`])],
-    [util.getDuration(info[`runtime`])],
+    [getDuration(info[`runtime`])],
     [info[`release`][`release_country`]],
     info[`genre`]];
 
   const tableFields = generateTableFields(tableData);
-  this.detailsTableMarkup = util.createMarkup(tableFields, renderFilmDetailsRowMarkup);
+  this.detailsTableMarkup = createMarkup(tableFields, renderFilmDetailsRowMarkup);
 
   const watchlistButtonStatus = data[`user_details`][`watchlist`];
   const watchedButtonStatus = data[`user_details`][`already_watched`];
   const favoriteButtonStatus = data[`user_details`][`favorite`];
-  const activeButtons = util.setActiveButtons([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
-  this.detailsControlsMarkup = util.createMarkup(controlButtonsList, renderControlFieldMarkup, ...activeButtons);
-  this.emojiListMarkup = util.createMarkup(emojiList, renderEmojiItemMarkup);
+  const activeButtons = setActiveButtons([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
+  this.detailsControlsMarkup = createMarkup(controlButtonsList, renderControlFieldMarkup, ...activeButtons);
+  this.emojiListMarkup = createMarkup(emojiList, renderEmojiItemMarkup);
 };
 
 export const createDetailsTemplate = (film, comments) => {
@@ -152,7 +152,7 @@ export const createDetailsTemplate = (film, comments) => {
     emojiListMarkup,
   } = new FilmCard(film);
 
-  const detailsCommentsMarkup = util.createMarkup(comments.slice(0, commentsCount), renderCommentsItemMarkup);
+  const detailsCommentsMarkup = createMarkup(comments.slice(0, commentsCount), renderCommentsItemMarkup);
 
   return (
     `<section class="film-details">
@@ -220,3 +220,26 @@ export const createDetailsTemplate = (film, comments) => {
     </section>`
   );
 };
+
+export default class Details {
+  constructor(filmCard, comments) {
+    this._film = filmCard;
+    this._comments = comments;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createDetailsTemplate(this._film, this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

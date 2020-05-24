@@ -1,13 +1,6 @@
-import {Regular, createMarkup, setId, getDuration} from '../util.js';
+import {Regular, createMarkup, createElement, setId, getDuration} from '../util.js';
 
-const AVATAR = `images/bitmap@2x.png`;
 const GENRES_FILED_NAME = `Top genre`;
-
-const Rank = {
-  'Movie Buff': 21,
-  'Fan': 11,
-  'Novice': 1,
-};
 
 const timeFieldNames = [
   `All time`,
@@ -21,15 +14,6 @@ const textFieldNames = [
   `Total duration`,
   GENRES_FILED_NAME];
 
-const getRank = (movies) => {
-  for (const count in Rank) {
-    if (Rank.hasOwnProperty(count) && Rank[count] <= movies) {
-      return count;
-    }
-  }
-  return null;
-};
-
 const renderTimeFieldMarkup = (name, isChecked = false) => {
   const id = setId(name);
 
@@ -40,7 +24,14 @@ const renderTimeFieldMarkup = (name, isChecked = false) => {
   );
 };
 
-const getStatisticString = (text) => {
+const generateTextFields = (textFieldValues) => textFieldNames.map((it, i) => ({
+  text: textFieldValues[i],
+  name: (it === GENRES_FILED_NAME && textFieldValues[i].indexOf(Regular.COMMA) !== -1)
+    ? `${it}s`
+    : it,
+}));
+
+const formatStatisticString = (text) => {
   return text
     .split(Regular.SPACE)
     .map((it) => {
@@ -51,15 +42,9 @@ const getStatisticString = (text) => {
     .join(Regular.SPACE);
 };
 
-const generateTextFields = (textFieldValues) => textFieldNames.map((it, i) => ({
-  text: textFieldValues[i],
-  name: (it === GENRES_FILED_NAME && textFieldValues[i].indexOf(Regular.COMMA) !== -1)
-    ? `${it}s`
-    : it,
-}));
-
-const renderStatisticTextItemMarkup = ({name, text}) => {
-  const fieldItemText = getStatisticString(text);
+const renderStatisticTextItemMarkup = (textField) => {
+  const {name, text} = textField;
+  const fieldItemText = formatStatisticString(text);
 
   return fieldItemText ? (
     `<li class="statistic__text-item">
@@ -113,45 +98,36 @@ const getTopGenres = (films) => {
     .join(`, `);
 };
 
-const createStatisticRankMarkup = (rank) => {
-  return rank ? (
+const createStatisticRankMarkup = () => {
+  const profileRaitingElement = document.querySelector(`.profile__rating`);
+  const profileAvatarElement = document.querySelector(`.profile__avatar`);
+  return profileRaitingElement ? (
     `<p class="statistic__rank">
       Your rank
-      <img class="statistic__img" src="${AVATAR}" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">${rank}</span>
+      <img class="statistic__img" src="${profileAvatarElement.src}" alt="Avatar" width="35" height="35">
+      <span class="statistic__rank-label">${profileRaitingElement.textContent}</span>
     </p>`
   ) : ``;
 };
 
 const Statistic = function (films) {
-  const watchedMovies = films.filter((it) => it[`user_details`][`already_watched`]);
-  const moviesCount = `${watchedMovies.length} movies`;
-  const durationInMinutes = watchedMovies.reduce(((accumulator, it) => accumulator + it[`film_info`][`runtime`]), 0);
-  const durationString = getDuration(durationInMinutes, true);
-  const topGenres = getTopGenres(watchedMovies);
+  const moviesCount = `${films.length} movies`;
+  const durationInMinutes = films.reduce(((accumulator, it) => accumulator + it[`film_info`][`runtime`]), 0);
+  const durationString = getDuration(durationInMinutes, `space between`);
+  const topGenres = getTopGenres(films);
   const textFields = generateTextFields([moviesCount, durationString, topGenres]);
 
-  this.rank = getRank(watchedMovies.length);
-  this.rankMarkup = createStatisticRankMarkup(this.rank);
-  this.fieldMarkup = createMarkup(timeFieldNames, renderTimeFieldMarkup, 0);
+  this.rankMarkup = createStatisticRankMarkup();
+  this.fieldsMarkup = createMarkup(timeFieldNames, renderTimeFieldMarkup, 0);
   this.textMarkup = createMarkup(textFields, renderStatisticTextItemMarkup);
 };
 
-const createUserLevelTemplate = (rank) => {
-  return rank ? (
-    `<section class="header__profile profile">
-      ${rank ? `<p class="profile__rating">${rank}</p>` : ``}
-      <img class="profile__avatar" src="${AVATAR}" alt="Avatar" width="35" height="35">
-    </section>`
-  ) : ``;
-};
-
-const createStatisticTemplate = (statistic) => {
+const createStatisticTemplate = (films) => {
   const {
-    fieldMarkup,
-    textMarkup,
     rankMarkup,
-  } = statistic;
+    fieldsMarkup,
+    textMarkup,
+  } = new Statistic(films);
 
   return (
     `<section class="statistic">
@@ -159,7 +135,7 @@ const createStatisticTemplate = (statistic) => {
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
         <p class="statistic__filters-description">Show stats:</p>
-        ${fieldMarkup}
+        ${fieldsMarkup}
       </form>
 
       <ul class="statistic__text-list">
@@ -174,4 +150,24 @@ const createStatisticTemplate = (statistic) => {
   );
 };
 
-export {Statistic, createUserLevelTemplate, createStatisticTemplate};
+export default class UserStatistic {
+  constructor(films) {
+    this._films = films;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createStatisticTemplate(this._films);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,4 +1,8 @@
-import {createMarkup, setId} from '../util.js';
+import {createMarkup, createElement, setId} from '../util.js';
+
+let watchlist = [];
+let favorites = [];
+let history = [];
 
 const AllMovies = {
   ID: `all`,
@@ -27,10 +31,6 @@ const createNavigationItemMarkup = function ({name, id, count = 0}, isActive = f
   );
 };
 
-let watchlist = [];
-let favorites = [];
-let history = [];
-
 const generateNavigationItems = (films) => {
   watchlist = films.filter((it) => it[`user_details`][`watchlist`]);
   favorites = films.filter((it) => it[`user_details`][`favorite`]);
@@ -52,8 +52,8 @@ const generateNavigationItems = (films) => {
   return createMarkup(navItems, createNavigationItemMarkup, 0);
 };
 
-export const createNavigationTemplate = (filmCards) => {
-  const navItemsMarkup = generateNavigationItems(filmCards);
+const createNavigationTemplate = (films) => {
+  const navItemsMarkup = generateNavigationItems(films);
 
   return (
     `<nav class="main-navigation">
@@ -64,3 +64,25 @@ export const createNavigationTemplate = (filmCards) => {
     </nav>`
   );
 };
+
+export default class Navigation {
+  constructor(films) {
+    this._films = films;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createNavigationTemplate(this._films);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
