@@ -1,4 +1,4 @@
-import {RenderPosition, render, removeElement} from './util.js';
+import {RenderPosition, render, removeElement, isEscEvent} from './util.js';
 
 import UserLevel from './components/user-level.js';
 import Navigation from './components/navigation.js';
@@ -38,6 +38,40 @@ const renderStatistic = (movies) => {
 
 const renderFilmCard = (container, card) => {
   const cardComponent = new Card(card);
+  const detailsComponent = new Details(card, generateCommentsData());
+
+  const onCloseButtonClick = () => {
+    detailsComponent.removeElement();
+    removeElement(`.film-details`);
+    document.removeEventListener(`keydown`, onDetailsEscPress);
+    document.addEventListener(`click`, onCloseButtonClick);
+  };
+
+  const onDetailsEscPress = (evt) => {
+    isEscEvent(evt, onCloseButtonClick);
+  };
+
+  const onCardClick = (evt) => {
+    evt.preventDefault();
+    evt.stopPropagation();
+    onCloseButtonClick();
+    render(pageFooter, detailsComponent.getElement(), RenderPosition.AFTEREND);
+    document.addEventListener(`keydown`, onDetailsEscPress);
+    document.addEventListener(`click`, onCloseButtonClick);
+    detailsComponent.getElement().addEventListener(`click`, (clickEvt) => clickEvt.stopPropagation());
+    detailsComponent.getElement()
+      .querySelector(`.film-details__close-btn`)
+      .addEventListener(`click`, onCloseButtonClick);
+
+  };
+
+  const cardListeningElements = [
+    cardComponent.getElement().querySelector(`.film-card__title`),
+    cardComponent.getElement().querySelector(`.film-card__poster`),
+    cardComponent.getElement().querySelector(`.film-card__comments`)];
+
+  cardListeningElements.forEach((element) => element.addEventListener(`click`, onCardClick));
+
   render(container, cardComponent.getElement());
 };
 
@@ -89,13 +123,11 @@ const pageFooter = document.querySelector(`.footer`);
 
 const filmCards = generateFilmCardsData(FILM_CARDS_COUNT);
 const watchedMovies = filmCards.filter((it) => it[`user_details`][`already_watched`]);
-const comments = generateCommentsData();
 
 renderUserLevel(watchedMovies);
 renderNavigation(filmCards);
 renderStatistic(watchedMovies);
 render(pageMain, new Sorting().getElement());
 renderFilmList(filmCards);
-render(pageFooter, new Details(filmCards[0], comments).getElement(), RenderPosition.AFTEREND);
 
 export {renderUserLevel, renderNavigation, renderStatistic, renderFilmList};
