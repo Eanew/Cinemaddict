@@ -54,7 +54,3 @@ export const createElement = (template) => {
   newElement.innerHTML = template;
   return newElement.firstChild || ``;
 };
-
-// 1) использовать новые функции из этого файла
-// 2) поменять импорты во всех файлах (и следить за новыми именами импортируемых функций)
-// 3) удалить src/util.js

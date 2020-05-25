@@ -1,5 +1,6 @@
 import AbstractComponent from './abstract-component.js';
-import {Regular, createMarkup, setId, getDuration} from '../util.js';
+import {Regular} from '../utils/common.js';
+import {createMarkup, setId, getDuration} from '../utils/data-process.js';
 
 const GENRES_FILED_NAME = `Top genre`;
 

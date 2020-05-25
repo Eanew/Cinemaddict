@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component.js';
-import {createMarkup, setActiveButtons, getDuration} from '../util.js';
+import {createMarkup, setActiveItems, getDuration} from '../utils/data-process.js';
 
 const GENRES_FIELD_NAME = `Genres`;
 
@@ -134,7 +134,7 @@ const FilmCard = function (data) {
   const watchlistButtonStatus = data[`user_details`][`watchlist`];
   const watchedButtonStatus = data[`user_details`][`already_watched`];
   const favoriteButtonStatus = data[`user_details`][`favorite`];
-  const activeButtons = setActiveButtons([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
+  const activeButtons = setActiveItems([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
   this.detailsControlsMarkup = createMarkup(controlButtonsList, renderControlFieldMarkup, ...activeButtons);
   this.emojiListMarkup = createMarkup(emojiList, renderEmojiItemMarkup);
 };

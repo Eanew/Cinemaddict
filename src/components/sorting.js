@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component.js';
-import {createMarkup} from '../util.js';
+import {createMarkup} from '../utils/data-process.js';
 
 const sortFieldsList = [
   `default`,

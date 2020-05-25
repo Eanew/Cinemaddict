@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component.js';
-import {createMarkup, setId} from '../util.js';
+import {createMarkup, setId} from '../utils/data-process.js';
 
 let watchlist = [];
 let favorites = [];

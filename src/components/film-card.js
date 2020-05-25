@@ -1,5 +1,6 @@
 import AbstractComponent from './abstract-component.js';
-import {Regular, createMarkup, setId, setActiveButtons, getDuration} from '../util.js';
+import {Regular} from '../utils/common.js';
+import {createMarkup, setId, setActiveItems, getDuration} from '../utils/data-process.js';
 
 const MAX_DESCRIPTION_LENGTH = 140;
 
@@ -49,7 +50,7 @@ const FilmCard = function (data) {
   const watchlistButtonStatus = data[`user_details`][`watchlist`];
   const watchedButtonStatus = data[`user_details`][`already_watched`];
   const favoriteButtonStatus = data[`user_details`][`favorite`];
-  const activeButtons = setActiveButtons([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
+  const activeButtons = setActiveItems([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
   const infoFields = generateInfoFields([year, duration, genre]);
 
   this.title = info[`title`];

@@ -1,4 +1,4 @@
-import {isEscEvent} from './util.js';
+import {isEscEvent} from './utils/common.js';
 import {RenderPosition, render, remove, removeBySelector} from './utils/render.js';
 
 import UserLevelComponent from './components/user-level.js';
@@ -129,12 +129,13 @@ const renderFilmList = (cards) => {
 
   const filmListElement = filmListComponent.getElement().querySelector(`.films-list__container`);
 
-  if (filmListElement) {
+  if (!filmListElement) {
+    return;
+  } else {
     cards.slice(0, FILMS_DISPLAY_STEP).forEach((card) => renderFilmCard(filmListElement, card));
-  }
-
-  if (cards.length > FILMS_DISPLAY_STEP) {
-    renderLoadMoreButton(filmListElement, cards);
+    if (cards.length > FILMS_DISPLAY_STEP) {
+      renderLoadMoreButton(filmListElement, cards);
+    }
   }
 };
 
