@@ -42,8 +42,11 @@ renderUserLevel(watchedMovies);
 renderNavigation(filmCards);
 renderStatistic(watchedMovies);
 render(pageMain, new SortingComponent());
-const filmListComponent = new FilmListComponent(filmCards);
+
+const filmListComponent = new FilmListComponent();
 const pageController = new PageController(filmListComponent);
+
+render(pageMain, filmListComponent);
 pageController.render(filmCards);
 
 export {renderUserLevel, renderNavigation, renderStatistic};
