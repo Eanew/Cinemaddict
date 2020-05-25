@@ -24,7 +24,7 @@ const createSortingTemplate = () => {
   );
 };
 
-export default class Sorting extends AbstractComponent {
+export default class SortingComponent extends AbstractComponent {
   getTemplate() {
     return createSortingTemplate();
   }

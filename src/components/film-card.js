@@ -90,7 +90,7 @@ const createCardTemplate = (card) => {
   );
 };
 
-export default class Card extends AbstractComponent {
+export default class CardComponent extends AbstractComponent {
   constructor(card) {
     super();
 

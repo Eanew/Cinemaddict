@@ -151,7 +151,7 @@ const createStatisticTemplate = (films) => {
   );
 };
 
-export default class UserStatistic extends AbstractComponent {
+export default class UserStatisticComponent extends AbstractComponent {
   constructor(films) {
     super();
 

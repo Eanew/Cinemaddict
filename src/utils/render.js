@@ -42,7 +42,7 @@ export const remove = (component) => {
   component.removeElement();
 };
 
-export const removeSelector = (selector) => {
+export const removeBySelector = (selector) => {
   const element = document.querySelector(selector);
   if (element) {
     element.remove();

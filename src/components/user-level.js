@@ -26,7 +26,7 @@ const createUserLevelTemplate = (rank) => {
   ) : ``;
 };
 
-export default class UserLevel extends AbstractComponent {
+export default class UserLevelComponent extends AbstractComponent {
   constructor(films) {
     super();
 

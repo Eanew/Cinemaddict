@@ -222,7 +222,7 @@ export const createDetailsTemplate = (film, comments) => {
   );
 };
 
-export default class Details extends AbstractComponent {
+export default class DetailsComponent extends AbstractComponent {
   constructor(filmCard, comments) {
     super();
 

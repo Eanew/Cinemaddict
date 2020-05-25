@@ -1,14 +1,14 @@
-import {RenderPosition, render, removeElement, isEscEvent} from './util.js';
-import {replace} from './utils/render.js';
+import {isEscEvent} from './util.js';
+import {RenderPosition, render, replace, remove, removeBySelector} from './utils/render.js';
 
-import UserLevel from './components/user-level.js';
-import Navigation from './components/navigation.js';
-import UserStatistic from './components/user-statistic.js';
-import Sorting from './components/sorting.js';
-import FilmList from './components/film-list.js';
-import Card from './components/film-card.js';
-import LoadMoreButton from './components/load-more-button.js';
-import Details from './components/details.js';
+import UserLevelComponent from './components/user-level.js';
+import NavigationComponent from './components/navigation.js';
+import UserStatisticComponent from './components/user-statistic.js';
+import SortingComponent from './components/sorting.js';
+import FilmListComponent from './components/film-list.js';
+import CardComponent from './components/film-card.js';
+import LoadMoreButtonComponent from './components/load-more-button.js';
+import DetailsComponent from './components/details.js';
 
 import {generateFilmCardsData} from './mock/film-list.js';
 import {generateCommentsData} from './mock/details.js';
@@ -21,54 +21,59 @@ const pageHeader = document.querySelector(`.header`);
 const pageMain = document.querySelector(`.main`);
 
 const renderUserLevel = (watchedMovies) => {
-  const userLevelComponent = new UserLevel(watchedMovies);
+  const userLevelComponent = new UserLevelComponent(watchedMovies);
 
-  removeElement(`.header__profile`);
-  render(pageHeader, userLevelComponent.getElement());
+  removeBySelector(`.header__profile`);
+  render(pageHeader, userLevelComponent);
 };
 
 const renderNavigation = (movies) => {
-  const navigationComponent = new Navigation(movies);
+  const navigationComponent = new NavigationComponent(movies);
 
-  removeElement(`.main-navigation`);
-  render(pageMain, navigationComponent.getElement());
+  removeBySelector(`.main-navigation`);
+  render(pageMain, navigationComponent);
 };
 
 const renderStatistic = (movies) => {
-  const statisticComponent = new UserStatistic(movies);
+  const statisticComponent = new UserStatisticComponent(movies);
 
-  removeElement(`.statistic`);
-  render(pageMain, statisticComponent.getElement());
+  removeBySelector(`.statistic`);
+  render(pageMain, statisticComponent);
 };
 
 let isPopupAlredyClosed = false;
+let lastDetailsComponent;
+
+const onCloseButtonClick = () => {
+  isPopupAlredyClosed = true;
+  setTimeout((() => {
+    isPopupAlredyClosed = false;
+  }), 200);
+  document.removeEventListener(`keydown`, onDetailsEscPress);
+  document.removeEventListener(`click`, onCloseButtonClick);
+  pageBody.removeChild(lastDetailsComponent.getElement());
+};
+
+const onDetailsEscPress = (evt) => {
+  isEscEvent(evt, onCloseButtonClick);
+};
 
 const renderFilmCard = (container, card) => {
-  const cardComponent = new Card(card);
-  const detailsComponent = new Details(card, generateCommentsData());
+  const cardComponent = new CardComponent(card);
+  const detailsComponent = new DetailsComponent(card, generateCommentsData());
   const detailsCloseButtonElement = detailsComponent.getElement().querySelector(`.film-details__close-btn`);
 
-  const appendNewPopup = (currentDetailsElement) => {
+  const appendNewPopup = () => {
     const lastDetailsElement = pageBody.querySelector(`.film-details`);
     if (lastDetailsElement) {
-      replace(pageBody, currentDetailsElement, lastDetailsElement);
+      document.removeEventListener(`keydown`, onDetailsEscPress);
+      document.removeEventListener(`click`, onCloseButtonClick);
+      if (lastDetailsElement !== detailsComponent.getElement()) {
+        pageBody.replaceChild(detailsComponent.getElement(), lastDetailsElement);
+      }
     } else if (!isPopupAlredyClosed) {
-      pageBody.appendChild(currentDetailsElement);
+      pageBody.appendChild(detailsComponent.getElement());
     }
-  };
-
-  const onCloseButtonClick = () => {
-    isPopupAlredyClosed = true;
-    setTimeout((() => {
-      isPopupAlredyClosed = false;
-    }), 200);
-    document.removeEventListener(`keydown`, onDetailsEscPress);
-    document.removeEventListener(`click`, onCloseButtonClick);
-    pageBody.removeChild(detailsComponent.getElement());
-  };
-
-  const onDetailsEscPress = (evt) => {
-    isEscEvent(evt, onCloseButtonClick);
   };
 
   const onCardClick = (evt) => {
@@ -76,9 +81,10 @@ const renderFilmCard = (container, card) => {
     evt.stopPropagation();
     detailsCloseButtonElement.addEventListener(`click`, onCloseButtonClick);
     detailsComponent.getElement().addEventListener(`click`, (clickEvt) => clickEvt.stopPropagation());
+    appendNewPopup();
+    lastDetailsComponent = detailsComponent;
     document.addEventListener(`keydown`, onDetailsEscPress);
     document.addEventListener(`click`, onCloseButtonClick);
-    appendNewPopup(detailsComponent.getElement());
   };
 
   const cardListeningElements = [
@@ -88,15 +94,13 @@ const renderFilmCard = (container, card) => {
 
   cardListeningElements.forEach((element) => element.addEventListener(`click`, onCardClick));
 
-  render(container, cardComponent.getElement());
+  render(container, cardComponent);
 };
 
 const renderLoadMoreButton = (container, cards) => {
-  const loadMoreButton = new LoadMoreButton();
+  const loadMoreButtonComponent = new LoadMoreButtonComponent();
 
-  render(container, loadMoreButton.getElement(), RenderPosition.AFTEREND);
-  const buttonElement = document.querySelector(`.films-list__show-more`);
-
+  render(container, loadMoreButtonComponent, RenderPosition.AFTEREND);
   let currentFilmsCount = FILMS_DISPLAY_STEP;
 
   const renderCards = (isLastCards) => {
@@ -104,14 +108,13 @@ const renderLoadMoreButton = (container, cards) => {
       .forEach((card) => renderFilmCard(container, card));
 
     if (isLastCards) {
-      buttonElement.remove();
-      loadMoreButton.removeElement();
+      remove(loadMoreButtonComponent);
     } else {
       currentFilmsCount += FILMS_DISPLAY_STEP;
     }
   };
 
-  buttonElement.addEventListener(`click`, ((evt) => {
+  loadMoreButtonComponent.getElement().addEventListener(`click`, ((evt) => {
     evt.preventDefault();
     const isLastCards = !(currentFilmsCount + FILMS_DISPLAY_STEP < cards.length);
     renderCards(isLastCards);
@@ -119,10 +122,10 @@ const renderLoadMoreButton = (container, cards) => {
 };
 
 const renderFilmList = (cards) => {
-  const filmListComponent = new FilmList(cards);
+  const filmListComponent = new FilmListComponent(cards);
 
-  removeElement(`.films-list`);
-  render(pageMain, filmListComponent.getElement());
+  removeBySelector(`.films-list`);
+  render(pageMain, filmListComponent);
 
   const filmListElement = filmListComponent.getElement().querySelector(`.films-list__container`);
 
@@ -141,7 +144,7 @@ const watchedMovies = filmCards.filter((it) => it[`user_details`][`already_watch
 renderUserLevel(watchedMovies);
 renderNavigation(filmCards);
 renderStatistic(watchedMovies);
-render(pageMain, new Sorting().getElement());
+render(pageMain, new SortingComponent());
 renderFilmList(filmCards);
 
 export {renderUserLevel, renderNavigation, renderStatistic, renderFilmList};

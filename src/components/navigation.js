@@ -66,7 +66,7 @@ const createNavigationTemplate = (films) => {
   );
 };
 
-export default class Navigation extends AbstractComponent {
+export default class NavigationComponent extends AbstractComponent {
   constructor(films) {
     super();
 
