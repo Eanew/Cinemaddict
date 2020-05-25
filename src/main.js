@@ -1,5 +1,5 @@
 import {isEscEvent} from './util.js';
-import {RenderPosition, render, replace, remove, removeBySelector} from './utils/render.js';
+import {RenderPosition, render, remove, removeBySelector} from './utils/render.js';
 
 import UserLevelComponent from './components/user-level.js';
 import NavigationComponent from './components/navigation.js';
