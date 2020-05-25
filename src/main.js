@@ -1,4 +1,5 @@
 import {RenderPosition, render, removeElement, isEscEvent} from './util.js';
+import {replace} from './utils/render.js';
 
 import UserLevel from './components/user-level.js';
 import Navigation from './components/navigation.js';
@@ -50,7 +51,7 @@ const renderFilmCard = (container, card) => {
   const appendNewPopup = (currentDetailsElement) => {
     const lastDetailsElement = pageBody.querySelector(`.film-details`);
     if (lastDetailsElement) {
-      pageBody.replaceChild(currentDetailsElement, lastDetailsElement);
+      replace(pageBody, currentDetailsElement, lastDetailsElement);
     } else if (!isPopupAlredyClosed) {
       pageBody.appendChild(currentDetailsElement);
     }
