@@ -1,4 +1,5 @@
-import {Regular, createMarkup, createElement, setId, getDuration} from '../util.js';
+import AbstractComponent from './abstract-component.js';
+import {Regular, createMarkup, setId, getDuration} from '../util.js';
 
 const GENRES_FILED_NAME = `Top genre`;
 
@@ -150,24 +151,14 @@ const createStatisticTemplate = (films) => {
   );
 };
 
-export default class UserStatistic {
+export default class UserStatistic extends AbstractComponent {
   constructor(films) {
+    super();
+
     this._films = films;
-    this._element = null;
   }
 
   getTemplate() {
     return createStatisticTemplate(this._films);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

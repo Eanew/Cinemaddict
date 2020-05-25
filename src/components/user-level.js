@@ -1,4 +1,4 @@
-import {createElement} from '../util.js';
+import AbstractComponent from './abstract-component.js';
 
 const AVATAR = `images/bitmap@2x.png`;
 
@@ -26,24 +26,14 @@ const createUserLevelTemplate = (rank) => {
   ) : ``;
 };
 
-export default class UserLevel {
+export default class UserLevel extends AbstractComponent {
   constructor(films) {
+    super();
+
     this._rank = getRank(films.length);
-    this._element = null;
   }
 
   getTemplate() {
     return createUserLevelTemplate(this._rank);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,5 @@
-import {Regular, createMarkup, createElement, setId, setActiveButtons, getDuration} from '../util.js';
+import AbstractComponent from './abstract-component.js';
+import {Regular, createMarkup, setId, setActiveButtons, getDuration} from '../util.js';
 
 const MAX_DESCRIPTION_LENGTH = 140;
 
@@ -89,24 +90,14 @@ const createCardTemplate = (card) => {
   );
 };
 
-export default class Card {
+export default class Card extends AbstractComponent {
   constructor(card) {
+    super();
+
     this._card = card;
-    this._element = null;
   }
 
   getTemplate() {
     return createCardTemplate(this._card);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

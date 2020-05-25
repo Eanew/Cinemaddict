@@ -1,4 +1,5 @@
-import {createMarkup, createElement, setActiveButtons, getDuration} from '../util.js';
+import AbstractComponent from './abstract-component.js';
+import {createMarkup, setActiveButtons, getDuration} from '../util.js';
 
 const GENRES_FIELD_NAME = `Genres`;
 
@@ -221,25 +222,15 @@ export const createDetailsTemplate = (film, comments) => {
   );
 };
 
-export default class Details {
+export default class Details extends AbstractComponent {
   constructor(filmCard, comments) {
+    super();
+
     this._film = filmCard;
     this._comments = comments;
-    this._element = null;
   }
 
   getTemplate() {
     return createDetailsTemplate(this._film, this._comments);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
