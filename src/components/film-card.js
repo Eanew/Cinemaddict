@@ -101,4 +101,13 @@ export default class CardComponent extends AbstractComponent {
   getTemplate() {
     return createCardTemplate(this._card);
   }
+
+  onPopupOpenersClick(handler) {
+    const cardListeningElements = [
+      this.getElement().querySelector(`.film-card__title`),
+      this.getElement().querySelector(`.film-card__poster`),
+      this.getElement().querySelector(`.film-card__comments`)];
+
+    cardListeningElements.forEach((element) => element.addEventListener(`click`, handler));
+  }
 }

@@ -233,4 +233,12 @@ export default class DetailsComponent extends AbstractComponent {
   getTemplate() {
     return createDetailsTemplate(this._film, this._comments);
   }
+
+  onPopupClick(handler) {
+    this.getElement().addEventListener(`click`, (evt) => handler(evt));
+  }
+
+  onCloseButtonClick(handler) {
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
+  }
 }
