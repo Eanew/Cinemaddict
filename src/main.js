@@ -1,4 +1,4 @@
-import {render, removeBySelector} from './utils/render.js';
+import {render} from './utils/render.js';
 
 import UserLevelComponent from './components/user-level.js';
 import NavigationComponent from './components/navigation.js';
@@ -11,42 +11,25 @@ import PageController from './controllers/page-controller.js';
 import {generateFilmCardsData} from './mock/film-list.js';
 
 const FILM_CARDS_COUNT = 12;
+
 const pageHeader = document.querySelector(`.header`);
 const pageMain = document.querySelector(`.main`);
-
-const renderUserLevel = (watchedMovies) => {
-  const userLevelComponent = new UserLevelComponent(watchedMovies);
-
-  removeBySelector(`.header__profile`);
-  render(pageHeader, userLevelComponent);
-};
-
-const renderNavigation = (movies) => {
-  const navigationComponent = new NavigationComponent(movies);
-
-  removeBySelector(`.main-navigation`);
-  render(pageMain, navigationComponent);
-};
-
-const renderStatistic = (movies) => {
-  const statisticComponent = new UserStatisticComponent(movies);
-
-  removeBySelector(`.statistic`);
-  render(pageMain, statisticComponent);
-};
 
 const filmCards = generateFilmCardsData(FILM_CARDS_COUNT);
 const watchedMovies = filmCards.filter((it) => it[`user_details`][`already_watched`]);
 
-renderUserLevel(watchedMovies);
-renderNavigation(filmCards);
-renderStatistic(watchedMovies);
-render(pageMain, new SortingComponent());
-
+const userLevelComponent = new UserLevelComponent(watchedMovies);
+const navigationComponent = new NavigationComponent(filmCards);
+const statisticComponent = new UserStatisticComponent(watchedMovies);
+const sortingComponent = new SortingComponent();
 const filmListComponent = new FilmListComponent();
+
 const pageController = new PageController(filmListComponent);
 
+render(pageHeader, userLevelComponent);
+render(pageMain, navigationComponent);
+render(pageMain, statisticComponent);
+render(pageMain, sortingComponent);
 render(pageMain, filmListComponent);
-pageController.render(filmCards);
 
-export {renderUserLevel, renderNavigation, renderStatistic};
+pageController.render(filmCards);

@@ -10,20 +10,23 @@ import DetailsComponent from '../components/details.js';
 
 import {generateCommentsData} from '../mock/details.js';
 
-const PERMISSION_TO_OPEN_NEW_POPUP_TIMEOUT = 200;
 const FILMS_DISPLAY_STEP = 5;
+const PERMISSION_TO_OPEN_NEW_POPUP_TIMEOUT = 200;
 
 const pageBody = document.querySelector(`body`);
 
 let lastDetailsComponent = null;
 let isPopupAlredyClosed = false;
 
-const closePopup = () => {
+const disableCasualPopupOpening = () => {
   isPopupAlredyClosed = true;
   setTimeout((() => {
     isPopupAlredyClosed = false;
   }), PERMISSION_TO_OPEN_NEW_POPUP_TIMEOUT);
+};
 
+const closePopup = () => {
+  disableCasualPopupOpening();
   document.removeEventListener(`keydown`, onPopupEscPress);
   document.removeEventListener(`click`, closePopup);
   pageBody.removeChild(lastDetailsComponent.getElement());
