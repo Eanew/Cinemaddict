@@ -1,4 +1,6 @@
-import {Regular, createMarkup, createElement, setId, setActiveButtons, getDuration} from '../util.js';
+import AbstractComponent from './abstract-component.js';
+import {Regular} from '../utils/common.js';
+import {createMarkup, setId, setActiveItems, getDuration} from '../utils/data-process.js';
 
 const MAX_DESCRIPTION_LENGTH = 140;
 
@@ -48,7 +50,7 @@ const FilmCard = function (data) {
   const watchlistButtonStatus = data[`user_details`][`watchlist`];
   const watchedButtonStatus = data[`user_details`][`already_watched`];
   const favoriteButtonStatus = data[`user_details`][`favorite`];
-  const activeButtons = setActiveButtons([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
+  const activeButtons = setActiveItems([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
   const infoFields = generateInfoFields([year, duration, genre]);
 
   this.title = info[`title`];
@@ -89,24 +91,23 @@ const createCardTemplate = (card) => {
   );
 };
 
-export default class Card {
+export default class CardComponent extends AbstractComponent {
   constructor(card) {
+    super();
+
     this._card = card;
-    this._element = null;
   }
 
   getTemplate() {
     return createCardTemplate(this._card);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
+  onPopupOpenersClick(handler) {
+    const cardListeningElements = [
+      this.getElement().querySelector(`.film-card__title`),
+      this.getElement().querySelector(`.film-card__poster`),
+      this.getElement().querySelector(`.film-card__comments`)];
 
-  removeElement() {
-    this._element = null;
+    cardListeningElements.forEach((element) => element.addEventListener(`click`, handler));
   }
 }

@@ -1,4 +1,4 @@
-import {getUniqueRandomItem} from '../util.js';
+import {getUniqueRandomItem} from '../utils/common.js';
 
 const commentTemplates = [
   {

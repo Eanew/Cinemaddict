@@ -1,4 +1,4 @@
-import * as util from '../util.js';
+import {Regular, getRandomCount, getUniqueRandomItem} from '../utils/common.js';
 
 const filmTemplates = [
   {
@@ -51,37 +51,37 @@ const generateDescription = () => {
   const descriptions = descriptionTemplates.slice();
 
   let string = ``;
-  for (let i = 0; i < util.getRandomCount(minDescriptionStringsCount, maxDescriptionStringsCount); i++) {
-    string += util.getUniqueRandomItem(descriptions);
+  for (let i = 0; i < getRandomCount(minDescriptionStringsCount, maxDescriptionStringsCount); i++) {
+    string += getUniqueRandomItem(descriptions);
   }
-  return string.replace(util.Regular.EMPTY_SPACE_IN_EDGES, ``);
+  return string.replace(Regular.EMPTY_SPACE_IN_EDGES, ``);
 };
 
 const generateRaiting = () => {
   const minRaiting = 6;
   const maxRaiting = 10;
-  return util.getRandomCount(minRaiting * 10, maxRaiting * 10) / 10;
+  return getRandomCount(minRaiting * 10, maxRaiting * 10) / 10;
 };
 
 const generateGenres = () => {
   const clonedGenresTemplate = genreTemplates.slice();
   let genres = [];
   for (let i = 0; i < clonedGenresTemplate.length; i++) {
-    genres.push(util.getUniqueRandomItem(clonedGenresTemplate));
+    genres.push(getUniqueRandomItem(clonedGenresTemplate));
   }
   return genres;
 };
 
 const RandomFilmCard = function (index) {
-  const film = filmTemplates[util.getRandomCount(0, filmTemplates.length - 1)];
+  const film = filmTemplates[getRandomCount(0, filmTemplates.length - 1)];
   this[`id`] = `${index}`;
-  this[`comments`] = new Array(Math.floor(Math.random() * 7)).fill(``).map(() => +`303${util.getRandomCount(4, 9)}`);
+  this[`comments`] = new Array(Math.floor(Math.random() * 7)).fill(``).map(() => +`303${getRandomCount(4, 9)}`);
   this[`film_info`] = {
     'title': film.name,
     'alternative_title': ``,
     'total_raiting': generateRaiting(),
     'poster': film.picture,
-    'age_raiting': util.getRandomCount(0, 18),
+    'age_raiting': getRandomCount(0, 18),
     'director': [`Tom Ford`, `Ken Cuopis`, `Kreve Standers`, `Elise Woo`, `Justin Cursele`][Math.floor(Math.random() * 5)],
     'writers': [[`Takeshi KItano`, `Tom Ford`, `Ken Cuopis`, `Kreve Standers`, `Elise Woo`, `Justin Cursele`][Math.floor(Math.random() * 6)]],
     'actors': [[`Morgan Freeman`, `Takeshi KItano`, `Tom Ford`, `Ken Cuopis`, `Kreve Standers`, `Elise Woo`, `Justin Cursele`][Math.floor(Math.random() * 7)]],
@@ -89,7 +89,7 @@ const RandomFilmCard = function (index) {
       'date': `20${Math.floor(Math.random() * 2)}${Math.floor(Math.random() * 10)}-05-11T00:00:00.000Z`,
       'release_country': [`Finland`, `Russia`, `USA`, `Brasil`, `India`, `England`][Math.floor(Math.random() * 5)],
     },
-    'runtime': util.getRandomCount(40, 140),
+    'runtime': getRandomCount(40, 140),
     'genre': generateGenres(),
     'description': generateDescription(),
   };

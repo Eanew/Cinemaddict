@@ -1,4 +1,5 @@
-import {createMarkup, createElement, setId} from '../util.js';
+import AbstractComponent from './abstract-component.js';
+import {createMarkup, setId} from '../utils/data-process.js';
 
 let watchlist = [];
 let favorites = [];
@@ -65,24 +66,14 @@ const createNavigationTemplate = (films) => {
   );
 };
 
-export default class Navigation {
+export default class NavigationComponent extends AbstractComponent {
   constructor(films) {
+    super();
+
     this._films = films;
-    this._element = null;
   }
 
   getTemplate() {
     return createNavigationTemplate(this._films);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

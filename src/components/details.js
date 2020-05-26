@@ -1,4 +1,5 @@
-import {createMarkup, createElement, setActiveButtons, getDuration} from '../util.js';
+import AbstractComponent from './abstract-component.js';
+import {createMarkup, setActiveItems, getDuration} from '../utils/data-process.js';
 
 const GENRES_FIELD_NAME = `Genres`;
 
@@ -133,7 +134,7 @@ const FilmCard = function (data) {
   const watchlistButtonStatus = data[`user_details`][`watchlist`];
   const watchedButtonStatus = data[`user_details`][`already_watched`];
   const favoriteButtonStatus = data[`user_details`][`favorite`];
-  const activeButtons = setActiveButtons([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
+  const activeButtons = setActiveItems([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
   this.detailsControlsMarkup = createMarkup(controlButtonsList, renderControlFieldMarkup, ...activeButtons);
   this.emojiListMarkup = createMarkup(emojiList, renderEmojiItemMarkup);
 };
@@ -221,25 +222,23 @@ export const createDetailsTemplate = (film, comments) => {
   );
 };
 
-export default class Details {
+export default class DetailsComponent extends AbstractComponent {
   constructor(filmCard, comments) {
+    super();
+
     this._film = filmCard;
     this._comments = comments;
-    this._element = null;
   }
 
   getTemplate() {
     return createDetailsTemplate(this._film, this._comments);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  onPopupClick(handler) {
+    this.getElement().addEventListener(`click`, (evt) => handler(evt));
   }
 
-  removeElement() {
-    this._element = null;
+  onCloseButtonClick(handler) {
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
   }
 }

@@ -1,40 +1,13 @@
-import {createElement} from '../util.js';
+import AbstractComponent from './abstract-component.js';
 
-const renderFilmListContentsMarkup = (movies) => {
-  return movies
-    ? (`<h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
-      <div class="films-list__container"></div>`)
-    : (`<h2 class="films-list__title">There are no movies in our database</h2>`);
-};
-
-const createFilmListTemplate = (films) => {
-  const filmListContentsMarkup = renderFilmListContentsMarkup(films && films.length);
-
+const createFilmListTemplate = () => {
   return (
-    `<section class="films-list">
-      ${filmListContentsMarkup}
-    </section>`
+    `<section class="films-list"></section>`
   );
 };
 
-export default class FilmList {
-  constructor(films) {
-    this._films = films;
-    this._element = null;
-  }
-
+export default class FilmListComponent extends AbstractComponent {
   getTemplate() {
-    return createFilmListTemplate(this._films);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    return createFilmListTemplate();
   }
 }
