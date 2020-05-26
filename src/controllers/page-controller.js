@@ -106,6 +106,7 @@ export default class PageController {
     };
 
     if (!cards || !cards.length) {
+      sectionContainerElement.innerHTML = ``;
       render(sectionContainerElement, this._noMoviesComponent);
       return;
     }
