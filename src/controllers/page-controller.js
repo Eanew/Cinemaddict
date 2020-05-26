@@ -108,8 +108,9 @@ export default class PageController {
       render(filmsContainerElement, this._loadMoreButtonComponent, RenderPosition.AFTEREND);
     };
 
+    sectionContainerElement.innerHTML = ``;
+
     if (!cards || !cards.length) {
-      sectionContainerElement.innerHTML = ``;
       render(sectionContainerElement, this._noMoviesComponent);
       return;
     }

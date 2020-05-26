@@ -28,4 +28,12 @@ export default class SortingComponent extends AbstractComponent {
   getTemplate() {
     return createSortingTemplate();
   }
+
+  getSortType() {
+
+  }
+
+  onSortTypeChange() {
+
+  }
 }
