@@ -1,6 +1,7 @@
 import {isEscEvent} from '../utils/common.js';
 import {RenderPosition, render, replace, remove} from '../utils/render.js';
 
+import SortingComponent, {SortType} from '../components/sorting.js';
 import NoMoviesComponent from '../components/no-movies.js';
 import FilmListTitleComponent from '../components/film-list-title.js';
 import FilmsContainerComponent from '../components/films-container.js';
@@ -67,10 +68,49 @@ const renderCards = (filmsContainerElement, cards) => {
   cards.forEach((card) => renderFilmCard(filmsContainerElement, card));
 };
 
+const sortByDate = (cards) => {
+  cards.sort((first, second) => {
+    const firstCardDate = Date.parse(first[`film_info`][`release`][`date`]);
+    const secondCardDate = Date.parse(second[`film_info`][`release`][`date`]);
+    return secondCardDate - firstCardDate;
+  });
+  return cards;
+};
+
+const sortByRaiting = (cards) => {
+  cards.sort((first, second) => {
+    const firstCardRaiting = first[`film_info`][`total_raiting`];
+    const secondCardRaiting = second[`film_info`][`total_raiting`];
+    return secondCardRaiting - firstCardRaiting;
+  });
+  return cards;
+};
+
+const getSortedCards = (cards, sortType) => {
+  let sortedCadrs = [];
+  const showingCards = cards.slice();
+
+  switch (sortType) {
+    case SortType.DEFAULT:
+      sortedCadrs = showingCards;
+      break;
+
+    case SortType.DATE:
+      sortedCadrs = sortByDate(showingCards);
+      break;
+
+    case SortType.RAITING:
+      sortedCadrs = sortByRaiting(showingCards);
+      break;
+  }
+  return sortedCadrs;
+};
+
 export default class PageController {
   constructor(container) {
     this._container = container;
 
+    this._sortingComponent = new SortingComponent();
     this._noMoviesComponent = new NoMoviesComponent();
     this._filmListTitleComponent = new FilmListTitleComponent();
     this._filmsContainerComponent = new FilmsContainerComponent();
@@ -81,15 +121,16 @@ export default class PageController {
     const sectionContainerElement = this._container.getElement();
     const filmsContainerElement = this._filmsContainerComponent.getElement();
 
-    const renderLoadMoreButton = () => {
-      if (cards.length <= FILMS_DISPLAY_STEP) {
+    const renderLoadMoreButton = (filmCards) => {
+      remove(this._loadMoreButtonComponent);
+      if (filmCards.length <= FILMS_DISPLAY_STEP) {
         return;
       }
 
       let currentFilmsCount = FILMS_DISPLAY_STEP;
 
       const renderMoreCards = (isLastCards) => {
-        const anotherCards = cards.slice(currentFilmsCount, currentFilmsCount + FILMS_DISPLAY_STEP);
+        const anotherCards = filmCards.slice(currentFilmsCount, currentFilmsCount + FILMS_DISPLAY_STEP);
         renderCards(filmsContainerElement, anotherCards);
 
         if (isLastCards) {
@@ -101,7 +142,7 @@ export default class PageController {
 
       this._loadMoreButtonComponent.onClick((evt) => {
         evt.preventDefault();
-        const isLastCards = !(currentFilmsCount + FILMS_DISPLAY_STEP < cards.length);
+        const isLastCards = !(currentFilmsCount + FILMS_DISPLAY_STEP < filmCards.length);
         renderMoreCards(isLastCards);
       });
 
@@ -115,10 +156,20 @@ export default class PageController {
       return;
     }
 
+    render(sectionContainerElement, this._sortingComponent, RenderPosition.BEFOREBEGIN);
     render(sectionContainerElement, this._filmListTitleComponent);
     render(sectionContainerElement, this._filmsContainerComponent);
 
     renderCards(filmsContainerElement, cards.slice(0, FILMS_DISPLAY_STEP));
-    renderLoadMoreButton();
+    renderLoadMoreButton(cards);
+
+    this._sortingComponent.onSortTypeChange((sortType) => {
+      const sortedCards = getSortedCards(cards, sortType);
+
+      filmsContainerElement.innerHTML = ``;
+
+      renderCards(filmsContainerElement, sortedCards.slice(0, FILMS_DISPLAY_STEP));
+      renderLoadMoreButton(sortedCards);
+    });
   }
 }
