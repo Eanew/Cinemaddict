@@ -65,10 +65,9 @@ export default class SortingComponent extends AbstractComponent {
         return;
       }
 
-      swapActiveElements(this.getElement(), evt.target, ACTIVE_BUTTON_CLASS);
-
       this._currentSortType = sortType;
 
+      swapActiveElements(this.getElement(), evt.target, ACTIVE_BUTTON_CLASS);
       handler(this._currentSortType);
     });
   }
