@@ -39,13 +39,7 @@ const generateNavigationItems = (films) => {
     .sort((first, second) => {
       const a = Date.parse(first[`user_details`][`watching_date`]);
       const b = Date.parse(second[`user_details`][`watching_date`]);
-      if (a < b) {
-        return 1;
-      } else if (a > b) {
-        return -1;
-      } else {
-        return 0;
-      }
+      return b - a;
     });
 
   const displayedCounts = [null, watchlist.length, history.length, favorites.length];

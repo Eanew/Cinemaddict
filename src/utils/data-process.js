@@ -33,6 +33,8 @@ export const generateRandomActiveItems = (array) => {
 
 export const setActiveItems = (itemsList) => itemsList.map((it, i) => it ? i : -1);
 
+export const matchActiveItems = (item, arrayToCheck) => arrayToCheck.map((it, i) => item === it ? i : -1);
+
 export const createMarkup = (array, renderer, ...activeItems) => array
   .map((it, i) => renderer(it, activeItems.some((item) => item === i)))
   .join(`\n`);
