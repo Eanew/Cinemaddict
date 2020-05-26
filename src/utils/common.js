@@ -31,3 +31,10 @@ export const getUniqueRandomItem = (collection) => {
   const randomCount = getRandomCount(0, collection.length - 1);
   return collection.splice(randomCount, 1)[0];
 };
+
+export const swapActiveElements = (container, target, activeElementClass) => {
+  if (target && !target.classList.contains(activeElementClass)) {
+    container.querySelector(`.${activeElementClass}`).classList.remove(activeElementClass);
+    target.classList.add(activeElementClass);
+  }
+};

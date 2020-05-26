@@ -1,13 +1,16 @@
 import AbstractComponent from './abstract-component.js';
-import {createMarkup} from '../utils/data-process.js';
+import {swapActiveElements} from '../utils/common.js';
+import {createMarkup, matchActiveItems} from '../utils/data-process.js';
 
-export const SortType = {
+const ACTIVE_BUTTON_CLASS = `sort__button--active`;
+
+const SortType = {
   DEFAULT: `default`,
   DATE: `date`,
   RAITING: `raiting`,
 };
 
-const sortTypessList = [
+const sortTypesList = [
   SortType.DEFAULT,
   SortType.DATE,
   SortType.RAITING];
@@ -15,15 +18,16 @@ const sortTypessList = [
 const createSortingItemMarkup = function (type, isActive = false) {
   return (
     `<li>
-      <a href="#" data-sort-type="${type}" class="sort__button${isActive ? ` sort__button--active` : ``}">
+      <a href="#" data-sort-type="${type}" class="sort__button${isActive ? ` ${ACTIVE_BUTTON_CLASS}` : ``}">
         Sort by ${type}
       </a>
     </li>`
   );
 };
 
-const createSortingTemplate = () => {
-  const sortItemsMarkup = createMarkup(sortTypessList, createSortingItemMarkup, 0);
+const createSortingTemplate = (currentSortType) => {
+  const activeElements = matchActiveItems(currentSortType, sortTypesList);
+  const sortItemsMarkup = createMarkup(sortTypesList, createSortingItemMarkup, ...activeElements);
 
   return (
     `<ul class="sort">
@@ -40,7 +44,7 @@ export default class SortingComponent extends AbstractComponent {
   }
 
   getTemplate() {
-    return createSortingTemplate();
+    return createSortingTemplate(this._currentSortType);
   }
 
   getSortType() {
@@ -61,9 +65,13 @@ export default class SortingComponent extends AbstractComponent {
         return;
       }
 
+      swapActiveElements(this.getElement(), evt.target, ACTIVE_BUTTON_CLASS);
+
       this._currentSortType = sortType;
 
       handler(this._currentSortType);
     });
   }
 }
+
+export {SortType};
