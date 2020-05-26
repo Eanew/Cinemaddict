@@ -115,65 +115,75 @@ export default class PageController {
     this._filmListTitleComponent = new FilmListTitleComponent();
     this._filmsContainerComponent = new FilmsContainerComponent();
     this._loadMoreButtonComponent = new LoadMoreButtonComponent();
+
+    this._sectionContainerElement = this._container.getElement();
+    this._filmsContainerElement = this._filmsContainerComponent.getElement();
+
+    this._cards = [];
+    this._sortedCards = [];
+    this._currentFilmsCount = FILMS_DISPLAY_STEP;
+
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
+
+    this._sortingComponent.onSortTypeChange(this._onSortTypeChange);
   }
 
   render(cards) {
-    const sectionContainerElement = this._container.getElement();
-    const filmsContainerElement = this._filmsContainerComponent.getElement();
+    this._cards = cards;
+    this._sectionContainerElement.innerHTML = ``;
 
-    const renderLoadMoreButton = () => {
-      if (cards.length <= currentFilmsCount) {
-        return;
-      }
-
-      const renderMoreCards = (isLastCards) => {
-        const sortType = this._sortingComponent.getSortType();
-        sortedCards = getSortedCards(cards, sortType, currentFilmsCount, currentFilmsCount + FILMS_DISPLAY_STEP);
-        renderCards(filmsContainerElement, sortedCards);
-
-        if (isLastCards) {
-          remove(this._loadMoreButtonComponent);
-        } else {
-          currentFilmsCount += FILMS_DISPLAY_STEP;
-        }
-      };
-
-      this._loadMoreButtonComponent.onClick((evt) => {
-        evt.preventDefault();
-        const isLastCards = !(currentFilmsCount + FILMS_DISPLAY_STEP < cards.length);
-        renderMoreCards(isLastCards);
-      });
-
-      render(filmsContainerElement, this._loadMoreButtonComponent, RenderPosition.AFTEREND);
-    };
-
-    sectionContainerElement.innerHTML = ``;
-
-    if (!cards || !cards.length) {
-      render(sectionContainerElement, this._noMoviesComponent);
+    if (!this._cards || !this._cards.length) {
+      render(this._sectionContainerElement, this._noMoviesComponent);
       return;
     }
 
-    render(sectionContainerElement, this._sortingComponent, RenderPosition.BEFOREBEGIN);
-    render(sectionContainerElement, this._filmListTitleComponent);
-    render(sectionContainerElement, this._filmsContainerComponent);
+    render(this._sectionContainerElement, this._sortingComponent, RenderPosition.BEFOREBEGIN);
+    render(this._sectionContainerElement, this._filmListTitleComponent);
+    render(this._sectionContainerElement, this._filmsContainerComponent);
 
-    let currentFilmsCount = FILMS_DISPLAY_STEP;
-    let sortedCards = getSortedCards(cards, this._sortingComponent.getSortType(), 0, currentFilmsCount);
+    this._sortedCards = getSortedCards(this._cards, this._sortingComponent.getSortType(), 0, this._currentFilmsCount);
 
-    renderCards(filmsContainerElement, sortedCards);
-    renderLoadMoreButton();
+    renderCards(this._filmsContainerElement, this._sortedCards);
+    this._renderLoadMoreButton();
+  }
 
-    this._sortingComponent.onSortTypeChange((sortType) => {
-      currentFilmsCount = FILMS_DISPLAY_STEP;
+  _renderLoadMoreButton() {
+    if (this._cards.length <= this._currentFilmsCount) {
+      return;
+    }
 
-      sortedCards = getSortedCards(cards, sortType, 0, currentFilmsCount);
+    const renderMoreCards = (isLastCards) => {
+      const sortType = this._sortingComponent.getSortType();
+      const showingCards = this._currentFilmsCount + FILMS_DISPLAY_STEP;
+      this._sortedCards = getSortedCards(this._cards, sortType, this._currentFilmsCount, showingCards);
 
-      filmsContainerElement.innerHTML = ``;
-      remove(this._loadMoreButtonComponent);
+      renderCards(this._filmsContainerElement, this._sortedCards);
 
-      renderCards(filmsContainerElement, sortedCards);
-      renderLoadMoreButton();
+      if (isLastCards) {
+        remove(this._loadMoreButtonComponent);
+      } else {
+        this._currentFilmsCount += FILMS_DISPLAY_STEP;
+      }
+    };
+
+    this._loadMoreButtonComponent.onClick((evt) => {
+      evt.preventDefault();
+      const isLastCards = !(this._currentFilmsCount + FILMS_DISPLAY_STEP < this._cards.length);
+      renderMoreCards(isLastCards);
     });
+
+    render(this._filmsContainerElement, this._loadMoreButtonComponent, RenderPosition.AFTEREND);
+  }
+
+  _onSortTypeChange(sortType) {
+    this._currentFilmsCount = FILMS_DISPLAY_STEP;
+
+    this._sortedCards = getSortedCards(this._cards, sortType, 0, this._currentFilmsCount);
+
+    this._filmsContainerElement.innerHTML = ``;
+    remove(this._loadMoreButtonComponent);
+
+    renderCards(this._filmsContainerElement, this._sortedCards);
+    this._renderLoadMoreButton();
   }
 }
