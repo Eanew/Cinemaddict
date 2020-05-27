@@ -1,4 +1,4 @@
-import AbstractComponent from './abstract-component.js';
+import AbstractSmartComponent from './abstract-smart-component.js';
 import {Regular} from '../utils/common.js';
 import {createMarkup, setId, setActiveItems, getDuration} from '../utils/data-process.js';
 
@@ -91,15 +91,28 @@ const createCardTemplate = (card) => {
   );
 };
 
-export default class CardComponent extends AbstractComponent {
+export default class CardComponent extends AbstractSmartComponent {
   constructor(card) {
     super();
 
     this._card = card;
+
+    this._addToWatchlistButtonClickHandler = null;
+
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
     return createCardTemplate(this._card);
+  }
+
+  recoveryListeners() {
+    this.onAddToWatchlistButtonClick(this._addToWatchlistButtonClickHandler);
+    this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
   }
 
   onPopupOpenersClick(handler) {
@@ -109,5 +122,33 @@ export default class CardComponent extends AbstractComponent {
       this.getElement().querySelector(`.film-card__comments`)];
 
     cardListeningElements.forEach((element) => element.addEventListener(`click`, handler));
+  }
+
+  onAddToWatchlistButtonClick(handler) {
+    const button = this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`);
+    button.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      handler(evt);
+    });
+    this._addToWatchlistButtonClickHandler = handler;
+  }
+
+  onMarkAsWatchedButtonClick(handler) {
+    const button = this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`);
+    button.addEventListener(`click`, (evt) => handler(evt));
+  }
+
+  onMarkAsFavoriteButtonClick(handler) {
+    const button = this.getElement().querySelector(`.film-card__controls-item--favorite`);
+    button.addEventListener(`click`, (evt) => handler(evt));
+  }
+
+  _subscribeOnEvents() {
+    const button = this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`);
+    button.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this._addToWatchlistButtonClickHandler(evt);
+      this._rerender();
+    });
   }
 }

@@ -241,4 +241,19 @@ export default class DetailsComponent extends AbstractComponent {
   onCloseButtonClick(handler) {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
   }
+
+  onAddToWatchlistButtonClick(handler) {
+    const button = this.getElement().querySelector(`#watchlist`);
+    button.addEventListener(`click`, (evt) => handler(evt));
+  }
+
+  onMarkAsWatchedButtonClick(handler) {
+    const button = this.getElement().querySelector(`#watched`);
+    button.addEventListener(`click`, (evt) => handler(evt));
+  }
+
+  onMarkAsFavoriteButtonClick(handler) {
+    const button = this.getElement().querySelector(`#favorite`);
+    button.addEventListener(`click`, (evt) => handler(evt));
+  }
 }
