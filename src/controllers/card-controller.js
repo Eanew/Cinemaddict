@@ -29,35 +29,6 @@ const closePopup = () => {
 
 const onPopupEscPress = (evt) => isEscEvent(evt, closePopup);
 
-// const renderFilmCard = (container, card) => {
-//   const cardComponent = new CardComponent(card);
-//   const detailsComponent = new DetailsComponent(card, generateCommentsData());
-
-//   const appendNewPopup = () => {
-//     if (lastDetailsComponent && pageBody.contains(lastDetailsComponent.getElement())) {
-//       if (lastDetailsComponent !== detailsComponent) {
-//         replace(detailsComponent, lastDetailsComponent);
-//       }
-//     } else if (!isPopupAlredyClosed) {
-//       pageBody.appendChild(detailsComponent.getElement());
-//     }
-//     lastDetailsComponent = detailsComponent;
-//   };
-
-//   const openPopup = (evt) => {
-//     evt.preventDefault();
-//     evt.stopPropagation();
-//     document.addEventListener(`keydown`, onPopupEscPress);
-//     document.addEventListener(`click`, closePopup);
-//     detailsComponent.onPopupClick((clickEvt) => clickEvt.stopPropagation());
-//     detailsComponent.onCloseButtonClick(closePopup);
-//     appendNewPopup();
-//   };
-
-//   cardComponent.onPopupOpenersClick(openPopup);
-//   render(container, cardComponent);
-// };
-
 export default class CardController {
   constructor(container) {
     this._container = container;
@@ -92,6 +63,7 @@ export default class CardController {
     };
 
     this._cardComponent.onPopupOpenersClick(openPopup);
+
     render(this._container, this._cardComponent);
   }
 }
