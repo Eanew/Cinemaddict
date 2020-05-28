@@ -141,6 +141,7 @@ export default class PageController {
     remove(this._loadMoreButtonComponent);
 
     const newCards = renderCards(this._filmsContainerElement, this._sortedCards, this._onDataChange, this._onVIewChange);
+
     this._showedCardControllers = newCards;
 
     this._renderLoadMoreButton();
@@ -154,7 +155,9 @@ export default class PageController {
 
     this._cards = [].concat(this._cards.slice(0, index), newData, this._cards.slice(index + 1));
 
-    this._showedCardControllers[index].render(newData);
+    const controller = this._showedCardControllers.find((it) => it.getData() === oldData);
+
+    controller.render(newData);
   }
 
   _onVIewChange() {

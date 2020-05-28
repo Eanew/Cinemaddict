@@ -29,6 +29,7 @@ export default class MovieController {
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
 
+    this._data = null;
     this._cardComponent = null;
     this._detailsComponent = null;
     this._lastDetailsComponent = null;
@@ -42,6 +43,7 @@ export default class MovieController {
     const oldCardComponent = this._cardComponent;
     const oldDetailsComponent = this._detailsComponent;
 
+    this._data = card;
     this._cardComponent = new CardComponent(card);
     this._detailsComponent = new DetailsComponent(card, generateCommentsData());
 
@@ -93,6 +95,10 @@ export default class MovieController {
     } else {
       render(this._container, this._cardComponent);
     }
+  }
+
+  getData() {
+    return this._data;
   }
 
   setDefaultView() {
