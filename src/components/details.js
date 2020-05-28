@@ -1,4 +1,4 @@
-import AbstractComponent from './abstract-component.js';
+import AbstractSmartComponent from './abstract-smart-component.js';
 import {createMarkup, setActiveItems, getDuration} from '../utils/data-process.js';
 
 const GENRES_FIELD_NAME = `Genres`;
@@ -222,38 +222,67 @@ export const createDetailsTemplate = (film, comments) => {
   );
 };
 
-export default class DetailsComponent extends AbstractComponent {
+export default class DetailsComponent extends AbstractSmartComponent {
   constructor(filmCard, comments) {
     super();
 
     this._film = filmCard;
     this._comments = comments;
+
+    this._popupClickHandler = null;
+    this._closeButtonClickHandler = null;
+    this._addToWatchlistButtonClickHandler = null;
+    this._markAsWatchedButtonClickHandler = null;
+    this._markAsFavoriteButtonClickHandler = null;
   }
 
   getTemplate() {
     return createDetailsTemplate(this._film, this._comments);
   }
 
+  rerender() {
+    super.rerender();
+  }
+
+  recoveryListeners() {
+    this.onPopupClick(this._popupClickHandler);
+    this.onCloseButtonClick(this._closeButtonClickHandler);
+    this.onAddToWatchlistButtonClick(this._addToWatchlistButtonClickHandler);
+    this.onMarkAsWatchedButtonClick(this._markAsWatchedButtonClickHandler);
+    this.onMarkAsFavoriteButtonClick(this._markAsFavoriteButtonClickHandler);
+  }
+
   onPopupClick(handler) {
     this.getElement().addEventListener(`click`, (evt) => handler(evt));
+    this._popupClickHandler = handler;
   }
 
   onCloseButtonClick(handler) {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
+    this._closeButtonClickHandler = handler;
   }
 
   onAddToWatchlistButtonClick(handler) {
-    const button = this.getElement().querySelector(`#watchlist`);
-    button.addEventListener(`click`, (evt) => handler(evt));
+    this.getElement().querySelector(`#watchlist`).addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      handler();
+    });
+    this._addToWatchlistButtonClickHandler = handler;
   }
 
   onMarkAsWatchedButtonClick(handler) {
-    const button = this.getElement().querySelector(`#watched`);
-    button.addEventListener(`click`, (evt) => handler(evt));
+    this.getElement().querySelector(`#watched`).addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      handler();
+    });
+    this._markAsWatchedButtonClickHandler = handler;
   }
 
   onMarkAsFavoriteButtonClick(handler) {
-    const button = this.getElement().querySelector(`#favorite`);
-    button.addEventListener(`click`, (evt) => handler(evt));
+    this.getElement().querySelector(`#favorite`).addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      handler();
+    });
+    this._markAsFavoriteButtonClickHandler = handler;
   }
 }
