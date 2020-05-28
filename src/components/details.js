@@ -223,21 +223,19 @@ export const createDetailsTemplate = (film, comments) => {
 };
 
 export default class DetailsComponent extends AbstractSmartComponent {
-  constructor(filmCard, comments) {
+  constructor(card, comments) {
     super();
 
-    this._film = filmCard;
+    this._card = card;
     this._comments = comments;
 
-    this._popupClickHandler = null;
-    this._closeButtonClickHandler = null;
     this._addToWatchlistButtonClickHandler = null;
     this._markAsWatchedButtonClickHandler = null;
     this._markAsFavoriteButtonClickHandler = null;
   }
 
   getTemplate() {
-    return createDetailsTemplate(this._film, this._comments);
+    return createDetailsTemplate(this._card, this._comments);
   }
 
   rerender() {
@@ -245,8 +243,6 @@ export default class DetailsComponent extends AbstractSmartComponent {
   }
 
   recoveryListeners() {
-    this.onPopupClick(this._popupClickHandler);
-    this.onCloseButtonClick(this._closeButtonClickHandler);
     this.onAddToWatchlistButtonClick(this._addToWatchlistButtonClickHandler);
     this.onMarkAsWatchedButtonClick(this._markAsWatchedButtonClickHandler);
     this.onMarkAsFavoriteButtonClick(this._markAsFavoriteButtonClickHandler);
@@ -254,18 +250,17 @@ export default class DetailsComponent extends AbstractSmartComponent {
 
   onPopupClick(handler) {
     this.getElement().addEventListener(`click`, (evt) => handler(evt));
-    this._popupClickHandler = handler;
   }
 
   onCloseButtonClick(handler) {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
-    this._closeButtonClickHandler = handler;
   }
 
   onAddToWatchlistButtonClick(handler) {
     this.getElement().querySelector(`#watchlist`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       handler();
+      // this.rerender();
     });
     this._addToWatchlistButtonClickHandler = handler;
   }
@@ -274,6 +269,7 @@ export default class DetailsComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`#watched`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       handler();
+      // this.rerender();
     });
     this._markAsWatchedButtonClickHandler = handler;
   }
@@ -282,6 +278,7 @@ export default class DetailsComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`#favorite`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       handler();
+      // this.rerender();
     });
     this._markAsFavoriteButtonClickHandler = handler;
   }

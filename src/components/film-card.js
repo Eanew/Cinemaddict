@@ -132,6 +132,7 @@ export default class CardComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       handler();
+      // this.rerender();
     });
     this._addToWatchlistButtonClickHandler = handler;
   }
@@ -140,6 +141,7 @@ export default class CardComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       handler();
+      // this.rerender();
     });
     this._markAsWatchedButtonClickHandler = handler;
   }
@@ -148,6 +150,7 @@ export default class CardComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       handler();
+      // this.rerender();
     });
     this._markAsFavoriteButtonClickHandler = handler;
   }

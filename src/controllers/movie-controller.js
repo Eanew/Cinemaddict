@@ -1,5 +1,5 @@
 import {isEscEvent} from '../utils/common.js';
-import {render} from '../utils/render.js';
+import {render, replace} from '../utils/render.js';
 
 import CardComponent from '../components/film-card.js';
 import DetailsComponent from '../components/details.js';
@@ -39,40 +39,60 @@ export default class MovieController {
   }
 
   render(card) {
+    const oldCardComponent = this._cardComponent;
+    const oldDetailsComponent = this._detailsComponent;
+
     this._cardComponent = new CardComponent(card);
     this._detailsComponent = new DetailsComponent(card, generateCommentsData());
+
+    const UserDetails = Object.assign({}, card[`user_details`]);
+
+    [this._cardComponent, this._detailsComponent].forEach((component) => {
+
+      component.onAddToWatchlistButtonClick(() => this.
+        _onDataChange(card, Object.assign({}, card, {
+
+          'user_details': Object.assign({}, UserDetails, {
+
+            'watchlist': !card[`user_details`][`watchlist`],
+          }),
+        })));
+
+      component.onMarkAsWatchedButtonClick(() => this.
+        _onDataChange(card, Object.assign({}, card, {
+
+          'user_details': Object.assign({}, UserDetails, {
+
+            'already_watched': !card[`user_details`][`already_watched`],
+            'watching_date': new Date().toISOString,
+          }),
+        })));
+
+      component.onMarkAsFavoriteButtonClick(() => this.
+        _onDataChange(card, Object.assign({}, card, {
+
+          'user_details': Object.assign({}, UserDetails, {
+
+            'favorite': !card[`user_details`][`favorite`],
+          }),
+        })));
+    });
 
     this._cardComponent.onPopupOpenersClick((evt) => {
       this._openPopup(evt);
     });
 
-    this._cardComponent.onAddToWatchlistButtonClick(() => this.
-      _onDataChange(this._card, Object.assign({}, this._card, {
-        'user_details': {
-          'watchlist': !this._card[`user_details`][`watchlist`],
-        },
-      })));
+    if (oldCardComponent && oldDetailsComponent) {
+      replace(this._cardComponent, oldCardComponent);
 
-    this._cardComponent.onMarkAsWatchedButtonClick(() => this.
-      _onDataChange(this._card, Object.assign({}, this._card, {
-        'user_details': {
-          'already_watched': !this._card[`user_details`][`already_watched`],
-          'watching_date': new Date().toISOString,
-        },
-      })));
+      if (pageBody.contains(oldDetailsComponent.getElement())) {
+        this._addPopupListeners();
+        replace(this._detailsComponent, oldDetailsComponent);
+      }
 
-    this._cardComponent.onMarkAsFavoriteButtonClick(() => this.
-      _onDataChange(this._card, Object.assign({}, this._card, {
-        'user_details': {
-          'favorite': !this._card[`user_details`][`favorite`],
-        },
-      })));
-
-    this._detailsComponent.onAddToWatchlistButtonClick(this._onDataChange);
-    this._detailsComponent.onMarkAsWatchedButtonClick(this._onDataChange);
-    this._detailsComponent.onMarkAsFavoriteButtonClick(this._onDataChange);
-
-    render(this._container, this._cardComponent);
+    } else {
+      render(this._container, this._cardComponent);
+    }
   }
 
   setDefaultView() {
@@ -94,6 +114,11 @@ export default class MovieController {
     isEscEvent(evt, this._closePopup);
   }
 
+  _addPopupListeners() {
+    this._detailsComponent.onPopupClick((evt) => evt.stopPropagation());
+    this._detailsComponent.onCloseButtonClick(this._closePopup);
+  }
+
   _openPopup(evt) {
     evt.preventDefault();
     evt.stopPropagation();
@@ -105,8 +130,7 @@ export default class MovieController {
 
     document.addEventListener(`keydown`, this._onPopupEscPress);
     document.addEventListener(`click`, this._closePopup);
-    this._detailsComponent.onPopupClick((clickEvt) => clickEvt.stopPropagation());
-    this._detailsComponent.onCloseButtonClick(this._closePopup);
+    this._addPopupListeners();
     this._lastDetailsComponent = this._detailsComponent;
     pageBody.appendChild(this._detailsComponent.getElement());
   }
