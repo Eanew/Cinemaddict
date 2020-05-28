@@ -1,4 +1,4 @@
-import AbstractSmartComponent from './abstract-smart-component.js';
+import AbstractComponent from './abstract-component.js';
 import {Regular} from '../utils/common.js';
 import {createMarkup, setId, setActiveItems, getDuration} from '../utils/data-process.js';
 
@@ -91,31 +91,15 @@ const createCardTemplate = (card) => {
   );
 };
 
-export default class CardComponent extends AbstractSmartComponent {
+export default class CardComponent extends AbstractComponent {
   constructor(card) {
     super();
 
     this._card = card;
-
-    this._popupOpenersClickHandler = null;
-    this._addToWatchlistButtonClickHandler = null;
-    this._markAsWatchedButtonClickHandler = null;
-    this._markAsFavoriteButtonClickHandler = null;
   }
 
   getTemplate() {
     return createCardTemplate(this._card);
-  }
-
-  rerender() {
-    super.rerender();
-  }
-
-  recoveryListeners() {
-    this.onPopupOpenersClick(this._popupOpenersClickHandler);
-    this.onAddToWatchlistButtonClick(this._addToWatchlistButtonClickHandler);
-    this.onMarkAsWatchedButtonClick(this._markAsWatchedButtonClickHandler);
-    this.onMarkAsFavoriteButtonClick(this._markAsFavoriteButtonClickHandler);
   }
 
   onPopupOpenersClick(handler) {
@@ -132,26 +116,20 @@ export default class CardComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       handler();
-      // this.rerender();
     });
-    this._addToWatchlistButtonClickHandler = handler;
   }
 
   onMarkAsWatchedButtonClick(handler) {
     this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       handler();
-      // this.rerender();
     });
-    this._markAsWatchedButtonClickHandler = handler;
   }
 
   onMarkAsFavoriteButtonClick(handler) {
     this.getElement().querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       handler();
-      // this.rerender();
     });
-    this._markAsFavoriteButtonClickHandler = handler;
   }
 }

@@ -3,8 +3,9 @@ import {render, replace} from '../utils/render.js';
 
 import CardComponent from '../components/film-card.js';
 import DetailsComponent from '../components/details.js';
+import CommentsComponent from '../components/comments.js';
 
-import {generateCommentsData} from '../mock/details.js';
+import {generateCommentsData} from '../mock/comments.js';
 
 const PERMISSION_TO_OPEN_NEW_POPUP_TIMEOUT = 200;
 
@@ -33,6 +34,7 @@ export default class MovieController {
     this._cardComponent = null;
     this._detailsComponent = null;
     this._lastDetailsComponent = null;
+    this._commentsComponent = null;
 
     this._closePopup = this._closePopup.bind(this);
     this._onPopupEscPress = this._onPopupEscPress.bind(this);
@@ -45,7 +47,12 @@ export default class MovieController {
 
     this._data = card;
     this._cardComponent = new CardComponent(card);
-    this._detailsComponent = new DetailsComponent(card, generateCommentsData());
+    this._detailsComponent = new DetailsComponent(card);
+    this._commentsComponent = new CommentsComponent(generateCommentsData(), card[`comments`].length);
+
+    const commentsContainer = this._detailsComponent.getElement().querySelector(`.form-details__bottom-container`);
+
+    render(commentsContainer, this._commentsComponent);
 
     const UserDetails = Object.assign({}, card[`user_details`]);
 

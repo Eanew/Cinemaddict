@@ -1,5 +1,5 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
-import {createMarkup, setActiveItems, getDuration} from '../utils/data-process.js';
+import {createMarkup, setTwoDigit, setActiveItems, getDuration} from '../utils/data-process.js';
 
 const GENRES_FIELD_NAME = `Genres`;
 
@@ -25,8 +25,6 @@ const controlButtonsList = [
     name: `Add to favorites`,
     id: `favorite`,
   }];
-
-const emojiList = [`smile`, `sleeping`, `puke`, `angry`];
 
 const generateTableFields = (tableValues) => tableFieldsList.map((it, i) => ({
   name: it,
@@ -58,50 +56,6 @@ const renderControlFieldMarkup = ({name, id}, isChecked = false) => {
   );
 };
 
-const setTwoDigit = (date, callback) => {
-  const getter = callback.bind(date);
-  const amends = callback[`name`] === `getMonth` ? 1 : 0;
-  return getter().toString().length === 1 ? `0${getter() + amends}` : getter() + amends;
-};
-
-const getTimeString = (iso) => {
-  const date = new Date(Date.parse(iso));
-  const month = setTwoDigit(date, Date.prototype.getMonth);
-  const day = setTwoDigit(date, Date.prototype.getDate);
-  const hours = setTwoDigit(date, Date.prototype.getHours);
-  const minutes = setTwoDigit(date, Date.prototype.getMinutes);
-  return `${date.getFullYear()}/${month}/${day} ${hours}:${minutes}`;
-};
-
-const renderCommentsItemMarkup = ({author, comment, date, emotion}) => {
-  const time = getTimeString(date);
-
-  return (
-    `<li class="film-details__comment">
-      <span class="film-details__comment-emoji">
-        <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
-      </span>
-      <div>
-        <p class="film-details__comment-text">${comment}</p>
-        <p class="film-details__comment-info">
-          <span class="film-details__comment-author">${author}</span>
-          <span class="film-details__comment-day">${time}</span>
-          <button class="film-details__comment-delete">Delete</button>
-        </p>
-      </div>
-    </li>`
-  );
-};
-
-const renderEmojiItemMarkup = (emoji) => {
-  return (
-    `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
-    <label class="film-details__emoji-label" for="emoji-${emoji}">
-      <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
-    </label>`
-  );
-};
-
 const getReleaseDate = (iso) => {
   const date = new Date(Date.parse(iso));
   const month = date.toLocaleString(`en-US`, {month: `long`});
@@ -117,7 +71,6 @@ const FilmCard = function (data) {
   this.raiting = info[`total_raiting`];
   this.ageRaiting = info[`age_raiting`];
   this.description = info[`description`];
-  this.commentsCount = data[`comments`].length;
 
   const tableData = [
     [info[`director`]],
@@ -136,10 +89,9 @@ const FilmCard = function (data) {
   const favoriteButtonStatus = data[`user_details`][`favorite`];
   const activeButtons = setActiveItems([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
   this.detailsControlsMarkup = createMarkup(controlButtonsList, renderControlFieldMarkup, ...activeButtons);
-  this.emojiListMarkup = createMarkup(emojiList, renderEmojiItemMarkup);
 };
 
-export const createDetailsTemplate = (film, comments) => {
+export const createDetailsTemplate = (film) => {
   const {
     title,
     alternativeTitle,
@@ -147,13 +99,9 @@ export const createDetailsTemplate = (film, comments) => {
     raiting,
     ageRaiting,
     description,
-    commentsCount,
     detailsTableMarkup,
     detailsControlsMarkup,
-    emojiListMarkup,
   } = new FilmCard(film);
-
-  const detailsCommentsMarkup = createMarkup(comments.slice(0, commentsCount), renderCommentsItemMarkup);
 
   return (
     `<section class="film-details">
@@ -194,48 +142,21 @@ export const createDetailsTemplate = (film, comments) => {
             ${detailsControlsMarkup}
           </section>
         </div>
-        <div class="form-details__bottom-container">
-          <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">
-              ${commentsCount || `0`}</span>
-            </h3>
-
-            <ul class="film-details__comments-list">
-              ${detailsCommentsMarkup}
-            </ul>
-
-            <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label"></div>
-
-              <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-              </label>
-
-              <div class="film-details__emoji-list">
-                ${emojiListMarkup}
-              </div>
-            </div>
-          </section>
-        </div>
+        <div class="form-details__bottom-container"></div>
       </form>
     </section>`
   );
 };
 
 export default class DetailsComponent extends AbstractSmartComponent {
-  constructor(card, comments) {
+  constructor(card) {
     super();
 
     this._card = card;
-    this._comments = comments;
-
-    this._addToWatchlistButtonClickHandler = null;
-    this._markAsWatchedButtonClickHandler = null;
-    this._markAsFavoriteButtonClickHandler = null;
   }
 
   getTemplate() {
-    return createDetailsTemplate(this._card, this._comments);
+    return createDetailsTemplate(this._card);
   }
 
   rerender() {
@@ -243,9 +164,7 @@ export default class DetailsComponent extends AbstractSmartComponent {
   }
 
   recoveryListeners() {
-    this.onAddToWatchlistButtonClick(this._addToWatchlistButtonClickHandler);
-    this.onMarkAsWatchedButtonClick(this._markAsWatchedButtonClickHandler);
-    this.onMarkAsFavoriteButtonClick(this._markAsFavoriteButtonClickHandler);
+
   }
 
   onPopupClick(handler) {
@@ -260,26 +179,20 @@ export default class DetailsComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`#watchlist`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       handler();
-      // this.rerender();
     });
-    this._addToWatchlistButtonClickHandler = handler;
   }
 
   onMarkAsWatchedButtonClick(handler) {
     this.getElement().querySelector(`#watched`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       handler();
-      // this.rerender();
     });
-    this._markAsWatchedButtonClickHandler = handler;
   }
 
   onMarkAsFavoriteButtonClick(handler) {
     this.getElement().querySelector(`#favorite`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       handler();
-      // this.rerender();
     });
-    this._markAsFavoriteButtonClickHandler = handler;
   }
 }

@@ -6,6 +6,12 @@ export const setId = (name) => {
     .replace(Regular.EMPTY_SPACE, Regular.DASH);
 };
 
+export const setTwoDigit = (date, callback) => {
+  const getter = callback.bind(date);
+  const amends = callback[`name`] === `getMonth` ? 1 : 0;
+  return getter().toString().length === 1 ? `0${getter() + amends}` : getter() + amends;
+};
+
 export const getDuration = (minutesAmount, spaceBetween = false) => {
   const hours = Math.floor(minutesAmount / HOUR_IN_MINUTES)
     ? `${Math.floor(minutesAmount / HOUR_IN_MINUTES)}${spaceBetween ? ` ` : ``}h`

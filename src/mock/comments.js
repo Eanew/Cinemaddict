@@ -45,8 +45,8 @@ const commentTemplates = [
   }];
 
 export const generateCommentsData = () => {
-  const comments = commentTemplates.slice();
   const randomComments = [];
+  const comments = [].concat(commentTemplates.slice(), commentTemplates.slice());
   for (let i = 0; i < comments.length; i++) {
     randomComments.push(getUniqueRandomItem(comments));
   }
