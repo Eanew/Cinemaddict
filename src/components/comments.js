@@ -41,14 +41,14 @@ const renderEmojiItemMarkup = (emoji) => {
   );
 };
 
-const createCommentsTemplate = (comments, commentsCount) => {
-  const detailsCommentsMarkup = createMarkup(comments.slice(0, commentsCount), renderCommentsItemMarkup);
+const createCommentsTemplate = (comments) => {
+  const detailsCommentsMarkup = createMarkup(comments, renderCommentsItemMarkup);
   const emojiListMarkup = createMarkup(emojiList, renderEmojiItemMarkup);
 
   return (
     `<section class="film-details__comments-wrap">
       <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">
-        ${commentsCount || `0`}</span>
+        ${comments.length || `0`}</span>
       </h3>
 
       <ul class="film-details__comments-list">
@@ -71,15 +71,25 @@ const createCommentsTemplate = (comments, commentsCount) => {
 };
 
 export default class CommentsComponent extends AbstractSmartComponent {
-  constructor(comments, commentsCount) {
+  constructor(comments, onDataChange) {
     super();
 
     this._comments = comments;
-    this._commentsCount = commentsCount;
+    this._onDataChange = onDataChange;
+
+    this._deleteButtonsClickHandler = null;
+    this._textInputHandler = null;
+    this._emojiClickHandler = null;
+
+    this._localComment = {
+      'comment': `Great movie!`,
+      'date': new Date().toISOString(),
+      'emotion': `smile`,
+    };
   }
 
   getTemplate() {
-    return createCommentsTemplate(this._comments, this._commentsCount);
+    return createCommentsTemplate(this._comments);
   }
 
   rerender() {
@@ -87,6 +97,35 @@ export default class CommentsComponent extends AbstractSmartComponent {
   }
 
   recoveryListeners() {
+    this.onDeleteButtonsClick(this._deleteButtonsClickHandler);
+    this.onTextInput(this._textInputHandler);
+    this.onEmojiClick(this._emojiClickHandler);
+  }
 
+  onDeleteButtonsClick(handler) {
+    this.getElement().querySelector(`.film-details__comments-list`)
+      .addEventListener(`click`, (evt) => {
+        if (evt.target.tagName !== `BUTTON`) {
+          return;
+        }
+        evt.preventDefault();
+        handler(evt);
+      });
+
+    this._deleteButtonsClickHandler = handler;
+  }
+
+  onTextInput(handler) {
+    this.getElement().querySelector(`.film-details__comment-input`)
+      .addEventListener(`input`, (evt) => handler(evt));
+
+    this._textInputHandler = handler;
+  }
+
+  onEmojiClick(handler) {
+    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach((emoji) => emoji
+      .addEventListener(`click`, (evt) => handler(evt)));
+
+    this._emojiClickHandler = handler;
   }
 }

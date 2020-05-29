@@ -35,6 +35,9 @@ export default class MovieController {
     this._detailsComponent = null;
     this._lastDetailsComponent = null;
     this._commentsComponent = null;
+    this._commentsContainer = null;
+    this._commentsCountElement = null;
+    this._comments = generateCommentsData();
 
     this._closePopup = this._closePopup.bind(this);
     this._onPopupEscPress = this._onPopupEscPress.bind(this);
@@ -46,13 +49,14 @@ export default class MovieController {
     const oldDetailsComponent = this._detailsComponent;
 
     this._data = card;
+    this._comments = this._comments.slice(0, card[`comments`].length);
     this._cardComponent = new CardComponent(card);
     this._detailsComponent = new DetailsComponent(card);
-    this._commentsComponent = new CommentsComponent(generateCommentsData(), card[`comments`].length);
+    this._commentsComponent = new CommentsComponent(this._comments, this._onDataChange);
+    this._commentsContainer = this._detailsComponent.getElement().querySelector(`.form-details__bottom-container`);
+    this._commentsCountElement = this._commentsComponent.getElement().querySelector(`.film-details__comments-count`);
 
-    const commentsContainer = this._detailsComponent.getElement().querySelector(`.form-details__bottom-container`);
-
-    render(commentsContainer, this._commentsComponent);
+    render(this._commentsContainer, this._commentsComponent);
 
     const UserDetails = Object.assign({}, card[`user_details`]);
 
@@ -116,6 +120,9 @@ export default class MovieController {
     document.removeEventListener(`click`, this._closePopup);
     pageBody.removeChild(this._detailsComponent.getElement());
     this._lastDetailsComponent = null;
+    this._onDataChange(this._data, Object.assign({}, this._data, {
+      'comments': this._comments.map((it) => it[`id`]),
+    }));
   }
 
   _closePopup() {
@@ -127,9 +134,21 @@ export default class MovieController {
     isEscEvent(evt, this._closePopup);
   }
 
+  _deleteComment(evt) {
+    const commentsElements = Array.from(evt.currentTarget.children);
+    commentsElements.forEach((item, index) => {
+      if (item.contains(evt.target)) {
+        this._comments = this._comments.filter((it, i) => i !== index);
+        this._commentsCountElement.textContent--;
+        item.remove();
+      }
+    });
+  }
+
   _addPopupListeners() {
     this._detailsComponent.onPopupClick((evt) => evt.stopPropagation());
     this._detailsComponent.onCloseButtonClick(this._closePopup);
+    this._commentsComponent.onDeleteButtonsClick((evt) => this._deleteComment(evt));
   }
 
   _openPopup(evt) {
