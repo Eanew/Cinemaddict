@@ -38,9 +38,14 @@ export default class MovieController {
     this._commentsContainer = null;
     this._commentsCountElement = null;
     this._comments = generateCommentsData();
+    this._commentValue = null;
+    this._emojiContainer = null;
+    this._emojiValue = null;
 
     this._closePopup = this._closePopup.bind(this);
     this._onPopupEscPress = this._onPopupEscPress.bind(this);
+    this._onCommentsListClick = this._onCommentsListClick.bind(this);
+    this._onEmojiClick = this._onEmojiClick.bind(this);
     this.setDefaultView = this.setDefaultView.bind(this);
   }
 
@@ -55,6 +60,11 @@ export default class MovieController {
     this._commentsComponent = new CommentsComponent(this._comments, this._onDataChange);
     this._commentsContainer = this._detailsComponent.getElement().querySelector(`.form-details__bottom-container`);
     this._commentsCountElement = this._commentsComponent.getElement().querySelector(`.film-details__comments-count`);
+    this._emojiContainer = this._commentsComponent.getElement().querySelector(`.film-details__add-emoji-label`);
+
+    if (this._emojiValue) {
+      this._onEmojiClick(null, this._emojiValue);
+    }
 
     render(this._commentsContainer, this._commentsComponent);
 
@@ -91,9 +101,7 @@ export default class MovieController {
         })));
     });
 
-    this._cardComponent.onPopupOpenersClick((evt) => {
-      this._openPopup(evt);
-    });
+    this._cardComponent.onPopupOpenersClick((evt) => this._openPopup(evt));
 
     if (oldCardComponent && oldDetailsComponent) {
       replace(this._cardComponent, oldCardComponent);
@@ -112,6 +120,11 @@ export default class MovieController {
     return this._data;
   }
 
+  reset() {
+    this._emojiContainer.innerHTML = ``;
+    this._emojiValue = null;
+  }
+
   setDefaultView() {
     if (!this._detailsComponent || !pageBody.contains(this._detailsComponent.getElement())) {
       return;
@@ -123,6 +136,7 @@ export default class MovieController {
     this._onDataChange(this._data, Object.assign({}, this._data, {
       'comments': this._comments.map((it) => it[`id`]),
     }));
+    this.reset();
   }
 
   _closePopup() {
@@ -134,9 +148,9 @@ export default class MovieController {
     isEscEvent(evt, this._closePopup);
   }
 
-  _deleteComment(evt) {
-    const commentsElements = Array.from(evt.currentTarget.children);
-    commentsElements.forEach((item, index) => {
+  _onCommentsListClick(evt) {
+    Array.from(evt.currentTarget.children).forEach((item, index) => {
+
       if (item.contains(evt.target)) {
         this._comments = this._comments.filter((it, i) => i !== index);
         this._commentsCountElement.textContent--;
@@ -145,10 +159,19 @@ export default class MovieController {
     });
   }
 
+  _onEmojiClick(evt, emojiValue) {
+    const image = this._commentsComponent.createEmojiImageElement((evt ? evt.target.value : emojiValue));
+
+    this._emojiContainer.innerHTML = ``;
+    this._emojiContainer.appendChild(image);
+    this._emojiValue = evt ? evt.target.value : emojiValue;
+  }
+
   _addPopupListeners() {
     this._detailsComponent.onPopupClick((evt) => evt.stopPropagation());
     this._detailsComponent.onCloseButtonClick(this._closePopup);
-    this._commentsComponent.onDeleteButtonsClick((evt) => this._deleteComment(evt));
+    this._commentsComponent.onCommentsListClick(this._onCommentsListClick);
+    this._commentsComponent.onEmojiClick(this._onEmojiClick);
   }
 
   _openPopup(evt) {

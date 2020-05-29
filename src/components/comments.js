@@ -1,5 +1,6 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
 import {createMarkup, setTwoDigit} from '../utils/data-process.js';
+import {createElement} from '../utils/render.js';
 
 const emojiList = [`smile`, `sleeping`, `puke`, `angry`];
 
@@ -102,7 +103,7 @@ export default class CommentsComponent extends AbstractSmartComponent {
     this.onEmojiClick(this._emojiClickHandler);
   }
 
-  onDeleteButtonsClick(handler) {
+  onCommentsListClick(handler) {
     this.getElement().querySelector(`.film-details__comments-list`)
       .addEventListener(`click`, (evt) => {
         if (evt.target.tagName !== `BUTTON`) {
@@ -122,9 +123,14 @@ export default class CommentsComponent extends AbstractSmartComponent {
     this._textInputHandler = handler;
   }
 
+  createEmojiImageElement(emoji) {
+    const markup = `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">`;
+    return createElement(markup);
+  }
+
   onEmojiClick(handler) {
-    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach((emoji) => emoji
-      .addEventListener(`click`, (evt) => handler(evt)));
+    this.getElement().querySelector(`.film-details__emoji-list`)
+      .addEventListener(`click`, (evt) => handler(evt));
 
     this._emojiClickHandler = handler;
   }
