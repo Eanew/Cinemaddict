@@ -36,15 +36,14 @@ export default class MovieController {
     this._lastDetailsComponent = null;
     this._commentsComponent = null;
     this._commentsContainer = null;
-    this._commentsCountElement = null;
     this._comments = generateCommentsData();
     this._commentValue = null;
-    this._emojiContainer = null;
     this._emojiValue = null;
 
     this._closePopup = this._closePopup.bind(this);
     this._onPopupEscPress = this._onPopupEscPress.bind(this);
     this._onCommentsListClick = this._onCommentsListClick.bind(this);
+    this._onCommentInput = this._onCommentInput.bind(this);
     this._onEmojiClick = this._onEmojiClick.bind(this);
     this.setDefaultView = this.setDefaultView.bind(this);
   }
@@ -55,17 +54,15 @@ export default class MovieController {
 
     this._data = card;
     this._comments = this._comments.slice(0, card[`comments`].length);
+
     this._cardComponent = new CardComponent(card);
     this._detailsComponent = new DetailsComponent(card);
-    this._commentsComponent = new CommentsComponent(this._comments, this._onDataChange);
+    this._commentsComponent = new CommentsComponent(this._comments);
     this._commentsContainer = this._detailsComponent.getElement().querySelector(`.form-details__bottom-container`);
-    this._commentsCountElement = this._commentsComponent.getElement().querySelector(`.film-details__comments-count`);
-    this._emojiContainer = this._commentsComponent.getElement().querySelector(`.film-details__add-emoji-label`);
 
-    if (this._emojiValue) {
-      this._onEmojiClick(null, this._emojiValue);
+    if (this._emojiValue || this._commentValue) {
+      this._commentsComponent.fillLocalComment(this._emojiValue, this._commentValue);
     }
-
     render(this._commentsContainer, this._commentsComponent);
 
     const UserDetails = Object.assign({}, card[`user_details`]);
@@ -104,16 +101,17 @@ export default class MovieController {
     this._cardComponent.onPopupOpenersClick((evt) => this._openPopup(evt));
 
     if (oldCardComponent && oldDetailsComponent) {
-      replace(this._cardComponent, oldCardComponent);
 
       if (pageBody.contains(oldDetailsComponent.getElement())) {
-        this._addPopupListeners();
         replace(this._detailsComponent, oldDetailsComponent);
+        this._addPopupListeners();
       }
 
-    } else {
-      render(this._container, this._cardComponent);
+      replace(this._cardComponent, oldCardComponent);
+      return;
     }
+
+    render(this._container, this._cardComponent);
   }
 
   getData() {
@@ -121,8 +119,9 @@ export default class MovieController {
   }
 
   reset() {
-    this._emojiContainer.innerHTML = ``;
+    this._commentValue = null;
     this._emojiValue = null;
+    this._commentsComponent.fillLocalComment(this._emojiValue, this._commentValue);
   }
 
   setDefaultView() {
@@ -148,32 +147,6 @@ export default class MovieController {
     isEscEvent(evt, this._closePopup);
   }
 
-  _onCommentsListClick(evt) {
-    Array.from(evt.currentTarget.children).forEach((item, index) => {
-
-      if (item.contains(evt.target)) {
-        this._comments = this._comments.filter((it, i) => i !== index);
-        this._commentsCountElement.textContent--;
-        item.remove();
-      }
-    });
-  }
-
-  _onEmojiClick(evt, emojiValue) {
-    const image = this._commentsComponent.createEmojiImageElement((evt ? evt.target.value : emojiValue));
-
-    this._emojiContainer.innerHTML = ``;
-    this._emojiContainer.appendChild(image);
-    this._emojiValue = evt ? evt.target.value : emojiValue;
-  }
-
-  _addPopupListeners() {
-    this._detailsComponent.onPopupClick((evt) => evt.stopPropagation());
-    this._detailsComponent.onCloseButtonClick(this._closePopup);
-    this._commentsComponent.onCommentsListClick(this._onCommentsListClick);
-    this._commentsComponent.onEmojiClick(this._onEmojiClick);
-  }
-
   _openPopup(evt) {
     evt.preventDefault();
     evt.stopPropagation();
@@ -185,8 +158,44 @@ export default class MovieController {
 
     document.addEventListener(`keydown`, this._onPopupEscPress);
     document.addEventListener(`click`, this._closePopup);
-    this._addPopupListeners();
     this._lastDetailsComponent = this._detailsComponent;
+    this._addPopupListeners();
+
     pageBody.appendChild(this._detailsComponent.getElement());
   }
+
+  _onCommentsListClick(evt) {
+    Array.from(evt.currentTarget.children).forEach((item, index) => {
+
+      if (item.contains(evt.target)) {
+        this._comments = this._comments.filter((it, i) => i !== index);
+        this._commentsComponent.updateComments(this._comments);
+      }
+    });
+  }
+
+  _onEmojiClick(evt) {
+    this._emojiValue = evt.target.value;
+    this._commentsComponent.fillLocalComment(this._emojiValue, this._commentValue);
+  }
+
+  _onCommentInput(evt) {
+    this._commentValue = evt.target.value;
+    this._commentsComponent.fillLocalComment(this._emojiValue, this._commentValue);
+  }
+
+  // _onFormSubmit(evt) {
+  //   const comment = this._commentsComponent.getLocalComment();
+  //   this.setDefaultView();
+  // }
+
+  _addPopupListeners() {
+    this._detailsComponent.onPopupClick((evt) => evt.stopPropagation());
+    this._detailsComponent.onCloseButtonClick(this._closePopup);
+    // this._detailsComponent.onFormSubmit(this._onFormSubmit);
+    this._commentsComponent.onCommentsListClick(this._onCommentsListClick);
+    this._commentsComponent.onEmojiClick(this._onEmojiClick);
+    this._commentsComponent.onCommentInput(this._onCommentInput);
+  }
+
 }

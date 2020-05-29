@@ -163,9 +163,9 @@ export default class DetailsComponent extends AbstractSmartComponent {
     super.rerender();
   }
 
-  recoveryListeners() {
+  // recoveryListeners() {
 
-  }
+  // }
 
   onPopupClick(handler) {
     this.getElement().addEventListener(`click`, (evt) => handler(evt));
@@ -174,6 +174,13 @@ export default class DetailsComponent extends AbstractSmartComponent {
   onCloseButtonClick(handler) {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
   }
+
+  // onFormSubmit(handler) {
+  //   this.getElement().querySelector(`.film-details__inner`).addEventListener(`submit`, (evt) => {
+  //     evt.preventDefault();
+  //     handler(evt);
+  //   });
+  // }
 
   onAddToWatchlistButtonClick(handler) {
     this.getElement().querySelector(`#watchlist`).addEventListener(`click`, (evt) => {

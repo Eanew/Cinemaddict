@@ -1,6 +1,5 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
 import {createMarkup, setTwoDigit} from '../utils/data-process.js';
-import {createElement} from '../utils/render.js';
 
 const emojiList = [`smile`, `sleeping`, `puke`, `angry`];
 
@@ -71,21 +70,24 @@ const createCommentsTemplate = (comments) => {
   );
 };
 
+const renderEmojiImageMarkup = (emoji) => {
+  return emoji ? `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">` : ``;
+};
+
 export default class CommentsComponent extends AbstractSmartComponent {
-  constructor(comments, onDataChange) {
+  constructor(comments) {
     super();
 
     this._comments = comments;
-    this._onDataChange = onDataChange;
 
-    this._deleteButtonsClickHandler = null;
-    this._textInputHandler = null;
+    this._commentsListClickHandler = null;
+    this._commentInputHandler = null;
     this._emojiClickHandler = null;
 
     this._localComment = {
-      'comment': `Great movie!`,
-      'date': new Date().toISOString(),
-      'emotion': `smile`,
+      'comment': null,
+      'date': null,
+      'emotion': null,
     };
   }
 
@@ -95,12 +97,33 @@ export default class CommentsComponent extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
+    this.fillLocalComment(this._localComment[`emoji`], this._localComment[`comment`]);
   }
 
   recoveryListeners() {
-    this.onDeleteButtonsClick(this._deleteButtonsClickHandler);
-    this.onTextInput(this._textInputHandler);
+    this.onCommentsListClick(this._commentsListClickHandler);
+    this.onCommentInput(this._commentInputHandler);
     this.onEmojiClick(this._emojiClickHandler);
+  }
+
+  getLocalComment() {
+    return Object.assign({}, this._localComment, {
+      'date': new Date().toISOString(),
+    });
+  }
+
+  fillLocalComment(emoji, comment) {
+    const imageMarkup = renderEmojiImageMarkup(emoji);
+
+    this.getElement().querySelector(`.film-details__add-emoji-label`).innerHTML = imageMarkup;
+    this.getElement().querySelector(`.film-details__comment-input`).value = comment;
+
+    this._localComment[`emoji`] = emoji;
+    this._localComment[`comment`] = comment;
+  }
+
+  updateComments(newComments) {
+    this._comments = [].concat(newComments);
   }
 
   onCommentsListClick(handler) {
@@ -111,27 +134,28 @@ export default class CommentsComponent extends AbstractSmartComponent {
         }
         evt.preventDefault();
         handler(evt);
+        this.rerender();
       });
 
-    this._deleteButtonsClickHandler = handler;
-  }
-
-  onTextInput(handler) {
-    this.getElement().querySelector(`.film-details__comment-input`)
-      .addEventListener(`input`, (evt) => handler(evt));
-
-    this._textInputHandler = handler;
-  }
-
-  createEmojiImageElement(emoji) {
-    const markup = `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">`;
-    return createElement(markup);
+    this._commentsListClickHandler = handler;
   }
 
   onEmojiClick(handler) {
     this.getElement().querySelector(`.film-details__emoji-list`)
-      .addEventListener(`click`, (evt) => handler(evt));
+      .addEventListener(`click`, (evt) => {
+        if (evt.target.tagName !== `INPUT`) {
+          return;
+        }
+        handler(evt);
+      });
 
     this._emojiClickHandler = handler;
+  }
+
+  onCommentInput(handler) {
+    this.getElement().querySelector(`.film-details__comment-input`)
+      .addEventListener(`input`, (evt) => handler(evt));
+
+    this._commentInputHandler = handler;
   }
 }
