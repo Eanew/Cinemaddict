@@ -115,8 +115,11 @@ export default class CommentsComponent extends AbstractSmartComponent {
   fillLocalComment(emoji, comment) {
     const imageMarkup = renderEmojiImageMarkup(emoji);
 
-    this.getElement().querySelector(`.film-details__add-emoji-label`).innerHTML = imageMarkup;
-    this.getElement().querySelector(`.film-details__comment-input`).value = comment;
+    this.getElement().querySelector(`.film-details__add-emoji-label`)
+      .innerHTML = imageMarkup;
+
+    this.getElement().querySelector(`.film-details__comment-input`)
+      .value = comment;
 
     this._localComment[`emoji`] = emoji;
     this._localComment[`comment`] = comment;

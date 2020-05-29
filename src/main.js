@@ -5,6 +5,8 @@ import NavigationComponent from './components/navigation.js';
 import UserStatisticComponent from './components/user-statistic.js';
 import FilmListComponent from './components/film-list.js';
 
+import MoviesModel from './models/movies.js';
+
 import PageController from './controllers/page-controller.js';
 
 import {generateFilmCardsData} from './mock/film-list.js';
@@ -22,11 +24,14 @@ const navigationComponent = new NavigationComponent(filmCards);
 const statisticComponent = new UserStatisticComponent(watchedMovies);
 const filmListComponent = new FilmListComponent();
 
-const pageController = new PageController(filmListComponent);
+const moviesModel = new MoviesModel();
+moviesModel.setMovies(filmCards);
+
+const pageController = new PageController(filmListComponent, moviesModel);
 
 render(pageHeader, userLevelComponent);
 render(pageMain, navigationComponent);
 render(pageMain, statisticComponent);
 render(pageMain, filmListComponent);
 
-pageController.render(filmCards);
+pageController.render();

@@ -58,8 +58,9 @@ const getSortedCards = (cards, sortType, from, to) => {
 };
 
 export default class PageController {
-  constructor(container) {
+  constructor(container, moviesModel) {
     this._container = container;
+    this._moviesModel = moviesModel;
 
     this._sortingComponent = new SortingComponent();
     this._noMoviesComponent = new NoMoviesComponent();
@@ -70,7 +71,6 @@ export default class PageController {
     this._sectionContainerElement = this._container.getElement();
     this._filmsContainerElement = this._filmsContainerComponent.getElement();
 
-    this._cards = [];
     this._sortedCards = [];
     this._showedCardControllers = [];
     this._currentFilmsCount = FILMS_DISPLAY_STEP;
@@ -82,11 +82,12 @@ export default class PageController {
     this._sortingComponent.onSortTypeChange(this._onSortTypeChange);
   }
 
-  render(cards) {
-    this._cards = cards;
+  render() {
     this._sectionContainerElement.innerHTML = ``;
 
-    if (!this._cards || !this._cards.length) {
+    const cards = this._moviesModel.getMovies();
+
+    if (!cards || !cards.length) {
       render(this._sectionContainerElement, this._noMoviesComponent);
       return;
     }
@@ -95,7 +96,7 @@ export default class PageController {
     render(this._sectionContainerElement, this._filmListTitleComponent);
     render(this._sectionContainerElement, this._filmsContainerComponent);
 
-    this._sortedCards = getSortedCards(this._cards, this._sortingComponent.getSortType(), 0, this._currentFilmsCount);
+    this._sortedCards = getSortedCards(cards, this._sortingComponent.getSortType(), 0, this._currentFilmsCount);
 
     const newCards = renderCards(this._filmsContainerElement, this._sortedCards, this._onDataChange, this._onVIewChange);
     this._showedCardControllers = this._showedCardControllers.concat(newCards);
@@ -104,14 +105,16 @@ export default class PageController {
   }
 
   _renderLoadMoreButton() {
-    if (this._cards.length <= this._currentFilmsCount) {
+    const cards = this._moviesModel.getMovies();
+
+    if (cards.length <= this._currentFilmsCount) {
       return;
     }
 
     const renderMoreCards = (isLastCards) => {
       const sortType = this._sortingComponent.getSortType();
       const showingCards = this._currentFilmsCount + FILMS_DISPLAY_STEP;
-      this._sortedCards = getSortedCards(this._cards, sortType, this._currentFilmsCount, showingCards);
+      this._sortedCards = getSortedCards(cards, sortType, this._currentFilmsCount, showingCards);
 
       const newCards = renderCards(this._filmsContainerElement, this._sortedCards, this._onDataChange, this._onVIewChange);
       this._showedCardControllers = this._showedCardControllers.concat(newCards);
@@ -125,7 +128,7 @@ export default class PageController {
 
     this._loadMoreButtonComponent.onClick((evt) => {
       evt.preventDefault();
-      const isLastCards = !(this._currentFilmsCount + FILMS_DISPLAY_STEP < this._cards.length);
+      const isLastCards = !(this._currentFilmsCount + FILMS_DISPLAY_STEP < cards.length);
       renderMoreCards(isLastCards);
     });
 
@@ -135,7 +138,7 @@ export default class PageController {
   _onSortTypeChange(sortType) {
     this._currentFilmsCount = FILMS_DISPLAY_STEP;
 
-    this._sortedCards = getSortedCards(this._cards, sortType, 0, this._currentFilmsCount);
+    this._sortedCards = getSortedCards(this._moviesModel.getMovies(), sortType, 0, this._currentFilmsCount);
 
     this._filmsContainerElement.innerHTML = ``;
     remove(this._loadMoreButtonComponent);
@@ -148,16 +151,11 @@ export default class PageController {
   }
 
   _onDataChange(oldData, newData) {
-    const index = this._cards.findIndex((it) => it === oldData);
-    if (index === -1) {
-      return;
+    const isSuccess = this._moviesModel.updateMovie(oldData[`id`], newData);
+    if (isSuccess) {
+      const controller = this._showedCardControllers.find((it) => it.getData() === oldData);
+      controller.render(newData);
     }
-
-    this._cards = [].concat(this._cards.slice(0, index), newData, this._cards.slice(index + 1));
-
-    const controller = this._showedCardControllers.find((it) => it.getData() === oldData);
-
-    controller.render(newData);
   }
 
   _onVIewChange() {
