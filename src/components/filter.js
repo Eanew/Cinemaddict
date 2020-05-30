@@ -10,19 +10,19 @@ const AllMovies = {
   NAME: `All movies`,
 };
 
-const navItemsList = [
+const filterItemsList = [
   AllMovies.NAME,
   `Watchlist`,
   `History`,
   `Favorites`];
 
-const generateNavItemsData = (counts) => navItemsList.map((it, i) => ({
+const generateFilterItemsData = (counts) => filterItemsList.map((it, i) => ({
   name: it,
   id: it === AllMovies.NAME ? AllMovies.ID : setId(it),
   count: counts[i],
 }));
 
-const createNavigationItemMarkup = function ({name, id, count = 0}, isActive = false) {
+const createFiltersItemMarkup = function ({name, id, count = 0}, isActive = false) {
   return (
     `<a href="#${id || setId(name)}"
       class="main-navigation__item${isActive ? ` main-navigation__item--active` : ``}">
@@ -32,7 +32,7 @@ const createNavigationItemMarkup = function ({name, id, count = 0}, isActive = f
   );
 };
 
-const generateNavigationItems = (films) => {
+const generateFilterItems = (films) => {
   watchlist = films.filter((it) => it[`user_details`][`watchlist`]);
   favorites = films.filter((it) => it[`user_details`][`favorite`]);
   history = films.filter((it) => it[`user_details`][`already_watched`])
@@ -43,12 +43,12 @@ const generateNavigationItems = (films) => {
     });
 
   const displayedCounts = [null, watchlist.length, history.length, favorites.length];
-  const navItems = generateNavItemsData(displayedCounts);
-  return createMarkup(navItems, createNavigationItemMarkup, 0);
+  const filterItems = generateFilterItemsData(displayedCounts);
+  return createMarkup(filterItems, createFiltersItemMarkup, 0);
 };
 
-const createNavigationTemplate = (films) => {
-  const navItemsMarkup = generateNavigationItems(films);
+const createFilterTemplate = (films) => {
+  const navItemsMarkup = generateFilterItems(films);
 
   return (
     `<nav class="main-navigation">
@@ -60,7 +60,7 @@ const createNavigationTemplate = (films) => {
   );
 };
 
-export default class NavigationComponent extends AbstractComponent {
+export default class FilterComponent extends AbstractComponent {
   constructor(films) {
     super();
 
@@ -68,6 +68,6 @@ export default class NavigationComponent extends AbstractComponent {
   }
 
   getTemplate() {
-    return createNavigationTemplate(this._films);
+    return createFilterTemplate(this._films);
   }
 }

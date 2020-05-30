@@ -1,7 +1,7 @@
 import {render} from './utils/render.js';
 
 import UserLevelComponent from './components/user-level.js';
-import NavigationComponent from './components/navigation.js';
+import FilterComponent from './components/filter.js';
 import UserStatisticComponent from './components/user-statistic.js';
 import FilmListComponent from './components/film-list.js';
 
@@ -20,7 +20,7 @@ const filmCards = generateFilmCardsData(FILM_CARDS_COUNT);
 const watchedMovies = filmCards.filter((it) => it[`user_details`][`already_watched`]);
 
 const userLevelComponent = new UserLevelComponent(watchedMovies);
-const navigationComponent = new NavigationComponent(filmCards);
+const filterComponent = new FilterComponent(filmCards);
 const statisticComponent = new UserStatisticComponent(watchedMovies);
 const filmListComponent = new FilmListComponent();
 
@@ -30,7 +30,7 @@ moviesModel.setMovies(filmCards);
 const pageController = new PageController(filmListComponent, moviesModel);
 
 render(pageHeader, userLevelComponent);
-render(pageMain, navigationComponent);
+render(pageMain, filterComponent);
 render(pageMain, statisticComponent);
 render(pageMain, filmListComponent);
 
