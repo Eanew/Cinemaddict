@@ -55,17 +55,10 @@ export default class SortingComponent extends AbstractComponent {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
 
-      if (evt.target.tagName !== `A`) {
+      if (evt.target.tagName !== `A` || evt.target.dataset.sortType === this._currentSortType) {
         return;
       }
-
-      const sortType = evt.target.dataset.sortType;
-
-      if (this._currentSortType === sortType) {
-        return;
-      }
-
-      this._currentSortType = sortType;
+      this._currentSortType = evt.target.dataset.sortType;
 
       swapActiveElements(this.getElement(), evt.target, ACTIVE_BUTTON_CLASS);
       handler(this._currentSortType);
