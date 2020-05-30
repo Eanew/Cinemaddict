@@ -1,5 +1,6 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
 import {createMarkup, setTwoDigit} from '../utils/data-process.js';
+import {encode} from 'he';
 
 const emojiList = [`smile`, `sleeping`, `puke`, `angry`];
 
@@ -108,6 +109,7 @@ export default class CommentsComponent extends AbstractSmartComponent {
 
   getLocalComment() {
     return Object.assign({}, this._localComment, {
+      'comment': encode(this._localComment[`comment`]),
       'date': new Date().toISOString(),
     });
   }
