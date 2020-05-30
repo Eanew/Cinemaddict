@@ -77,10 +77,9 @@ export default class PageController {
     this._updateCards = this._updateCards.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
     this._onVIewChange = this._onVIewChange.bind(this);
-    this._onFilterChange = this._onFilterChange.bind(this);
 
+    this._moviesModel.setFilterChangeHandler(this._updateCards);
     this._sortingComponent.onSortTypeChange(this._updateCards);
-    this._moviesModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   render() {
@@ -144,9 +143,5 @@ export default class PageController {
 
   _onVIewChange() {
     this._showedCardControllers.forEach((it) => it.setDefaultView());
-  }
-
-  _onFilterChange() {
-    this._updateCards();
   }
 }
