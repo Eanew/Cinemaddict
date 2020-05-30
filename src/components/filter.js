@@ -1,24 +1,17 @@
 import AbstractComponent from './abstract-component.js';
 import {createMarkup, setId} from '../utils/data-process.js';
+import {FilterType} from '../utils/const.js';
+import {getCardsByFilter} from '../utils/filter.js';
 
 let watchlist = [];
 let favorites = [];
 let history = [];
 
-const AllMovies = {
-  ID: `all`,
-  NAME: `All movies`,
-};
+const ALL_MOVIES_ID = `all`;
 
-const filterItemsList = [
-  AllMovies.NAME,
-  `Watchlist`,
-  `History`,
-  `Favorites`];
-
-const generateFilterItemsData = (counts) => filterItemsList.map((it, i) => ({
+const generateFilterItemsData = (counts) => Object.values(FilterType).map((it, i) => ({
   name: it,
-  id: it === AllMovies.NAME ? AllMovies.ID : setId(it),
+  id: it === FilterType.ALL_MOVIES ? ALL_MOVIES_ID : setId(it),
   count: counts[i],
 }));
 
@@ -32,15 +25,10 @@ const createFiltersItemMarkup = function ({name, id, count = 0}, isActive = fals
   );
 };
 
-const generateFilterItems = (films) => {
-  watchlist = films.filter((it) => it[`user_details`][`watchlist`]);
-  favorites = films.filter((it) => it[`user_details`][`favorite`]);
-  history = films.filter((it) => it[`user_details`][`already_watched`])
-    .sort((first, second) => {
-      const a = Date.parse(first[`user_details`][`watching_date`]);
-      const b = Date.parse(second[`user_details`][`watching_date`]);
-      return b - a;
-    });
+const generateFilterItems = (cards) => {
+  watchlist = getCardsByFilter(cards, FilterType.WATCHLIST);
+  history = getCardsByFilter(cards, FilterType.HISTORY);
+  favorites = getCardsByFilter(cards, FilterType.FAVORITES);
 
   const displayedCounts = [null, watchlist.length, history.length, favorites.length];
   const filterItems = generateFilterItemsData(displayedCounts);

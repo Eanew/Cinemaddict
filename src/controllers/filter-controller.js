@@ -1,5 +1,6 @@
 import FilterComponent from '../components/filter.js';
 import {render, replace} from '../utils/render.js';
+import {FilterType} from '../utils/const.js';
 
 export default class FilterController {
   constructor(container, moviesModel) {
