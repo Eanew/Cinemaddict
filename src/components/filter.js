@@ -5,12 +5,12 @@ import {FilterType} from '../utils/const.js';
 
 const ACTIVE_FILTER_CLASS = `main-navigation__item--active`;
 
-const createFilterItemMarkup = function (filters, isChecked = false) {
-  const {name, id, count = 0} = filters;
+const createFilterItemMarkup = function (filters) {
+  const {name, id, count = 0, checked} = filters;
 
   return (
     `<a href="#${id}"
-      class="main-navigation__item${isChecked ? ` ${ACTIVE_FILTER_CLASS}` : ``}">
+      class="main-navigation__item${checked ? ` ${ACTIVE_FILTER_CLASS}` : ``}">
       ${name}
       ${count !== null ? ` <span class="main-navigation__item-count">${count}</span>` : ``}
     </a>`
@@ -18,8 +18,7 @@ const createFilterItemMarkup = function (filters, isChecked = false) {
 };
 
 const createFilterTemplate = (filters) => {
-  const activeFilters = filters.map((it, i) => it.checked ? i : -1);
-  const filterItemsMarkup = createMarkup(filters, createFilterItemMarkup, ...activeFilters);
+  const filterItemsMarkup = createMarkup(filters, createFilterItemMarkup);
 
   return (
     `<nav class="main-navigation">

@@ -1,4 +1,6 @@
 import {render} from './utils/render.js';
+import {getCardsByFilter} from './utils/filter.js';
+import {FilterType} from './utils/const.js';
 
 import UserLevelComponent from './components/user-level.js';
 import UserStatisticComponent from './components/user-statistic.js';
@@ -17,14 +19,13 @@ const pageHeader = document.querySelector(`.header`);
 const pageMain = document.querySelector(`.main`);
 
 const filmCards = generateFilmCardsData(FILM_CARDS_COUNT);
-const watchedMovies = filmCards.filter((it) => it[`user_details`][`already_watched`]);
+const watchedMovies = getCardsByFilter(FilterType.HISTORY);
 
 const userLevelComponent = new UserLevelComponent(watchedMovies);
 const statisticComponent = new UserStatisticComponent(watchedMovies);
 const filmListComponent = new FilmListComponent();
 
 const moviesModel = new MoviesModel();
-moviesModel.setMovies(filmCards);
 
 const pageController = new PageController(filmListComponent, moviesModel);
 const filterController = new FilterController(pageMain, moviesModel);
@@ -32,6 +33,8 @@ const filterController = new FilterController(pageMain, moviesModel);
 render(pageHeader, userLevelComponent);
 render(pageMain, statisticComponent);
 render(pageMain, filmListComponent);
+
+moviesModel.setMovies(filmCards);
 
 pageController.render();
 filterController.render();

@@ -205,5 +205,4 @@ export default class MovieController {
     this._commentsComponent.onEmojiClick(this._onEmojiClick);
     this._commentsComponent.onCommentInput(this._onCommentInput);
   }
-
 }

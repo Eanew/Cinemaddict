@@ -1,8 +1,8 @@
 import FilterComponent from '../components/filter.js';
 import {RenderPosition, render, replace} from '../utils/render.js';
-import {setId} from '../utils/data-process.js';
-import {FilterType} from '../utils/const.js';
 import {getCardsByFilter} from '../utils/filter.js';
+import {FilterType} from '../utils/const.js';
+import {setId} from '../utils/data-process.js';
 
 const ALL_MOVIES_ID = `all`;
 
@@ -29,8 +29,8 @@ export default class FilterController {
       count: filterType === FilterType.ALL_MOVIES ? null : getCardsByFilter(allCards, filterType).length,
       checked: filterType === this._activeFilterType,
     }));
-    const oldComponent = this._filterComponent;
 
+    const oldComponent = this._filterComponent;
     this._filterComponent = new FilterComponent(filters);
     this._filterComponent.setFilterChangeHandler(this._onFilterChange);
 
