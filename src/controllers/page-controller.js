@@ -137,32 +137,33 @@ export default class PageController {
     render(this._filmsContainerElement, this._loadMoreButtonComponent, RenderPosition.AFTEREND);
   }
 
-  _onSortTypeChange(sortType) {
-    this._currentFilmsCount = FILMS_DISPLAY_STEP;
-
-    this._sortedCards = getSortedCards(this._moviesModel.getMovies(), sortType, 0, this._currentFilmsCount);
-
-    this._filmsContainerElement.innerHTML = ``;
-    remove(this._loadMoreButtonComponent);
-
-    const newCards = renderCards(this._filmsContainerElement, this._sortedCards, this._onDataChange, this._onVIewChange);
-
-    this._showedCardControllers = newCards;
-
-    this._renderLoadMoreButton();
-  }
-
   _removeCards() {
     this._showedCardControllers.forEach((cardController) => cardController.destroy());
     this._showedCardControllers = [];
   }
 
-  _updateCards(count) {
+  _onSortTypeChange(sortType) {
+    this._currentFilmsCount = FILMS_DISPLAY_STEP;
     this._removeCards();
+    remove(this._loadMoreButtonComponent);
 
-    this._sortedCards = getSortedCards(this._moviesModel.getMovies(), this._sortingComponent.getSortType(), 0, count);
+    this._sortedCards = getSortedCards(this._moviesModel.getMovies(), sortType, 0, this._currentFilmsCount);
     const newCards = renderCards(this._filmsContainerElement, this._sortedCards, this._onDataChange, this._onVIewChange);
-    this._showedCardControllers = this._showedCardControllers.concat(newCards);
+    this._showedCardControllers = newCards;
+
+    this._renderLoadMoreButton();
+  }
+
+  _updateCards() {
+    const sortType = this._sortingComponent.getSortType();
+    this._currentFilmsCount = FILMS_DISPLAY_STEP;
+    this._removeCards();
+    remove(this._loadMoreButtonComponent);
+
+    this._sortedCards = getSortedCards(this._moviesModel.getMovies(), sortType, 0, this._currentFilmsCount);
+    const newCards = renderCards(this._filmsContainerElement, this._sortedCards, this._onDataChange, this._onVIewChange);
+    this._showedCardControllers = newCards;
+
     this._renderLoadMoreButton();
   }
 
@@ -179,6 +180,6 @@ export default class PageController {
   }
 
   _onFilterChange() {
-    this._updateCards(FILMS_DISPLAY_STEP);
+    this._updateCards();
   }
 }

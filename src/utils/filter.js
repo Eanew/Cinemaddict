@@ -9,7 +9,7 @@ export const getHistoryCards = (cards) => cards.filter((it) => it[`user_details`
     return b - a;
   });
 
-export const getFavoritesCards = (cards) => cards.filter((it) => it[`user_details`][`watchlist`]);
+export const getFavoritesCards = (cards) => cards.filter((it) => it[`user_details`][`favorite`]);
 
 export const getCardsByFilter = (cards, filterType) => {
   switch (filterType) {
