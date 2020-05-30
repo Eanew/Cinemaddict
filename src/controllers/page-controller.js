@@ -78,8 +78,10 @@ export default class PageController {
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
     this._onVIewChange = this._onVIewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
 
     this._sortingComponent.onSortTypeChange(this._onSortTypeChange);
+    this._moviesModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   render() {
@@ -150,6 +152,20 @@ export default class PageController {
     this._renderLoadMoreButton();
   }
 
+  _removeCards() {
+    this._showedCardControllers.forEach((cardController) => cardController.destroy());
+    this._showedCardControllers = [];
+  }
+
+  _updateCards(count) {
+    this._removeCards();
+
+    this._sortedCards = getSortedCards(this._moviesModel.getMovies(), this._sortingComponent.getSortType(), 0, count);
+    const newCards = renderCards(this._filmsContainerElement, this._sortedCards, this._onDataChange, this._onVIewChange);
+    this._showedCardControllers = this._showedCardControllers.concat(newCards);
+    this._renderLoadMoreButton();
+  }
+
   _onDataChange(oldData, newData) {
     const isSuccess = this._moviesModel.updateMovie(oldData[`id`], newData);
     if (isSuccess) {
@@ -160,5 +176,9 @@ export default class PageController {
 
   _onVIewChange() {
     this._showedCardControllers.forEach((it) => it.setDefaultView());
+  }
+
+  _onFilterChange() {
+    this._updateCards(FILMS_DISPLAY_STEP);
   }
 }

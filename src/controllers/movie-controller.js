@@ -1,5 +1,5 @@
 import {isEscEvent} from '../utils/common.js';
-import {render, replace} from '../utils/render.js';
+import {render, replace, remove} from '../utils/render.js';
 
 import CardComponent from '../components/film-card.js';
 import DetailsComponent from '../components/details.js';
@@ -118,7 +118,15 @@ export default class MovieController {
     return this._data;
   }
 
-  reset() {
+  destroy() {
+    remove(this._cardComponent);
+    remove(this._detailsComponent);
+    remove(this._commentsComponent);
+    document.removeEventListener(`keydown`, this._onPopupEscPress);
+    document.removeEventListener(`click`, this._closePopup);
+  }
+
+  formReset() {
     this._commentValue = null;
     this._emojiValue = null;
     this._commentsComponent.fillLocalComment(this._emojiValue, this._commentValue);
@@ -135,7 +143,7 @@ export default class MovieController {
     this._onDataChange(this._data, Object.assign({}, this._data, {
       'comments': this._comments.map((it) => it[`id`]),
     }));
-    this.reset();
+    this.formReset();
   }
 
   _closePopup() {
