@@ -19,7 +19,7 @@ const pageHeader = document.querySelector(`.header`);
 const pageMain = document.querySelector(`.main`);
 
 const filmCards = generateFilmCardsData(FILM_CARDS_COUNT);
-const watchedMovies = getCardsByFilter(FilterType.HISTORY);
+const watchedMovies = getCardsByFilter(filmCards, FilterType.HISTORY);
 
 const userLevelComponent = new UserLevelComponent(watchedMovies);
 const statisticComponent = new UserStatisticComponent(watchedMovies);
