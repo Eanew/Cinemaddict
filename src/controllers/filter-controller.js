@@ -1,8 +1,9 @@
-import FilterComponent from '../components/filter.js';
 import {RenderPosition, render, replace} from '../utils/render.js';
 import {getCardsByFilter} from '../utils/filter.js';
 import {FilterType} from '../utils/const.js';
 import {setId} from '../utils/data-process.js';
+
+import FilterComponent from '../components/filter.js';
 
 const ALL_MOVIES_ID = `all`;
 

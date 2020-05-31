@@ -1,39 +1,24 @@
 import AbstractComponent from './abstract-component.js';
 
-const AVATAR = `images/bitmap@2x.png`;
+const createUserLevelTemplate = (userInfo) => {
+  const {avatar, rank} = userInfo;
 
-const Rank = {
-  'Movie Buff': 21,
-  'Fan': 11,
-  'Novice': 1,
-};
-
-const getRank = (watchedMovies) => {
-  for (const count in Rank) {
-    if (Rank.hasOwnProperty(count) && Rank[count] <= watchedMovies) {
-      return count;
-    }
-  }
-  return ``;
-};
-
-const createUserLevelTemplate = (rank) => {
   return rank ? (
     `<section class="header__profile profile">
       <p class="profile__rating">${rank}</p>
-      <img class="profile__avatar" src="${AVATAR}" alt="Avatar" width="35" height="35">
+      <img class="profile__avatar" src="${avatar}" alt="Avatar" width="35" height="35">
     </section>`
   ) : ``;
 };
 
 export default class UserLevelComponent extends AbstractComponent {
-  constructor(films) {
+  constructor(userInfo) {
     super();
 
-    this._rank = getRank(films.length);
+    this._userInfo = userInfo;
   }
 
   getTemplate() {
-    return createUserLevelTemplate(this._rank);
+    return createUserLevelTemplate(this._userInfo);
   }
 }

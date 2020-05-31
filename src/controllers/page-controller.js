@@ -82,6 +82,15 @@ export default class PageController {
     this._sortingComponent.onSortTypeChange(this._updateCards);
   }
 
+  hide() {
+    this._container.hide();
+    this._sortingComponent.resetSortType();
+  }
+
+  show() {
+    this._container.show();
+  }
+
   render() {
     if (!this._moviesModel.getMovies() || !this._moviesModel.getMovies().length) {
       render(this._sectionContainerElement, this._noMoviesComponent);
