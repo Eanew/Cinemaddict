@@ -175,7 +175,6 @@ export default class StatisticController {
     }
     this._statisticComponent.show();
     this._isShowed = true;
-    createChart(this._statisticCtx, this._genres);
   }
 
   getDisplayStatus() {
@@ -200,6 +199,7 @@ export default class StatisticController {
     } else {
       render(this._statisticContainer, this._statisticComponent);
     }
+    createChart(this._statisticCtx, this._genres);
   }
 
   renderUserLevel() {
@@ -234,6 +234,5 @@ export default class StatisticController {
     this._interval = interval;
     this._cards = getCardsByInterval(this._moviesModel.getAllMovies(), this._interval);
     this.render(isIntervalChange);
-    createChart(this._statisticCtx, this._genres);
   }
 }
