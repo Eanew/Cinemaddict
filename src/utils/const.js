@@ -1,3 +1,5 @@
+export const HIDDEN_CLASS = `visually-hidden`;
+
 export const FilterType = {
   ALL_MOVIES: `All movies`,
   WATCHLIST: `Watchlist`,

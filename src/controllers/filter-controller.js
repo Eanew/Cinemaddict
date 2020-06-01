@@ -3,6 +3,8 @@ import {getCardsByFilter} from '../utils/filter.js';
 import {FilterType} from '../utils/const.js';
 import {setId} from '../utils/data-process.js';
 
+import {statisticDisplayToggle} from '../main.js';
+
 import FilterComponent from '../components/filter.js';
 
 const ALL_MOVIES_ID = `all`;
@@ -21,6 +23,11 @@ export default class FilterController {
     this._moviesModel.setDataChangeHandler(this._onDataChange);
   }
 
+  reset() {
+    this._onFilterChange(FilterType.ALL_MOVIES);
+    this._filterComponent.resetFilter();
+  }
+
   render() {
     const container = this._container;
     const allCards = this._moviesModel.getAllMovies();
@@ -34,6 +41,7 @@ export default class FilterController {
     const oldComponent = this._filterComponent;
     this._filterComponent = new FilterComponent(filters);
     this._filterComponent.setFilterChangeHandler(this._onFilterChange);
+    this._filterComponent.setStatisticButtonClickHandler(statisticDisplayToggle);
 
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);

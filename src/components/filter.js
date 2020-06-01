@@ -44,6 +44,11 @@ export default class FilterComponent extends AbstractComponent {
     return createFilterTemplate(this._filters);
   }
 
+  resetFilter() {
+    const defaultFilterButton = this.getElement().querySelectorAll(`.main-navigation__item`)[0];
+    swapActiveElements(this.getElement(), defaultFilterButton, ACTIVE_FILTER_CLASS);
+  }
+
   setFilterChangeHandler(handler) {
     this.getElement().querySelector(`.main-navigation__items`)
       .addEventListener(`click`, (evt) => {
@@ -55,6 +60,15 @@ export default class FilterComponent extends AbstractComponent {
         const filterType = getFilterType(evt.target);
         swapActiveElements(this.getElement(), evt.target, ACTIVE_FILTER_CLASS);
         handler(filterType);
+      });
+  }
+
+  setStatisticButtonClickHandler(handler) {
+    this.getElement().querySelector(`.main-navigation__additional`)
+      .addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        swapActiveElements(this.getElement(), evt.target, ACTIVE_FILTER_CLASS);
+        handler();
       });
   }
 }

@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component.js';
-import {StatisticInterval, StatisticField} from '../utils/const.js';
+import {StatisticInterval, StatisticField, HIDDEN_CLASS} from '../utils/const.js';
 import {createMarkup, setId} from '../utils/data-process.js';
 import {Regular} from '../utils/common.js';
 
@@ -45,7 +45,7 @@ const renderStatisticFieldMarkup = (textField) => {
   ) : ``;
 };
 
-const createStatisticTemplate = (userInfo, statisticFields) => {
+const createStatisticTemplate = (userInfo, statisticFields, isShowed) => {
   const {avatar, rank} = userInfo;
 
   const rankMarkup = createStatisticRankMarkup(avatar, rank);
@@ -53,7 +53,7 @@ const createStatisticTemplate = (userInfo, statisticFields) => {
   const statisticFieldsMarkup = createMarkup(statisticFields, renderStatisticFieldMarkup);
 
   return (
-    `<section class="statistic">
+    `<section class="statistic${!isShowed ? ` ${HIDDEN_CLASS}` : ``}">
       ${rankMarkup}
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -74,15 +74,28 @@ const createStatisticTemplate = (userInfo, statisticFields) => {
 };
 
 export default class StatisticComponent extends AbstractComponent {
-  constructor(userInfo, statisticFields, genres) {
+  constructor(userInfo, statisticFields, genres, displayStatus) {
     super();
 
     this._userInfo = userInfo;
     this._statisticFields = statisticFields;
     this._genres = genres;
+    this._displayStatus = displayStatus;
   }
 
   getTemplate() {
-    return createStatisticTemplate(this._userInfo, this._statisticFields);
+    return createStatisticTemplate(this._userInfo, this._statisticFields, this._displayStatus);
+  }
+
+  onIntervalChange(handler) {
+    this.getElement().querySelector(`.statistic__filters`)
+      .addEventListener(`change`, (evt) => {
+        if (evt.target.tagName !== `INPUT`) {
+          return;
+        }
+
+        const interval = Object.values(StatisticInterval).find((it) => setId(it) === evt.target.value);
+        handler(interval, evt.target.id);
+      });
   }
 }

@@ -74,21 +74,31 @@ export default class PageController {
     this._currentFilmsCount = FILMS_DISPLAY_STEP;
     this._showedCardControllers = [];
 
+    this._displayStatus = true;
+
+    this.show = this.show.bind(this);
     this._updateCards = this._updateCards.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
     this._onVIewChange = this._onVIewChange.bind(this);
 
-    this._moviesModel.setFilterChangeHandler(this._updateCards);
     this._sortingComponent.onSortTypeChange(this._updateCards);
+    this._moviesModel.setFilterChangeHandler(this.show);
   }
 
   hide() {
     this._container.hide();
+    this._sortingComponent.hide();
     this._sortingComponent.resetSortType();
+    this._displayStatus = false;
   }
 
   show() {
-    this._container.show();
+    this._updateCards();
+    if (this._displayStatus === false) {
+      this._container.show();
+      this._sortingComponent.show();
+      this._displayStatus = true;
+    }
   }
 
   render() {

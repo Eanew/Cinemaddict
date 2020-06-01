@@ -52,7 +52,9 @@ export default class SortingComponent extends AbstractComponent {
   }
 
   resetSortType() {
+    const defaultSortingButton = this.getElement().querySelectorAll(`.sort__button`)[0];
     this._currentSortType = SortType.DEFAULT;
+    swapActiveElements(this.getElement(), defaultSortingButton, ACTIVE_BUTTON_CLASS);
   }
 
   onSortTypeChange(handler) {

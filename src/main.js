@@ -25,7 +25,19 @@ const filterController = new FilterController(pageMain, moviesModel);
 const statisticController = new StatisticController(pageHeader, pageMain, moviesModel);
 const pageController = new PageController(filmListComponent, moviesModel);
 
+export const statisticDisplayToggle = () => {
+  if (statisticController.getDisplayStatus() === false) {
+    pageController.hide();
+    statisticController.show();
+  } else {
+    statisticController.hide();
+    filterController.reset();
+    pageController.show();
+  }
+};
+
 filterController.render();
 statisticController.render();
+statisticController.hide();
 render(pageMain, filmListComponent);
 pageController.render();

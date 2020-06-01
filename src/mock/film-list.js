@@ -96,7 +96,7 @@ const RandomFilmCard = function (index) {
   this[`user_details`] = {
     'watchlist': Math.round(Math.random()),
     'already_watched': Math.round(Math.random()),
-    'watching_date': `20${Math.floor(Math.random() * 2)}${Math.floor(Math.random() * 10)}-04-12T16:12:32.554Z`,
+    'watching_date': `2020-0${getRandomCount(4, 5)}-2${getRandomCount(0, 9)}T16:12:32.554Z`,
     'favorite': Math.round(Math.random()),
   };
 };
