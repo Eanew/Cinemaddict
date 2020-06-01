@@ -74,7 +74,7 @@ export default class PageController {
     this._currentFilmsCount = FILMS_DISPLAY_STEP;
     this._showedCardControllers = [];
 
-    this._displayStatus = true;
+    this._isShowed = true;
 
     this.show = this.show.bind(this);
     this._updateCards = this._updateCards.bind(this);
@@ -89,15 +89,15 @@ export default class PageController {
     this._container.hide();
     this._sortingComponent.hide();
     this._sortingComponent.resetSortType();
-    this._displayStatus = false;
+    this._isShowed = false;
   }
 
   show() {
     this._updateCards();
-    if (this._displayStatus === false) {
+    if (this._isShowed === false) {
       this._container.show();
       this._sortingComponent.show();
-      this._displayStatus = true;
+      this._isShowed = true;
     }
   }
 

@@ -38,6 +38,6 @@ export const statisticDisplayToggle = () => {
 
 filterController.render();
 statisticController.render();
-statisticController.hide();
+statisticController.renderUserLevel();
 render(pageMain, filmListComponent);
 pageController.render();

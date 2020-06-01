@@ -1,6 +1,6 @@
 import AbstractComponent from './abstract-component.js';
-import {StatisticInterval, StatisticField, HIDDEN_CLASS} from '../utils/const.js';
-import {createMarkup, setId} from '../utils/data-process.js';
+import {StatisticInterval, HIDDEN_CLASS} from '../utils/const.js';
+import {createMarkup, setId, matchActiveItems} from '../utils/data-process.js';
 import {Regular} from '../utils/common.js';
 
 const createStatisticRankMarkup = (avatar, rank) => {
@@ -45,11 +45,14 @@ const renderStatisticFieldMarkup = (textField) => {
   ) : ``;
 };
 
-const createStatisticTemplate = (userInfo, statisticFields, isShowed) => {
+const createStatisticTemplate = (userInfo, statisticFields, isShowed, currentInterval) => {
   const {avatar, rank} = userInfo;
 
+  const intervals = Object.values(StatisticInterval);
+  const activeItems = matchActiveItems(currentInterval, intervals);
+
   const rankMarkup = createStatisticRankMarkup(avatar, rank);
-  const intervalFieldsMarkup = createMarkup(Object.values(StatisticInterval), renderIntervalFieldMarkup, 0);
+  const intervalFieldsMarkup = createMarkup(intervals, renderIntervalFieldMarkup, ...activeItems);
   const statisticFieldsMarkup = createMarkup(statisticFields, renderStatisticFieldMarkup);
 
   return (
@@ -74,17 +77,18 @@ const createStatisticTemplate = (userInfo, statisticFields, isShowed) => {
 };
 
 export default class StatisticComponent extends AbstractComponent {
-  constructor(userInfo, statisticFields, genres, displayStatus) {
+  constructor(userInfo, statisticFields, genres, isShowed, currentInterval) {
     super();
 
     this._userInfo = userInfo;
     this._statisticFields = statisticFields;
     this._genres = genres;
-    this._displayStatus = displayStatus;
+    this._isShowed = isShowed;
+    this._currentInterval = currentInterval;
   }
 
   getTemplate() {
-    return createStatisticTemplate(this._userInfo, this._statisticFields, this._displayStatus);
+    return createStatisticTemplate(this._userInfo, this._statisticFields, this._isShowed, this._currentInterval);
   }
 
   onIntervalChange(handler) {
@@ -95,7 +99,7 @@ export default class StatisticComponent extends AbstractComponent {
         }
 
         const interval = Object.values(StatisticInterval).find((it) => setId(it) === evt.target.value);
-        handler(interval, evt.target.id);
+        handler(interval);
       });
   }
 }

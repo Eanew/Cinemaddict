@@ -1,15 +1,14 @@
-import {RenderPosition, render, replace, remove} from '../utils/render.js';
+import {render, replace, remove} from '../utils/render.js';
 import {FilterType, StatisticInterval, StatisticField} from '../utils/const.js';
 import {getCardsByFilter} from '../utils/filter.js';
 import {getCardsByInterval} from '../utils/statistic.js';
-import {getDuration, setId} from '../utils/data-process.js';
+import {getDuration} from '../utils/data-process.js';
 import {Regular} from '../utils/common.js';
 
 import UserLevelComponent from '../components/user-level.js';
 import StatisticComponent from '../components/statistic.js';
 
 const AVATAR = `images/bitmap@2x.png`;
-const INTERVAL_ID_PREFIX = `statistic-`;
 
 const Rank = {
   'Movie Buff': 21,
@@ -74,11 +73,13 @@ export default class StatisticController {
     this._oldUserLevelComponent = null;
     this._userLevelComponent = null;
     this._statisticComponent = null;
-    this._displayStatus = false;
 
-    this._isDataChanged = null;
+    this._interval = StatisticInterval.ALL_TIME;
+    this._isShowed = false;
+    this._isDataChanged = false;
+
     this._cards = null;
-    this._userInfo = {
+    this._user = {
       avatar: AVATAR,
       rank: null,
     };
@@ -92,10 +93,12 @@ export default class StatisticController {
   }
 
   hide() {
-    if (this._displayStatus === true) {
+    if (this._isShowed === true) {
       this._statisticComponent.hide();
-      this._displayStatus = false;
-      this._onIntervalChange(StatisticInterval.ALL_TIME, (INTERVAL_ID_PREFIX + setId(StatisticInterval.ALL_TIME)));
+      this._isShowed = false;
+      if (this._interval !== StatisticInterval.ALL_TIME) {
+        this._onIntervalChange(StatisticInterval.ALL_TIME);
+      }
     }
   }
 
@@ -105,24 +108,23 @@ export default class StatisticController {
       this._isDataChanged = false;
     }
     this._statisticComponent.show();
-    this._displayStatus = true;
+    this._isShowed = true;
   }
 
   getDisplayStatus() {
-    return this._displayStatus;
+    return this._isShowed;
   }
 
   render(isIntervalChange) {
     if (!isIntervalChange) {
       this._cards = getCardsByFilter(this._moviesModel.getAllMovies(), FilterType.HISTORY);
-      this._userInfo.rank = getRank(this._cards.length);
-      this._renderUserLevel();
+      this._user.rank = getRank(this._cards.length);
     }
     const genres = getSortedGenres(this._cards);
-    const statisticFields = getStatisticFields(this._cards, genres);
+    const statistic = getStatisticFields(this._cards, genres);
 
     const oldStatisticComponent = this._statisticComponent;
-    this._statisticComponent = new StatisticComponent(this._userInfo, statisticFields, genres, this._displayStatus);
+    this._statisticComponent = new StatisticComponent(this._user, statistic, genres, this._isShowed, this._interval);
     this._statisticComponent.onIntervalChange(this._onIntervalChange);
 
     if (oldStatisticComponent) {
@@ -132,7 +134,7 @@ export default class StatisticController {
     }
   }
 
-  _renderUserLevel() {
+  renderUserLevel() {
     const oldUserLevelComponent = this._userLevelComponent;
     const oldElement = oldUserLevelComponent ? oldUserLevelComponent.getElement() : null;
     const isShowed = oldElement ? this._userLevelContainer.contains(oldElement) : false;
@@ -140,7 +142,7 @@ export default class StatisticController {
     const isToShow = !isShowed && this._cards.length;
     const isToRemove = isShowed && !this._cards.length;
 
-    this._userLevelComponent = new UserLevelComponent(this._userInfo);
+    this._userLevelComponent = new UserLevelComponent(this._user);
     if (isToReplace) {
       replace(this._userLevelComponent, oldUserLevelComponent);
     } else if (isToShow) {
@@ -153,16 +155,16 @@ export default class StatisticController {
   _onDataChange() {
     this._cards = getCardsByFilter(this._moviesModel.getAllMovies(), FilterType.HISTORY);
     this._isDataChanged = true;
-    if (Object.values(Rank).some((count) => this._cards.length === count || count - 1)) {
-      this._userInfo.rank = getRank(this._cards.length);
-      this._renderUserLevel();
+    if (Object.values(Rank).some((count) => this._cards.length === count || this._cards.length === count - 1)) {
+      this._user.rank = getRank(this._cards.length);
+      this.renderUserLevel();
     }
   }
 
-  _onIntervalChange(interval, id) {
+  _onIntervalChange(interval) {
     const isIntervalChange = true;
-    this._cards = getCardsByInterval(this._moviesModel.getAllMovies(), interval);
+    this._interval = interval;
+    this._cards = getCardsByInterval(this._moviesModel.getAllMovies(), this._interval);
     this.render(isIntervalChange);
-    this._statisticComponent.getElement().querySelector(`#${id}`).checked = true;
   }
 }
