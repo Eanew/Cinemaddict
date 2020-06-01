@@ -1,4 +1,4 @@
-import {RenderPosition, render, replace} from '../utils/render.js';
+import {RenderPosition, render, replace, remove} from '../utils/render.js';
 import {FilterType, StatisticInterval, StatisticField} from '../utils/const.js';
 import {getCardsByFilter} from '../utils/filter.js';
 import {getCardsByInterval} from '../utils/statistic.js';
@@ -76,6 +76,7 @@ export default class StatisticController {
     this._statisticComponent = null;
     this._displayStatus = false;
 
+    this._isDataChanged = null;
     this._cards = null;
     this._userInfo = {
       avatar: AVATAR,
@@ -99,6 +100,10 @@ export default class StatisticController {
   }
 
   show() {
+    if (this._isDataChanged) {
+      this.render();
+      this._isDataChanged = false;
+    }
     this._statisticComponent.show();
     this._displayStatus = true;
   }
@@ -129,17 +134,26 @@ export default class StatisticController {
 
   _renderUserLevel() {
     const oldUserLevelComponent = this._userLevelComponent;
+    const oldElement = oldUserLevelComponent ? oldUserLevelComponent.getElement() : null;
+    const isShowed = oldElement ? this._userLevelContainer.contains(oldElement) : false;
+    const isToReplace = isShowed && this._cards.length;
+    const isToShow = !isShowed && this._cards.length;
+    const isToRemove = isShowed && !this._cards.length;
+
     this._userLevelComponent = new UserLevelComponent(this._userInfo);
-    if (oldUserLevelComponent && oldUserLevelComponent.getElement()) {
+    if (isToReplace) {
       replace(this._userLevelComponent, oldUserLevelComponent);
-    } else {
+    } else if (isToShow) {
       render(this._userLevelContainer, this._userLevelComponent);
+    } else if (isToRemove) {
+      remove(oldUserLevelComponent);
     }
   }
 
   _onDataChange() {
     this._cards = getCardsByFilter(this._moviesModel.getAllMovies(), FilterType.HISTORY);
-    if (Object.values(Rank).some((count) => count === this._cards.length)) {
+    this._isDataChanged = true;
+    if (Object.values(Rank).some((count) => this._cards.length === count || count - 1)) {
       this._userInfo.rank = getRank(this._cards.length);
       this._renderUserLevel();
     }
