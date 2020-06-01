@@ -8,7 +8,72 @@ import {Regular} from '../utils/common.js';
 import UserLevelComponent from '../components/user-level.js';
 import StatisticComponent from '../components/statistic.js';
 
+import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+
 const AVATAR = `images/bitmap@2x.png`;
+const BAR_HEIGHT = 50;
+
+const createChart = (ctx, genres) => {
+  ctx.height = BAR_HEIGHT * genres.length;
+
+  return new Chart(ctx, {
+    plugins: [ChartDataLabels],
+    type: `horizontalBar`,
+    data: {
+      labels: genres.map((genre) => genre.name),
+      datasets: [{
+        data: genres.map((genre) => genre.count),
+        backgroundColor: `#ffe800`,
+        hoverBackgroundColor: `#ffe800`,
+        anchor: `start`
+      }]
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 20
+          },
+          color: `#ffffff`,
+          anchor: `start`,
+          align: `start`,
+          offset: 40,
+        }
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: `#ffffff`,
+            padding: 100,
+            fontSize: 20
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          barThickness: 24
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+        }],
+      },
+      legend: {
+        display: false
+      },
+      tooltips: {
+        enabled: false
+      }
+    }
+  });
+};
 
 const Rank = {
   'Movie Buff': 21,
@@ -83,6 +148,7 @@ export default class StatisticController {
       avatar: AVATAR,
       rank: null,
     };
+    this._genres = null;
 
     this.hide = this.hide.bind(this);
     this._onIntervalChange = this._onIntervalChange.bind(this);
@@ -109,6 +175,7 @@ export default class StatisticController {
     }
     this._statisticComponent.show();
     this._isShowed = true;
+    createChart(this._statisticCtx, this._genres);
   }
 
   getDisplayStatus() {
@@ -120,12 +187,13 @@ export default class StatisticController {
       this._cards = getCardsByFilter(this._moviesModel.getAllMovies(), FilterType.HISTORY);
       this._user.rank = getRank(this._cards.length);
     }
-    const genres = getSortedGenres(this._cards);
-    const statistic = getStatisticFields(this._cards, genres);
+    this._genres = getSortedGenres(this._cards);
+    const statistic = getStatisticFields(this._cards, this._genres);
 
     const oldStatisticComponent = this._statisticComponent;
-    this._statisticComponent = new StatisticComponent(this._user, statistic, genres, this._isShowed, this._interval);
+    this._statisticComponent = new StatisticComponent(this._user, statistic, this._isShowed, this._interval);
     this._statisticComponent.onIntervalChange(this._onIntervalChange);
+    this._statisticCtx = this._statisticComponent.getElement().querySelector(`.statistic__chart`);
 
     if (oldStatisticComponent) {
       replace(this._statisticComponent, oldStatisticComponent);
@@ -166,5 +234,6 @@ export default class StatisticController {
     this._interval = interval;
     this._cards = getCardsByInterval(this._moviesModel.getAllMovies(), this._interval);
     this.render(isIntervalChange);
+    createChart(this._statisticCtx, this._genres);
   }
 }

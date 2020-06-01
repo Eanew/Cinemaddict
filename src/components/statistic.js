@@ -3,6 +3,72 @@ import {StatisticInterval, HIDDEN_CLASS} from '../utils/const.js';
 import {createMarkup, setId, matchActiveItems} from '../utils/data-process.js';
 import {Regular} from '../utils/common.js';
 
+// import Chart from 'chart.js';
+// import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+// const BAR_HEIGHT = 50;
+
+// const createChart = (ctx, genres) => {
+//   ctx.height = BAR_HEIGHT * genres.length;
+
+//   return new Chart(ctx, {
+//     plugins: [ChartDataLabels],
+//     type: `horizontalBar`,
+//     data: {
+//       labels: genres.map((genre) => genre.name),
+//       datasets: [{
+//         data: genres.map((genre) => genre.count),
+//         backgroundColor: `#ffe800`,
+//         hoverBackgroundColor: `#ffe800`,
+//         anchor: `start`
+//       }]
+//     },
+//     options: {
+//       plugins: {
+//         datalabels: {
+//           font: {
+//             size: 20
+//           },
+//           color: `#ffffff`,
+//           anchor: `start`,
+//           align: `start`,
+//           offset: 40,
+//         }
+//       },
+//       scales: {
+//         yAxes: [{
+//           ticks: {
+//             fontColor: `#ffffff`,
+//             padding: 100,
+//             fontSize: 20
+//           },
+//           gridLines: {
+//             display: false,
+//             drawBorder: false
+//           },
+//           barThickness: 24
+//         }],
+//         xAxes: [{
+//           ticks: {
+//             display: false,
+//             beginAtZero: true
+//           },
+//           gridLines: {
+//             display: false,
+//             drawBorder: false
+//           },
+//         }],
+//       },
+//       legend: {
+//         display: false
+//       },
+//       tooltips: {
+//         enabled: false
+//       }
+//     }
+//   });
+// };
+
 const createStatisticRankMarkup = (avatar, rank) => {
   return rank ? (
     `<p class="statistic__rank">
@@ -77,12 +143,11 @@ const createStatisticTemplate = (userInfo, statisticFields, isShowed, currentInt
 };
 
 export default class StatisticComponent extends AbstractComponent {
-  constructor(userInfo, statisticFields, genres, isShowed, currentInterval) {
+  constructor(userInfo, statisticFields, isShowed, currentInterval) {
     super();
 
     this._userInfo = userInfo;
     this._statisticFields = statisticFields;
-    this._genres = genres;
     this._isShowed = isShowed;
     this._currentInterval = currentInterval;
   }
