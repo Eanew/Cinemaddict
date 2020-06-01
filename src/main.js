@@ -25,7 +25,7 @@ const filterController = new FilterController(pageMain, moviesModel);
 const statisticController = new StatisticController(pageHeader, pageMain, moviesModel);
 const pageController = new PageController(filmListComponent, moviesModel);
 
-export const statisticDisplayToggle = () => {
+const statisticDisplayToggle = () => {
   if (statisticController.getDisplayStatus() === false) {
     pageController.hide();
     statisticController.show();
@@ -41,3 +41,5 @@ statisticController.render();
 statisticController.renderUserLevel();
 render(pageMain, filmListComponent);
 pageController.render();
+
+export {statisticDisplayToggle};

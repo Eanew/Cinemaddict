@@ -148,7 +148,6 @@ export default class StatisticController {
       avatar: AVATAR,
       rank: null,
     };
-    this._genres = null;
 
     this.hide = this.hide.bind(this);
     this._onIntervalChange = this._onIntervalChange.bind(this);
@@ -186,20 +185,20 @@ export default class StatisticController {
       this._cards = getCardsByFilter(this._moviesModel.getAllMovies(), FilterType.HISTORY);
       this._user.rank = getRank(this._cards.length);
     }
-    this._genres = getSortedGenres(this._cards);
-    const statistic = getStatisticFields(this._cards, this._genres);
+    const genres = getSortedGenres(this._cards);
+    const statistic = getStatisticFields(this._cards, genres);
 
     const oldStatisticComponent = this._statisticComponent;
     this._statisticComponent = new StatisticComponent(this._user, statistic, this._isShowed, this._interval);
     this._statisticComponent.onIntervalChange(this._onIntervalChange);
-    this._statisticCtx = this._statisticComponent.getElement().querySelector(`.statistic__chart`);
+    const statisticCtx = this._statisticComponent.getElement().querySelector(`.statistic__chart`);
 
     if (oldStatisticComponent) {
       replace(this._statisticComponent, oldStatisticComponent);
     } else {
       render(this._statisticContainer, this._statisticComponent);
     }
-    createChart(this._statisticCtx, this._genres);
+    createChart(statisticCtx, genres);
   }
 
   renderUserLevel() {
