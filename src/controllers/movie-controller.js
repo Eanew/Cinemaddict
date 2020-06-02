@@ -6,6 +6,7 @@ import DetailsComponent from '../components/details.js';
 import CommentsComponent from '../components/comments.js';
 
 const PERMISSION_TO_OPEN_NEW_POPUP_TIMEOUT = 200;
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const pageBody = document.querySelector(`body`);
 
@@ -183,6 +184,9 @@ export default class MovieController {
           .then(() => {
             this._comments = this._comments.filter((it, i) => i !== index);
             this._commentsComponent.rerender(this._comments);
+          })
+          .catch(() => {
+            this._shake();
           });
       }
     });
@@ -199,12 +203,20 @@ export default class MovieController {
   }
 
   _onCommentSubmit() {
-    this._api.createComment(this._data[`id`], this._commentsComponent.getLocalComment())
-      .then((response) => {
-        this.commentReset();
-        this._comments = response.comments;
-        this._commentsComponent.rerender(this._comments);
-      });
+    const localComment = this._commentsComponent.getLocalComment();
+    if (localComment.emotion && localComment.comment && localComment.comment.length) {
+      this._api.createComment(this._data[`id`], localComment)
+        .then((response) => {
+          this.commentReset();
+          this._comments = response.comments;
+          this._commentsComponent.rerender(this._comments);
+        })
+        .catch(() => {
+          this._shake();
+        });
+    } else {
+      this._shake();
+    }
   }
 
   _addPopupListeners() {
@@ -214,5 +226,13 @@ export default class MovieController {
     this._commentsComponent.onEmojiClick(this._onEmojiClick);
     this._commentsComponent.onCommentInput(this._onCommentInput);
     this._commentsComponent.onCommentSubmit(this._onCommentSubmit);
+  }
+
+  _shake() {
+    this._detailsComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._detailsComponent.getElement().style.animation = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }

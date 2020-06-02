@@ -114,7 +114,7 @@ export default class CommentsComponent extends AbstractSmartComponent {
 
   getLocalComment() {
     return Object.assign({}, this._localComment, {
-      'comment': encode(this._localComment[`comment`]),
+      'comment': this._localComment[`comment`] ? encode(this._localComment[`comment`]) : null,
       'date': new Date().toISOString(),
     });
   }
@@ -168,6 +168,7 @@ export default class CommentsComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`.film-details__new-comment`)
       .addEventListener(`keydown`, (evt) => {
         if (evt.ctrlKey && evt.key === Key.ENTER) {
+          evt.preventDefault();
           handler();
         }
       });
