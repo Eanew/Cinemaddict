@@ -99,7 +99,8 @@ export default class CommentsComponent extends AbstractSmartComponent {
     return createCommentsTemplate(this._comments);
   }
 
-  rerender() {
+  rerender(newComments) {
+    this._comments = newComments ? [].concat(newComments) : this._comments;
     super.rerender();
     this.fillLocalComment(this._localComment[`emotion`], this._localComment[`comment`]);
   }
@@ -129,10 +130,6 @@ export default class CommentsComponent extends AbstractSmartComponent {
 
     this._localComment[`emotion`] = emoji;
     this._localComment[`comment`] = comment;
-  }
-
-  updateComments(newComments) {
-    this._comments = [].concat(newComments);
   }
 
   onCommentsListClick(handler) {

@@ -35,9 +35,9 @@ export default class MovieController {
     this._lastDetailsComponent = null;
     this._commentsComponent = null;
     this._commentsContainer = null;
-    this._comments = [];
     this._commentValue = null;
     this._emojiValue = null;
+    this._comments = [];
 
     this._closePopup = this._closePopup.bind(this);
     this._onPopupEscPress = this._onPopupEscPress.bind(this);
@@ -58,11 +58,6 @@ export default class MovieController {
     this._detailsComponent = new DetailsComponent(card);
     this._commentsComponent = new CommentsComponent(this._comments);
     this._commentsContainer = this._detailsComponent.getElement().querySelector(`.form-details__bottom-container`);
-
-    if (this._emojiValue || this._commentValue) {
-      this._commentsComponent.fillLocalComment(this._emojiValue, this._commentValue);
-    }
-    render(this._commentsContainer, this._commentsComponent);
 
     const UserDetails = Object.assign({}, card[`user_details`]);
 
@@ -99,6 +94,11 @@ export default class MovieController {
 
     this._cardComponent.onPopupOpenersClick((evt) => this._openPopup(evt));
 
+    if (this._emojiValue || this._commentValue) {
+      this._commentsComponent.fillLocalComment(this._emojiValue, this._commentValue);
+    }
+    render(this._commentsContainer, this._commentsComponent);
+
     if (oldCardComponent && oldDetailsComponent) {
 
       if (pageBody.contains(oldDetailsComponent.getElement())) {
@@ -109,7 +109,6 @@ export default class MovieController {
       replace(this._cardComponent, oldCardComponent);
       return;
     }
-
     render(this._container, this._cardComponent);
   }
 
@@ -172,8 +171,7 @@ export default class MovieController {
     this._api.getComments(this._data[`id`])
       .then((response) => {
         this._comments = response;
-        this._commentsComponent.updateComments(this._comments);
-        this._commentsComponent.rerender();
+        this._commentsComponent.rerender(this._comments);
       });
   }
 
@@ -184,8 +182,7 @@ export default class MovieController {
         this._api.deleteComment(this._comments[index][`id`])
           .then(() => {
             this._comments = this._comments.filter((it, i) => i !== index);
-            this._commentsComponent.updateComments(this._comments);
-            this._commentsComponent.rerender();
+            this._commentsComponent.rerender(this._comments);
           });
       }
     });
@@ -204,10 +201,9 @@ export default class MovieController {
   _onCommentSubmit() {
     this._api.createComment(this._data[`id`], this._commentsComponent.getLocalComment())
       .then((response) => {
-        this._comments = response.comments;
-        this._commentsComponent.updateComments(this._comments);
         this.commentReset();
-        this._commentsComponent.rerender();
+        this._comments = response.comments;
+        this._commentsComponent.rerender(this._comments);
       });
   }
 

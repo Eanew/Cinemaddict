@@ -1,4 +1,4 @@
-import AbstractSmartComponent from './abstract-smart-component.js';
+import AbstractComponent from './abstract-component.js';
 import {createMarkup, setTwoDigit, setActiveItems, getDuration} from '../utils/data-process.js';
 
 const GENRES_FIELD_NAME = `Genres`;
@@ -148,7 +148,7 @@ export const createDetailsTemplate = (film) => {
   );
 };
 
-export default class DetailsComponent extends AbstractSmartComponent {
+export default class DetailsComponent extends AbstractComponent {
   constructor(card) {
     super();
 
@@ -159,14 +159,6 @@ export default class DetailsComponent extends AbstractSmartComponent {
     return createDetailsTemplate(this._card);
   }
 
-  rerender() {
-    super.rerender();
-  }
-
-  // recoveryListeners() {
-
-  // }
-
   onPopupClick(handler) {
     this.getElement().addEventListener(`click`, (evt) => handler(evt));
   }
@@ -174,13 +166,6 @@ export default class DetailsComponent extends AbstractSmartComponent {
   onCloseButtonClick(handler) {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
   }
-
-  // onFormSubmit(handler) {
-  //   this.getElement().querySelector(`.film-details__inner`).addEventListener(`submit`, (evt) => {
-  //     evt.preventDefault();
-  //     handler(evt);
-  //   });
-  // }
 
   onAddToWatchlistButtonClick(handler) {
     this.getElement().querySelector(`#watchlist`).addEventListener(`click`, (evt) => {
