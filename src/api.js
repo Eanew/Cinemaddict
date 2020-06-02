@@ -34,6 +34,11 @@ const API = class {
       .then((response) => response.json());
   }
 
+  getComments(id) {
+    return this._load({url: `comments/${id}`})
+      .then((response) => response.json());
+  }
+
   createComment(id, comment) {
     return this._load({
       url: `comments/${id}`,

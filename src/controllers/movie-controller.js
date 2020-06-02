@@ -197,10 +197,10 @@ export default class MovieController {
   _onCommentSubmit() {
     this._api.createComment(this._data[`id`], this._commentsComponent.getLocalComment())
       .then((response) => {
-        console.dir(response);
         this._comments = response.comments;
-        // this._commentsComponent.updateComments(this._comments);
-        // this.commentReset();
+        this._commentsComponent.updateComments(this._comments);
+        this.commentReset();
+        this._commentsComponent.rerender();
       });
   }
 

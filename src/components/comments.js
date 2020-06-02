@@ -101,7 +101,7 @@ export default class CommentsComponent extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
-    this.fillLocalComment(this._localComment[`emoji`], this._localComment[`comment`]);
+    this.fillLocalComment(this._localComment[`emotion`], this._localComment[`comment`]);
   }
 
   recoveryListeners() {
@@ -127,7 +127,7 @@ export default class CommentsComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`.film-details__comment-input`)
       .value = comment;
 
-    this._localComment[`emoji`] = emoji;
+    this._localComment[`emotion`] = emoji;
     this._localComment[`comment`] = comment;
   }
 
@@ -177,6 +177,5 @@ export default class CommentsComponent extends AbstractSmartComponent {
       });
 
     this._commentSubmitHandler = handler;
-    // this.rerender();
   }
 }
