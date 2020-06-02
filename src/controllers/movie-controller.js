@@ -84,7 +84,7 @@ export default class MovieController {
           'user_details': Object.assign({}, UserDetails, {
 
             'already_watched': !card[`user_details`][`already_watched`],
-            'watching_date': new Date().toISOString,
+            'watching_date': new Date().toISOString(),
           }),
         })));
 

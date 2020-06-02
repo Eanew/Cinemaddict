@@ -55,7 +55,7 @@ const FilmCard = function (data) {
 
   this.title = info[`title`];
   this.poster = info[`poster`];
-  this.raiting = info[`total_raiting`];
+  this.rating = info[`total_rating`];
   this.description = getDescription(info[`description`]);
   this.commentsCount = data[`comments`].length;
   this.buttonsMarkup = createMarkup(controlButtonsList, renderControlButtonMarkup, ...activeButtons);
@@ -67,7 +67,7 @@ const createCardTemplate = (card) => {
   const {
     title,
     poster,
-    raiting,
+    rating,
     description,
     commentsCount,
     infoFieldsMarkup,
@@ -77,7 +77,7 @@ const createCardTemplate = (card) => {
   return (
     `<article class="film-card">
       <h3 class="film-card__title">${title}</h3>
-      <p class="film-card__rating">${raiting}</p>
+      <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         ${infoFieldsMarkup}
       </p>

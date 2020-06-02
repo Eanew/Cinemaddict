@@ -30,8 +30,8 @@ const sortByDate = (cards) => {
 
 const sortByRaiting = (cards) => {
   cards.sort((first, second) => {
-    const firstCardRaiting = first[`film_info`][`total_raiting`];
-    const secondCardRaiting = second[`film_info`][`total_raiting`];
+    const firstCardRaiting = first[`film_info`][`total_rating`];
+    const secondCardRaiting = second[`film_info`][`total_rating`];
     return secondCardRaiting - firstCardRaiting;
   });
   return cards;
