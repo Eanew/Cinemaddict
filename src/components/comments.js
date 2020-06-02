@@ -143,7 +143,6 @@ export default class CommentsComponent extends AbstractSmartComponent {
         }
         evt.preventDefault();
         handler(evt);
-        this.rerender();
       });
 
     this._commentsListClickHandler = handler;

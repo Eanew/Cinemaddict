@@ -5,8 +5,6 @@ import CardComponent from '../components/film-card.js';
 import DetailsComponent from '../components/details.js';
 import CommentsComponent from '../components/comments.js';
 
-import {generateCommentsData} from '../mock/comments.js';
-
 const PERMISSION_TO_OPEN_NEW_POPUP_TIMEOUT = 200;
 
 const pageBody = document.querySelector(`body`);
@@ -37,7 +35,7 @@ export default class MovieController {
     this._lastDetailsComponent = null;
     this._commentsComponent = null;
     this._commentsContainer = null;
-    this._comments = generateCommentsData();
+    this._comments = [];
     this._commentValue = null;
     this._emojiValue = null;
 
@@ -55,7 +53,6 @@ export default class MovieController {
     const oldDetailsComponent = this._detailsComponent;
 
     this._data = card;
-    this._comments = this._comments.slice(0, card[`comments`].length);
 
     this._cardComponent = new CardComponent(card);
     this._detailsComponent = new DetailsComponent(card);
@@ -170,16 +167,26 @@ export default class MovieController {
     document.addEventListener(`click`, this._closePopup);
     this._lastDetailsComponent = this._detailsComponent;
     this._addPopupListeners();
-
     pageBody.appendChild(this._detailsComponent.getElement());
+
+    this._api.getComments(this._data[`id`])
+      .then((response) => {
+        this._comments = response;
+        this._commentsComponent.updateComments(this._comments);
+        this._commentsComponent.rerender();
+      });
   }
 
   _onCommentsListClick(evt) {
     Array.from(evt.currentTarget.children).forEach((item, index) => {
 
       if (item.contains(evt.target)) {
-        this._comments = this._comments.filter((it, i) => i !== index);
-        this._commentsComponent.updateComments(this._comments);
+        this._api.deleteComment(this._comments[index][`id`])
+          .then(() => {
+            this._comments = this._comments.filter((it, i) => i !== index);
+            this._commentsComponent.updateComments(this._comments);
+            this._commentsComponent.rerender();
+          });
       }
     });
   }

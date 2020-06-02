@@ -39,6 +39,10 @@ const API = class {
       .then((response) => response.json());
   }
 
+  deleteComment(id) {
+    return this._load({url: `comments/${id}`, method: Method.DELETE});
+  }
+
   createComment(id, comment) {
     return this._load({
       url: `comments/${id}`,
