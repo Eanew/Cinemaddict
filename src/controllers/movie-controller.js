@@ -25,10 +25,11 @@ const disableCasualPopupOpening = () => {
 };
 
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, api) {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._api = api;
 
     this._data = null;
     this._cardComponent = null;
@@ -45,6 +46,7 @@ export default class MovieController {
     this._onCommentsListClick = this._onCommentsListClick.bind(this);
     this._onCommentInput = this._onCommentInput.bind(this);
     this._onEmojiClick = this._onEmojiClick.bind(this);
+    this._onCommentSubmit = this._onCommentSubmit.bind(this);
     this.setDefaultView = this.setDefaultView.bind(this);
   }
 
@@ -126,7 +128,7 @@ export default class MovieController {
     document.removeEventListener(`click`, this._closePopup);
   }
 
-  formReset() {
+  commentReset() {
     this._commentValue = null;
     this._emojiValue = null;
     this._commentsComponent.fillLocalComment(this._emojiValue, this._commentValue);
@@ -143,7 +145,7 @@ export default class MovieController {
     this._onDataChange(this._data, Object.assign({}, this._data, {
       'comments': this._comments.map((it) => it[`id`]),
     }));
-    this.formReset();
+    this.commentReset();
   }
 
   _closePopup() {
@@ -192,17 +194,22 @@ export default class MovieController {
     this._commentsComponent.fillLocalComment(this._emojiValue, this._commentValue);
   }
 
-  // _onFormSubmit(evt) {
-  //   const comment = this._commentsComponent.getLocalComment();
-  //   this.setDefaultView();
-  // }
+  _onCommentSubmit() {
+    this._api.createComment(this._data[`id`], this._commentsComponent.getLocalComment())
+      .then((response) => {
+        console.dir(response);
+        this._comments = response.comments;
+        // this._commentsComponent.updateComments(this._comments);
+        // this.commentReset();
+      });
+  }
 
   _addPopupListeners() {
     this._detailsComponent.onPopupClick((evt) => evt.stopPropagation());
     this._detailsComponent.onCloseButtonClick(this._closePopup);
-    // this._detailsComponent.onFormSubmit(this._onFormSubmit);
     this._commentsComponent.onCommentsListClick(this._onCommentsListClick);
     this._commentsComponent.onEmojiClick(this._onEmojiClick);
     this._commentsComponent.onCommentInput(this._onCommentInput);
+    this._commentsComponent.onCommentSubmit(this._onCommentSubmit);
   }
 }

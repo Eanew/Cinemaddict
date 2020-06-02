@@ -1,5 +1,7 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
 import {createMarkup, setTwoDigit} from '../utils/data-process.js';
+import {Key} from '../utils/common.js';
+
 import {encode} from 'he';
 
 const emojiList = [`smile`, `sleeping`, `puke`, `angry`];
@@ -84,6 +86,7 @@ export default class CommentsComponent extends AbstractSmartComponent {
     this._commentsListClickHandler = null;
     this._commentInputHandler = null;
     this._emojiClickHandler = null;
+    this._commentSubmitHandler = null;
 
     this._localComment = {
       'comment': null,
@@ -105,6 +108,7 @@ export default class CommentsComponent extends AbstractSmartComponent {
     this.onCommentsListClick(this._commentsListClickHandler);
     this.onCommentInput(this._commentInputHandler);
     this.onEmojiClick(this._emojiClickHandler);
+    this.onCommentSubmit(this._commentSubmitHandler);
   }
 
   getLocalComment() {
@@ -162,5 +166,17 @@ export default class CommentsComponent extends AbstractSmartComponent {
       .addEventListener(`input`, (evt) => handler(evt));
 
     this._commentInputHandler = handler;
+  }
+
+  onCommentSubmit(handler) {
+    this.getElement().querySelector(`.film-details__new-comment`)
+      .addEventListener(`keydown`, (evt) => {
+        if (evt.ctrlKey && evt.key === Key.ENTER) {
+          handler();
+        }
+      });
+
+    this._commentSubmitHandler = handler;
+    // this.rerender();
   }
 }

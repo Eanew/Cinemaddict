@@ -10,9 +10,9 @@ import MovieController from './movie-controller';
 
 const FILMS_DISPLAY_STEP = 5;
 
-const renderCards = (filmsContainerElement, cards, onDataChange, onViewChange) => {
+const renderCards = (filmsContainerElement, cards, onDataChange, onViewChange, api) => {
   return cards.map((card) => {
-    const movieController = new MovieController(filmsContainerElement, onDataChange, onViewChange);
+    const movieController = new MovieController(filmsContainerElement, onDataChange, onViewChange, api);
     movieController.render(card);
     return movieController;
   });
@@ -137,7 +137,7 @@ export default class PageController {
 
   _renderCards(from, to) {
     const sortedCards = getSortedCards(this._moviesModel.getMovies(), this._sortingComponent.getSortType(), from, to);
-    const newCards = renderCards(this._filmsContainerElement, sortedCards, this._onDataChange, this._onVIewChange);
+    const newCards = renderCards(this._filmsContainerElement, sortedCards, this._onDataChange, this._onVIewChange, this._api);
     this._showedCardControllers = this._showedCardControllers.concat(newCards);
   }
 
