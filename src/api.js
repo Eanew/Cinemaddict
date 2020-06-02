@@ -14,16 +14,14 @@ const API = class {
   updateCard(id, data) {
     const headers = new Headers();
     headers.append(`Authorization`, this._authorization);
+    headers.append(`Content-Type`, `application/json`);
 
     return fetch(`https://11.ecmascript.pages.academy/cinemaddict/movies/${id}`, {
       method: `PUT`,
       body: JSON.stringify(data),
       headers,
     })
-      .then((response) => {
-        console.log(response);
-        response.json();
-      });
+      .then((response) => response.json());
   }
 };
 

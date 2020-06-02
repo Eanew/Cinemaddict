@@ -156,7 +156,6 @@ export default class PageController {
   _onDataChange(oldData, newData) {
     this._api.updateCard(oldData[`id`], newData)
       .then((newCard) => {
-        // console.dir(newCard);
         const isSuccess = this._moviesModel.updateMovie(oldData[`id`], newCard);
         if (isSuccess) {
           const controller = this._showedCardControllers.find((it) => it.getData() === oldData);
