@@ -146,8 +146,8 @@ export default class PageController {
     this._showedCardControllers = [];
   }
 
-  _updateCards(count) {
-    this._currentFilmsCount = count || FILMS_DISPLAY_STEP;
+  _updateCards() {
+    this._currentFilmsCount = FILMS_DISPLAY_STEP;
     this._removeCards();
     this._renderCards(0, this._currentFilmsCount);
     this._renderLoadMoreButton();
@@ -155,12 +155,11 @@ export default class PageController {
 
   _onDataChange(oldData, newData) {
     this._api.updateCard(oldData[`id`], newData)
-      .then((newCard) => {
-        const isSuccess = this._moviesModel.updateMovie(oldData[`id`], newCard);
+      .then((updatedCard) => {
+        const isSuccess = this._moviesModel.updateMovie(oldData[`id`], updatedCard);
         if (isSuccess) {
           const controller = this._showedCardControllers.find((it) => it.getData() === oldData);
-          controller.render(newCard);
-          this._updateCards(this._currentFilmsCount);
+          controller.render(updatedCard);
         }
       });
   }

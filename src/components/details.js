@@ -68,8 +68,8 @@ const FilmCard = function (data) {
   this.title = info[`title`];
   this.alternativeTitle = info[`alternative_title`] || this.title;
   this.poster = info[`poster`];
-  this.raiting = info[`total_raiting`];
-  this.ageRaiting = info[`age_raiting`];
+  this.rating = info[`total_rating`];
+  this.ageRating = info[`age_rating`];
   this.description = info[`description`];
 
   const tableData = [
@@ -96,8 +96,8 @@ export const createDetailsTemplate = (film) => {
     title,
     alternativeTitle,
     poster,
-    raiting,
-    ageRaiting,
+    rating,
+    ageRating,
     description,
     detailsTableMarkup,
     detailsControlsMarkup,
@@ -114,7 +114,7 @@ export const createDetailsTemplate = (film) => {
             <div class="film-details__poster">
               <img class="film-details__poster-img" src="${poster}" alt="">
 
-              <p class="film-details__age">${ageRaiting}+</p>
+              <p class="film-details__age">${ageRating}+</p>
             </div>
 
             <div class="film-details__info">
@@ -125,7 +125,7 @@ export const createDetailsTemplate = (film) => {
                 </div>
 
                 <div class="film-details__rating">
-                  <p class="film-details__total-rating">${raiting}</p>
+                  <p class="film-details__total-rating">${rating}</p>
                 </div>
               </div>
 

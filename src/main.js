@@ -11,21 +11,16 @@ import StatisticController from './controllers/statistic-controller.js';
 import PageController from './controllers/page-controller.js';
 
 const AUTHORIZATION = `Basic mlkj34klj6549fek37`;
-
-// import {generateFilmCardsData} from './mock/film-list.js';
-
-// const FILM_CARDS_COUNT = 12;
+const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 
 const pageHeader = document.querySelector(`.header`);
 const pageMain = document.querySelector(`.main`);
 
-// const filmCards = generateFilmCardsData(FILM_CARDS_COUNT);
-const api = new API(AUTHORIZATION);
+const api = new API(END_POINT, AUTHORIZATION);
+
 const moviesModel = new MoviesModel();
 
 const filmListComponent = new FilmListComponent();
-
-// moviesModel.setMovies(filmCards);
 
 const filterController = new FilterController(pageMain, moviesModel);
 const statisticController = new StatisticController(pageHeader, pageMain, moviesModel);
@@ -42,16 +37,12 @@ const statisticDisplayToggle = () => {
   }
 };
 
-// filterController.render();
-// statisticController.render();
-// statisticController.renderUserLevel();
-// pageController.render();
+filterController.render();
 render(pageMain, filmListComponent);
 
 api.getCards()
   .then((cards) => {
     moviesModel.setMovies(cards);
-    filterController.render();
     statisticController.render();
     statisticController.renderUserLevel();
     pageController.render();
