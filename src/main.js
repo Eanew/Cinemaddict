@@ -29,7 +29,7 @@ const filmListComponent = new FilmListComponent();
 
 const filterController = new FilterController(pageMain, moviesModel);
 const statisticController = new StatisticController(pageHeader, pageMain, moviesModel);
-const pageController = new PageController(filmListComponent, moviesModel);
+const pageController = new PageController(filmListComponent, moviesModel, api);
 
 const statisticDisplayToggle = () => {
   if (statisticController.getDisplayStatus() === false) {
@@ -45,8 +45,8 @@ const statisticDisplayToggle = () => {
 // filterController.render();
 // statisticController.render();
 // statisticController.renderUserLevel();
-render(pageMain, filmListComponent);
 // pageController.render();
+render(pageMain, filmListComponent);
 
 api.getCards()
   .then((cards) => {

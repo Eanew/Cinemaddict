@@ -10,6 +10,21 @@ const API = class {
     return fetch(`https://11.ecmascript.pages.academy/cinemaddict/movies`, {headers})
       .then((response) => response.json());
   }
+
+  updateCard(id, data) {
+    const headers = new Headers();
+    headers.append(`Authorization`, this._authorization);
+
+    return fetch(`https://11.ecmascript.pages.academy/cinemaddict/movies/${id}`, {
+      method: `PUT`,
+      body: JSON.stringify(data),
+      headers,
+    })
+      .then((response) => {
+        console.log(response);
+        response.json();
+      });
+  }
 };
 
 export default API;

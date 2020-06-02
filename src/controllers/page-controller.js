@@ -58,9 +58,10 @@ const getSortedCards = (cards, sortType, from, to) => {
 };
 
 export default class PageController {
-  constructor(container, moviesModel) {
+  constructor(container, moviesModel, api) {
     this._container = container;
     this._moviesModel = moviesModel;
+    this._api = api;
 
     this._sortingComponent = new SortingComponent();
     this._noMoviesComponent = new NoMoviesComponent();
@@ -145,19 +146,24 @@ export default class PageController {
     this._showedCardControllers = [];
   }
 
-  _updateCards() {
-    this._currentFilmsCount = FILMS_DISPLAY_STEP;
+  _updateCards(count) {
+    this._currentFilmsCount = count || FILMS_DISPLAY_STEP;
     this._removeCards();
     this._renderCards(0, this._currentFilmsCount);
     this._renderLoadMoreButton();
   }
 
   _onDataChange(oldData, newData) {
-    const isSuccess = this._moviesModel.updateMovie(oldData[`id`], newData);
-    if (isSuccess) {
-      const controller = this._showedCardControllers.find((it) => it.getData() === oldData);
-      controller.render(newData);
-    }
+    this._api.updateCard(oldData[`id`], newData)
+      .then((newCard) => {
+        // console.dir(newCard);
+        const isSuccess = this._moviesModel.updateMovie(oldData[`id`], newCard);
+        if (isSuccess) {
+          const controller = this._showedCardControllers.find((it) => it.getData() === oldData);
+          controller.render(newCard);
+          this._updateCards(this._currentFilmsCount);
+        }
+      });
   }
 
   _onVIewChange() {
