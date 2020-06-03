@@ -215,6 +215,7 @@ export default class MovieController {
   _onCommentSubmit() {
     const localComment = this._commentsComponent.getLocalComment();
     if (localComment.emotion && localComment.comment && localComment.comment.length) {
+      this._commentsComponent.disableTextInput();
       this._api.createComment(this._data[`id`], localComment)
         .then((response) => {
           this.commentReset();
@@ -223,6 +224,7 @@ export default class MovieController {
         })
         .catch(() => {
           this._shake();
+          this._commentsComponent.enableTextInput();
         });
     } else {
       this._shake();

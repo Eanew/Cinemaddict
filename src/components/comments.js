@@ -93,7 +93,6 @@ export default class CommentsComponent extends AbstractSmartComponent {
     this._emojiClickHandler = null;
     this._commentSubmitHandler = null;
 
-    this._commentsTitle = this.getElement().querySelector(`.film-details__comments-title`);
     this._textInput = this.getElement().querySelector(`.film-details__comment-input`);
 
     this._localComment = {
@@ -110,6 +109,7 @@ export default class CommentsComponent extends AbstractSmartComponent {
   rerender(newComments) {
     this._comments = newComments ? [].concat(newComments) : this._comments;
     super.rerender();
+    this._textInput = this.getElement().querySelector(`.film-details__comment-input`);
     this.fillLocalComment(this._localComment[`emotion`], this._localComment[`comment`]);
   }
 
@@ -162,8 +162,25 @@ export default class CommentsComponent extends AbstractSmartComponent {
   }
 
   onCommentInput(handler) {
-    this._textInput.addEventListener(`input`, (evt) => handler(evt));
+    this.getElement().querySelector(`.film-details__comment-input`)
+      .addEventListener(`input`, (evt) => {
+        handler(evt);
+        evt.target.style.outline = ``;
+      });
+
     this._commentInputHandler = handler;
+  }
+
+  disableTextInput() {
+    this._textInput.disabled = true;
+    this._textInput.style.outline = ``;
+    this._textInput.value = `Sending...`;
+  }
+
+  enableTextInput() {
+    this._textInput.disabled = false;
+    this._textInput.style.outline = `2px solid red`;
+    this._textInput.value = this._localComment[`comment`];
   }
 
   onCommentSubmit(handler) {
@@ -179,11 +196,11 @@ export default class CommentsComponent extends AbstractSmartComponent {
   }
 
   onCommentsLoading() {
-    this._commentsTitle.textContent = `Loading...`;
+    this.getElement().querySelector(`.film-details__comments-title`).textContent = `Loading...`;
   }
 
   onCommentsLoadError() {
-    this._commentsTitle.textContent = `Loading comments error`;
+    this.getElement().querySelector(`.film-details__comments-title`).textContent = `Loading comments error`;
     this._textInput.placeholder = `Sorry, but you can not write a comment right now`;
     this._textInput.disabled = true;
   }
