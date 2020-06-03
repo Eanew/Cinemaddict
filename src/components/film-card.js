@@ -21,7 +21,7 @@ const generateInfoFields = (infoFieldsData) => infoFieldsList.map((it, i) => ({
 
 const renderInfoFieldMarkup = (infoField) => {
   const {name, value} = infoField;
-  return (
+  return !value ? `` : (
     `<span class="film-card__${name}">${value}</span>`
   );
 };

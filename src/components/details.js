@@ -40,7 +40,7 @@ const renderFilmDetailsRowMarkup = ({name, values}) => {
     ? values.map((it) => `<span class="film-details__genre">${it}</span>`).join(`\n`)
     : values.join(`, `);
 
-  return (
+  return (!values || !values.length) ? `` : (
     `<tr class="film-details__row">
       <td class="film-details__term">${term}</td>
       <td class="film-details__cell">${cell}</td>

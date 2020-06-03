@@ -175,12 +175,18 @@ export default class CommentsComponent extends AbstractSmartComponent {
     this._textInput.disabled = true;
     this._textInput.style.outline = ``;
     this._textInput.value = `Sending...`;
+    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach((input) => {
+      input.disabled = true;
+    });
   }
 
   enableTextInput() {
     this._textInput.disabled = false;
     this._textInput.style.outline = `2px solid red`;
     this._textInput.value = this._localComment[`comment`];
+    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach((input) => {
+      input.disabled = false;
+    });
   }
 
   onCommentSubmit(handler) {
