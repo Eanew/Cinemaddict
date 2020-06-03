@@ -1,8 +1,9 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
-import {createMarkup, setTwoDigit} from '../utils/data-process.js';
+import {createMarkup} from '../utils/data-process.js';
 import {Key} from '../utils/common.js';
 
 import {encode} from 'he';
+import moment from 'moment';
 
 const DeleteButtonText = {
   DEFAULT: `Delete`,
@@ -11,17 +12,11 @@ const DeleteButtonText = {
 
 const EMOJI_LIST = [`smile`, `sleeping`, `puke`, `angry`];
 
-const getTimeString = (iso) => {
-  const date = new Date(Date.parse(iso));
-  const month = setTwoDigit(date, Date.prototype.getMonth);
-  const day = setTwoDigit(date, Date.prototype.getDate);
-  const hours = setTwoDigit(date, Date.prototype.getHours);
-  const minutes = setTwoDigit(date, Date.prototype.getMinutes);
-  return `${date.getFullYear()}/${month}/${day} ${hours}:${minutes}`;
-};
-
 const renderCommentsItemMarkup = ({author, comment, date, emotion}) => {
-  const time = getTimeString(date);
+  const time = moment(date).calendar(null, {
+    sameDay: `[${moment(date).fromNow()}]`,
+    sameElse: `YYYY/MM/DD hh:mm`,
+  });
 
   return (
     `<li class="film-details__comment">
