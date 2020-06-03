@@ -93,6 +93,9 @@ export default class CommentsComponent extends AbstractSmartComponent {
     this._emojiClickHandler = null;
     this._commentSubmitHandler = null;
 
+    this._commentsTitle = this.getElement().querySelector(`.film-details__comments-title`);
+    this._textInput = this.getElement().querySelector(`.film-details__comment-input`);
+
     this._localComment = {
       'comment': null,
       'date': null,
@@ -126,12 +129,8 @@ export default class CommentsComponent extends AbstractSmartComponent {
 
   fillLocalComment(emoji, comment) {
     const imageMarkup = renderEmojiImageMarkup(emoji);
-
-    this.getElement().querySelector(`.film-details__add-emoji-label`)
-      .innerHTML = imageMarkup;
-
-    this.getElement().querySelector(`.film-details__comment-input`)
-      .value = comment;
+    this.getElement().querySelector(`.film-details__add-emoji-label`).innerHTML = imageMarkup;
+    this._textInput.value = comment;
 
     this._localComment[`emotion`] = emoji;
     this._localComment[`comment`] = comment;
@@ -163,9 +162,7 @@ export default class CommentsComponent extends AbstractSmartComponent {
   }
 
   onCommentInput(handler) {
-    this.getElement().querySelector(`.film-details__comment-input`)
-      .addEventListener(`input`, (evt) => handler(evt));
-
+    this._textInput.addEventListener(`input`, (evt) => handler(evt));
     this._commentInputHandler = handler;
   }
 
@@ -179,6 +176,16 @@ export default class CommentsComponent extends AbstractSmartComponent {
       });
 
     this._commentSubmitHandler = handler;
+  }
+
+  onCommentsLoading() {
+    this._commentsTitle.textContent = `Loading...`;
+  }
+
+  onCommentsLoadError() {
+    this._commentsTitle.textContent = `Loading comments error`;
+    this._textInput.placeholder = `Sorry, but you can not write a comment right now`;
+    this._textInput.disabled = true;
   }
 }
 

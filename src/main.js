@@ -45,14 +45,21 @@ filterController.render();
 render(pageMain, filmListComponent);
 render(filmListComponent.getElement(), loadingComponent);
 
+const renderContent = (cards) => {
+  moviesModel.setMovies(cards);
+  statisticController.render();
+  statisticController.renderUserLevel();
+  remove(loadingComponent);
+  pageController.render();
+  render(footerStatistics, new FooterStatisticsComponent(cards.length));
+};
+
 api.getCards()
   .then((cards) => {
-    moviesModel.setMovies(cards);
-    statisticController.render();
-    statisticController.renderUserLevel();
-    remove(loadingComponent);
-    pageController.render();
-    render(footerStatistics, new FooterStatisticsComponent(cards.length));
+    renderContent(cards);
+  })
+  .catch(() => {
+    renderContent([]);
   });
 
 export {statisticDisplayToggle};

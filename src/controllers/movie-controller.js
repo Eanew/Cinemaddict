@@ -165,14 +165,19 @@ export default class MovieController {
 
     document.addEventListener(`keydown`, this._onPopupEscPress);
     document.addEventListener(`click`, this._closePopup);
+    this._commentsComponent.onCommentsLoading();
     this._lastDetailsComponent = this._detailsComponent;
     this._addPopupListeners();
+
     pageBody.appendChild(this._detailsComponent.getElement());
 
     this._api.getComments(this._data[`id`])
       .then((response) => {
         this._comments = response;
         this._commentsComponent.rerender(this._comments);
+      })
+      .catch(() => {
+        this._commentsComponent.onCommentsLoadError();
       });
   }
 
