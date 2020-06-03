@@ -42,24 +42,26 @@ const getDescription = (string) => string.length > MAX_DESCRIPTION_LENGTH
 
 const getYear = (iso) => new Date(Date.parse(iso)).getFullYear();
 
-const FilmCard = function (data) {
-  const info = data[`film_info`];
+const parseFilmCardData = (card) => {
+  const info = card[`film_info`];
   const year = getYear(info[`release`][`date`]);
   const duration = getDuration(info[`runtime`]);
   const genre = info[`genre`][0];
-  const watchlistButtonStatus = data[`user_details`][`watchlist`];
-  const watchedButtonStatus = data[`user_details`][`already_watched`];
-  const favoriteButtonStatus = data[`user_details`][`favorite`];
+  const watchlistButtonStatus = card[`user_details`][`watchlist`];
+  const watchedButtonStatus = card[`user_details`][`already_watched`];
+  const favoriteButtonStatus = card[`user_details`][`favorite`];
   const activeButtons = setActiveItems([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
   const infoFields = generateInfoFields([year, duration, genre]);
 
-  this.title = info[`title`];
-  this.poster = info[`poster`];
-  this.rating = info[`total_rating`];
-  this.description = getDescription(info[`description`]);
-  this.commentsCount = data[`comments`].length;
-  this.buttonsMarkup = createMarkup(CONTROL_BUTTONS_LIST, renderControlButtonMarkup, ...activeButtons);
-  this.infoFieldsMarkup = createMarkup(infoFields, renderInfoFieldMarkup);
+  return {
+    title: info[`title`],
+    poster: info[`poster`],
+    rating: info[`total_rating`],
+    description: getDescription(info[`description`]),
+    commentsCount: card[`comments`].length,
+    buttonsMarkup: createMarkup(CONTROL_BUTTONS_LIST, renderControlButtonMarkup, ...activeButtons),
+    infoFieldsMarkup: createMarkup(infoFields, renderInfoFieldMarkup),
+  };
 };
 
 const createCardTemplate = (card) => {
@@ -72,7 +74,7 @@ const createCardTemplate = (card) => {
     commentsCount,
     infoFieldsMarkup,
     buttonsMarkup
-  } = new FilmCard(card);
+  } = parseFilmCardData(card);
 
   return (
     `<article class="film-card">

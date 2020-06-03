@@ -63,11 +63,11 @@ const getReleaseDate = (iso) => {
   return `${day} ${month} ${date.getFullYear()}`;
 };
 
-const generatePopupData = (film) => {
-  const info = film[`film_info`];
-  const watchlistButtonStatus = film[`user_details`][`watchlist`];
-  const watchedButtonStatus = film[`user_details`][`already_watched`];
-  const favoriteButtonStatus = film[`user_details`][`favorite`];
+const parsePopupData = (card) => {
+  const info = card[`film_info`];
+  const watchlistButtonStatus = card[`user_details`][`watchlist`];
+  const watchedButtonStatus = card[`user_details`][`already_watched`];
+  const favoriteButtonStatus = card[`user_details`][`favorite`];
   const activeButtons = setActiveItems([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
   const tableValues = [
     [info[`director`]],
@@ -92,7 +92,8 @@ const generatePopupData = (film) => {
   };
 };
 
-export const createDetailsTemplate = (film) => {
+export const createDetailsTemplate = (card) => {
+
   const {
     title,
     alternativeTitle,
@@ -102,7 +103,7 @@ export const createDetailsTemplate = (film) => {
     description,
     detailsTableMarkup,
     detailsControlsMarkup,
-  } = generatePopupData(film);
+  } = parsePopupData(card);
 
   return (
     `<section class="film-details">
