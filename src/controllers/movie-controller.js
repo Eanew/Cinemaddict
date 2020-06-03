@@ -3,7 +3,7 @@ import {render, replace, remove} from '../utils/render.js';
 
 import CardComponent from '../components/film-card.js';
 import DetailsComponent from '../components/details.js';
-import CommentsComponent from '../components/comments.js';
+import CommentsComponent, {DeleteButtonText} from '../components/comments.js';
 
 const PERMISSION_TO_OPEN_NEW_POPUP_TIMEOUT = 200;
 const SHAKE_ANIMATION_TIMEOUT = 600;
@@ -180,6 +180,9 @@ export default class MovieController {
     Array.from(evt.currentTarget.children).forEach((item, index) => {
 
       if (item.contains(evt.target)) {
+        evt.target.textContent = DeleteButtonText.DELETING;
+        evt.target.disabled = true;
+
         this._api.deleteComment(this._comments[index][`id`])
           .then(() => {
             this._comments = this._comments.filter((it, i) => i !== index);
@@ -187,6 +190,8 @@ export default class MovieController {
           })
           .catch(() => {
             this._shake();
+            evt.target.textContent = DeleteButtonText.DEFAULT;
+            evt.target.disabled = false;
           });
       }
     });

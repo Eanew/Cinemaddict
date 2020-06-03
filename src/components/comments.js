@@ -4,6 +4,11 @@ import {Key} from '../utils/common.js';
 
 import {encode} from 'he';
 
+const DeleteButtonText = {
+  DEFAULT: `Delete`,
+  DELETING: `Deleting…`,
+};
+
 const emojiList = [`smile`, `sleeping`, `puke`, `angry`];
 
 const getTimeString = (iso) => {
@@ -28,7 +33,7 @@ const renderCommentsItemMarkup = ({author, comment, date, emotion}) => {
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${time}</span>
-          <button class="film-details__comment-delete">Delete</button>
+          <button class="film-details__comment-delete">${DeleteButtonText.DEFAULT}</button>
         </p>
       </div>
     </li>`
@@ -176,3 +181,5 @@ export default class CommentsComponent extends AbstractSmartComponent {
     this._commentSubmitHandler = handler;
   }
 }
+
+export {DeleteButtonText};
