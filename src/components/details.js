@@ -3,7 +3,7 @@ import {createMarkup, setTwoDigit, setActiveItems, getDuration} from '../utils/d
 
 const GENRES_FIELD_NAME = `Genres`;
 
-const tableFieldsList = [
+const TABLE_FIELDS_LIST = [
   `Director`,
   `Writers`,
   `Actors`,
@@ -12,7 +12,7 @@ const tableFieldsList = [
   `Country`,
   GENRES_FIELD_NAME];
 
-const controlButtonsList = [
+const CONTROL_BUTTONS_LIST = [
   {
     name: `Add to watchlist`,
     id: `watchlist`,
@@ -26,7 +26,7 @@ const controlButtonsList = [
     id: `favorite`,
   }];
 
-const generateTableFields = (tableValues) => tableFieldsList.map((it, i) => ({
+const generateTableFields = (tableValues) => TABLE_FIELDS_LIST.map((it, i) => ({
   name: it,
   values: tableValues[i],
 }));
@@ -63,16 +63,13 @@ const getReleaseDate = (iso) => {
   return `${day} ${month} ${date.getFullYear()}`;
 };
 
-const FilmCard = function (data) {
-  const info = data[`film_info`];
-  this.title = info[`title`];
-  this.alternativeTitle = info[`alternative_title`] || this.title;
-  this.poster = info[`poster`];
-  this.rating = info[`total_rating`];
-  this.ageRating = info[`age_rating`];
-  this.description = info[`description`];
-
-  const tableData = [
+const generatePopupData = (film) => {
+  const info = film[`film_info`];
+  const watchlistButtonStatus = film[`user_details`][`watchlist`];
+  const watchedButtonStatus = film[`user_details`][`already_watched`];
+  const favoriteButtonStatus = film[`user_details`][`favorite`];
+  const activeButtons = setActiveItems([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
+  const tableValues = [
     [info[`director`]],
     info[`writers`],
     info[`actors`],
@@ -81,14 +78,18 @@ const FilmCard = function (data) {
     [info[`release`][`release_country`]],
     info[`genre`]];
 
-  const tableFields = generateTableFields(tableData);
-  this.detailsTableMarkup = createMarkup(tableFields, renderFilmDetailsRowMarkup);
+  const tableFields = generateTableFields(tableValues);
 
-  const watchlistButtonStatus = data[`user_details`][`watchlist`];
-  const watchedButtonStatus = data[`user_details`][`already_watched`];
-  const favoriteButtonStatus = data[`user_details`][`favorite`];
-  const activeButtons = setActiveItems([watchlistButtonStatus, watchedButtonStatus, favoriteButtonStatus]);
-  this.detailsControlsMarkup = createMarkup(controlButtonsList, renderControlFieldMarkup, ...activeButtons);
+  return {
+    title: info[`title`],
+    alternativeTitle: info[`alternative_title`] || info[`title`],
+    poster: info[`poster`],
+    rating: info[`total_rating`],
+    ageRating: info[`age_rating`],
+    description: info[`description`],
+    detailsControlsMarkup: createMarkup(CONTROL_BUTTONS_LIST, renderControlFieldMarkup, ...activeButtons),
+    detailsTableMarkup: createMarkup(tableFields, renderFilmDetailsRowMarkup),
+  };
 };
 
 export const createDetailsTemplate = (film) => {
@@ -101,7 +102,7 @@ export const createDetailsTemplate = (film) => {
     description,
     detailsTableMarkup,
     detailsControlsMarkup,
-  } = new FilmCard(film);
+  } = generatePopupData(film);
 
   return (
     `<section class="film-details">

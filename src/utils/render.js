@@ -42,13 +42,6 @@ export const remove = (component) => {
   component.removeElement();
 };
 
-export const removeBySelector = (selector) => {
-  const element = document.querySelector(selector);
-  if (element) {
-    element.remove();
-  }
-};
-
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;

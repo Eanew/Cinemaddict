@@ -10,7 +10,7 @@ const SortType = {
   RAITING: `raiting`,
 };
 
-const sortTypesList = [
+const SORT_TYPES_LIST = [
   SortType.DEFAULT,
   SortType.DATE,
   SortType.RAITING];
@@ -26,8 +26,8 @@ const createSortingItemMarkup = function (type, isActive = false) {
 };
 
 const createSortingTemplate = (currentSortType) => {
-  const activeElements = matchActiveItems(currentSortType, sortTypesList);
-  const sortItemsMarkup = createMarkup(sortTypesList, createSortingItemMarkup, ...activeElements);
+  const activeElements = matchActiveItems(currentSortType, SORT_TYPES_LIST);
+  const sortItemsMarkup = createMarkup(SORT_TYPES_LIST, createSortingItemMarkup, ...activeElements);
 
   return (
     `<ul class="sort">

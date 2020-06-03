@@ -9,7 +9,7 @@ const DeleteButtonText = {
   DELETING: `Deleting…`,
 };
 
-const emojiList = [`smile`, `sleeping`, `puke`, `angry`];
+const EMOJI_LIST = [`smile`, `sleeping`, `puke`, `angry`];
 
 const getTimeString = (iso) => {
   const date = new Date(Date.parse(iso));
@@ -51,7 +51,7 @@ const renderEmojiItemMarkup = (emoji) => {
 
 const createCommentsTemplate = (comments) => {
   const detailsCommentsMarkup = createMarkup(comments, renderCommentsItemMarkup);
-  const emojiListMarkup = createMarkup(emojiList, renderEmojiItemMarkup);
+  const emojiListMarkup = createMarkup(EMOJI_LIST, renderEmojiItemMarkup);
 
   return (
     `<section class="film-details__comments-wrap">
@@ -192,7 +192,7 @@ export default class CommentsComponent extends AbstractSmartComponent {
   onCommentSubmit(handler) {
     this.getElement().querySelector(`.film-details__new-comment`)
       .addEventListener(`keydown`, (evt) => {
-        if (evt.ctrlKey && evt.key === Key.ENTER) {
+        if ((evt.ctrlKey || evt.metaKey) && evt.key === Key.ENTER) {
           evt.preventDefault();
           handler();
         }

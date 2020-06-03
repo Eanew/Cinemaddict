@@ -4,17 +4,17 @@ import {createMarkup, setId, setActiveItems, getDuration} from '../utils/data-pr
 
 const MAX_DESCRIPTION_LENGTH = 140;
 
-const infoFieldsList = [
+const INFO_FIELDS_LIST = [
   `year`,
   `duration`,
   `genre`];
 
-const controlButtonsList = [
+const CONTROL_BUTTONS_LIST = [
   {name: `Add to watchlist`},
   {name: `Mark as watched`},
   {name: `Mark as favorite`, id: `favorite`}];
 
-const generateInfoFields = (infoFieldsData) => infoFieldsList.map((it, i) => ({
+const generateInfoFields = (infoFieldsData) => INFO_FIELDS_LIST.map((it, i) => ({
   name: it,
   value: infoFieldsData[i],
 }));
@@ -58,7 +58,7 @@ const FilmCard = function (data) {
   this.rating = info[`total_rating`];
   this.description = getDescription(info[`description`]);
   this.commentsCount = data[`comments`].length;
-  this.buttonsMarkup = createMarkup(controlButtonsList, renderControlButtonMarkup, ...activeButtons);
+  this.buttonsMarkup = createMarkup(CONTROL_BUTTONS_LIST, renderControlButtonMarkup, ...activeButtons);
   this.infoFieldsMarkup = createMarkup(infoFields, renderInfoFieldMarkup);
 };
 
