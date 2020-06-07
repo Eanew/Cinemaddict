@@ -1,4 +1,5 @@
 import API from './api/index.js';
+import Store from './api/store.js';
 import Provider from './api/provider.js';
 
 import {render, remove} from './utils/render.js';
@@ -15,13 +16,17 @@ import PageController from './controllers/page-controller.js';
 
 const AUTHORIZATION = `Basic mlkj34klj6549fek37`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
+const STORE_PREFIX = `cinemaddict-localstorage`;
+const STORE_VER = `v1`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const pageHeader = document.querySelector(`.header`);
 const pageMain = document.querySelector(`.main`);
 const footerStatistics = document.querySelector(`.footer__statistics`);
 
 const api = new API(END_POINT, AUTHORIZATION);
-const apiWithProvider = new Provider(api);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 
 const moviesModel = new MoviesModel();
 

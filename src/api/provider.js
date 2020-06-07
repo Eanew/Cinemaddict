@@ -3,17 +3,21 @@ const isOnline = () => {
 };
 
 export default class Provider {
-  constructor(api) {
+  constructor(api, store) {
     this._api = api;
+    this._store = store;
   }
 
   getCards() {
     if (isOnline()) {
-      return this._api.getCards();
+      return this._api.getCards()
+        .then((cards) => {
+          cards.forEach((card) => this._store.setItem(card.id));
+          return cards;
+        });
     }
-
-    // TODO: Реализовать логику при отсутствии интернета
-    return Promise.reject(`offline logic is not implemented`);
+    const storeCards = Object.values(this._store.getItems());
+    return Promise.resolve(storeCards);
   }
 
   updateCard(id, data) {
