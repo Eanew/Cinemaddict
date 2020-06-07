@@ -1,4 +1,5 @@
-import API from './api.js';
+import API from './api/index.js';
+import Provider from './api/provider.js';
 
 import {render, remove} from './utils/render.js';
 
@@ -20,6 +21,7 @@ const pageMain = document.querySelector(`.main`);
 const footerStatistics = document.querySelector(`.footer__statistics`);
 
 const api = new API(END_POINT, AUTHORIZATION);
+const apiWithProvider = new Provider(api);
 
 const moviesModel = new MoviesModel();
 
@@ -28,7 +30,7 @@ const loadingComponent = new LoadingComponent();
 
 const filterController = new FilterController(pageMain, moviesModel);
 const statisticController = new StatisticController(pageHeader, pageMain, moviesModel);
-const pageController = new PageController(filmListComponent, moviesModel, api);
+const pageController = new PageController(filmListComponent, moviesModel, apiWithProvider);
 
 const statisticDisplayToggle = () => {
   if (statisticController.getDisplayStatus() === false) {
@@ -54,7 +56,7 @@ const renderContent = (cards) => {
   render(footerStatistics, new FooterStatisticsComponent(cards.length));
 };
 
-api.getCards()
+apiWithProvider.getCards()
   .then((cards) => {
     renderContent(cards);
   })
