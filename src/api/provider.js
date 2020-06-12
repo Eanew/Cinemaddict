@@ -1,5 +1,14 @@
 import {nanoid} from 'nanoid';
 
+const StoreKey = {
+  FILMS: `films`,
+  COMMENTS: `comments`,
+};
+
+const createStoreStructure = (items) => {
+  return items.reduce((acc, current) => Object.assign({}, acc, {[current.id]: current}), {});
+};
+
 const isOnline = () => {
   return window.navigator.onLine;
 };
@@ -7,10 +16,6 @@ const isOnline = () => {
 const getSyncedCards = (items) => {
   return items.filter(({success}) => success)
     .map(({payload}) => payload.card);
-};
-
-const createStoreStructure = (items) => {
-  return items.reduce((acc, current) => Object.assign({}, acc, {[current.id]: current}), {});
 };
 
 export default class Provider {
@@ -22,13 +27,13 @@ export default class Provider {
   getCards() {
     if (isOnline()) {
       return this._api.getCards()
-        .then((cards) => {
-          const items = createStoreStructure(cards);
-          this._store.setItems(items);
-          return cards;
+        .then((films) => {
+          const items = createStoreStructure(films);
+          this._store.setItems(items, StoreKey.FILMS);
+          return films;
         });
     }
-    const storeCards = Object.values(this._store.getItems());
+    const storeCards = Object.values(this._store.getItems()[StoreKey.FILMS]);
     return Promise.resolve(storeCards);
   }
 
@@ -36,45 +41,42 @@ export default class Provider {
     if (isOnline()) {
       return this._api.updateCard(id, data)
         .then((newCard) => {
-          this._store.setItem(newCard.id, newCard);
+          this._store.setItem(newCard.id, newCard, StoreKey.FILMS);
           return newCard;
         });
     }
     const localCard = Object.assign({}, data, {id});
-    this._store.setItem(id, localCard);
+    this._store.setItem(id, localCard, StoreKey.FILMS);
     return Promise.resolve(localCard);
   }
 
   getComments(id) {
-    // TODO: Перенастроить работу с комментариями на отдельный ключ в localStorage
     if (isOnline()) {
       return this._api.getComments(id)
         .then((comments) => {
           const items = createStoreStructure(comments);
-          this._store.setItems(items);
+          this._store.setItems(items, StoreKey.COMMENTS);
           return comments;
         });
     }
-    const storeComments = Object.values(this._store.getItems());
+    const storeComments = Object.values(this._store.getItems()[StoreKey.COMMENTS]);
     return Promise.resolve(storeComments);
   }
 
   deleteComment(id) {
-    // TODO: Перенастроить работу с комментариями на отдельный ключ в localStorage
     if (isOnline()) {
       return this._api.deleteComment(id)
-        .then(() => this._store.removeItem(id));
+        .then(() => this._store.removeItem(id, StoreKey.COMMENTS));
     }
-    this._store.removeItem(id);
+    this._store.removeItem(id, StoreKey.COMMENTS);
     return Promise.resolve();
   }
 
   createComment(id, comment) {
-    // TODO: Перенастроить работу с комментариями на отдельный ключ в localStorage
     if (isOnline()) {
       return this._api.createComment(id, comment)
         .then((newComment) => {
-          this._store.setItem(newComment.id, newComment);
+          this._store.setItem(newComment.id, newComment, StoreKey.COMMENTS);
           return newComment;
         });
     }
@@ -83,7 +85,7 @@ export default class Provider {
       name: `You`,
     });
 
-    this._store.setItem(localNewComment.id, localNewComment);
+    this._store.setItem(localNewComment.id, localNewComment, StoreKey.COMMENTS);
     return Promise.resolve(localNewComment);
   }
 
@@ -95,7 +97,7 @@ export default class Provider {
           const createdCards = getSyncedCards(response.created);
           const updatedCards = getSyncedCards(response.updated);
           const items = createStoreStructure([...createdCards, ...updatedCards]);
-          this._store.setItems(items);
+          this._store.setItems(items, StoreKey.FILMS);
         });
     }
 

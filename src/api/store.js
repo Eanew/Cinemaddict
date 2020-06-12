@@ -12,19 +12,24 @@ export default class Store {
     }
   }
 
-  setItems(items) {
-    this._storage.setItem(this._storeKey, JSON.stringify(items));
+  setItems(items, folder) {
+    const store = this.getItems();
+    const updatedStore = Object.assign({}, store, {[folder]: items});
+
+    this._storage.setItem(this._storeKey, JSON.stringify(updatedStore));
   }
 
-  setItem(key, value) {
+  setItem(key, value, folder) {
     const store = this.getItems();
+    const updatedItems = Object.assign({}, store[folder], {[key]: value});
+    const updatedStore = Object.assign({}, store, {[folder]: updatedItems});
 
-    this._storage.setItem(this._storeKey, JSON.stringify(Object.assign({}, store, {[key]: value})));
+    this._storage.setItem(this._storeKey, JSON.stringify(updatedStore));
   }
 
-  removeItem(key) {
+  removeItem(key, folder) {
     const store = this.getItems();
-    delete store[key];
+    delete store[folder][key];
     this._storage.setItem(this._storeKey, JSON.stringify(store));
   }
 }
