@@ -1,5 +1,22 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
+## Описание
+
+Учебный проект на чистом ES6, с применением ООП, MVC, observer. ТЗ [здесь](https://up.htmlacademy.ru/ecmascript/11/project/cinemaddict#specification)
+
+Установка пакетов:
+```
+npm install
+```
+Сборка:
+```
+npm build
+```
+Запуск:
+```
+npm start
+```
+
 * Студент: [Александр Петров](https://up.htmlacademy.ru/ecmascript/11/user/345769).
 * Наставник: [Виталий Комолаев](https://htmlacademy.ru/profile/id1274335).
 
