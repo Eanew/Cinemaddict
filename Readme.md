@@ -2,7 +2,15 @@
 
 SPA на чистом ES6, с применением ООП, MVC, observer.
 
-<img width="769" alt="Preview" src="https://up.htmlacademy.ru/static/img/intensive/ecmascript/cinemaddict-v10.png">
+---
+
+<img width="769" alt="Main page preview" src="./project-preview/index.png">
+
+<img width="769" alt="Film popup preview" src="./project-preview/film.png">
+
+<img width="769" alt="Stats preview" src="./project-preview/stats.png">
+
+---
 
 ### Функциональность
 
