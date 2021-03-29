@@ -1,11 +1,6 @@
 # Личный проект «Киноман»
 
-* Студент: [Александр Петров](https://up.htmlacademy.ru/ecmascript/11/user/345769).
-* Наставник: [Виталий Комолаев](https://htmlacademy.ru/profile/id1274335).
-
-## Описание
-
-Учебный проект на чистом ES6, с применением ООП, MVC, observer.
+SPA на чистом ES6, с применением ООП, MVC, observer.
 
 <img width="769" alt="Preview" src="https://up.htmlacademy.ru/static/img/intensive/ecmascript/cinemaddict-v10.png">
 
