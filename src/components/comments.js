@@ -187,7 +187,7 @@ export default class CommentsComponent extends AbstractSmartComponent {
   onCommentSubmit(handler) {
     this.getElement().querySelector(`.film-details__new-comment`)
       .addEventListener(`keydown`, (evt) => {
-        if ((evt.ctrlKey || evt.metaKey) && evt.key === Key.ENTER) {
+        if (evt.key === Key.ENTER && !evt.shiftKey) {
           evt.preventDefault();
           handler();
         }
